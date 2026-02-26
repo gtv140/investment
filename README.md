@@ -2,52 +2,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FREE INTERNET DATA 50GB 🎁</title>
-    <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', Courier, monospace; text-align: center; padding-top: 100px; overflow: hidden; }
-        #scare { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; }
-        #scare img { width: 100%; height: 100%; object-fit: cover; }
-        .btn { background: #0f0; color: #000; padding: 15px 30px; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; font-size: 20px; }
-        #status { margin-top: 20px; color: white; }
-    </style>
+    <title>InvestSmart | Grow Your Wealth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 font-sans">
 
-    <h1>⚡ FREE 50GB DATA ACTIVATION ⚡</h1>
-    <p>Click below to start the server connection...</p>
-    <br>
-    <button class="btn" onclick="startPrank()">ACTIVATE NOW</button>
-    <div id="status"></div>
+    <nav class="p-6 bg-white shadow-sm flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-blue-600">InvestSmart</h1>
+        <div class="space-x-6">
+            <a href="#" class="text-gray-600 hover:text-blue-600">Market</a>
+            <a href="#" class="text-gray-600 hover:text-blue-600">Portfolio</a>
+            <button class="bg-blue-600 text-white px-5 py-2 rounded-lg">Login</button>
+        </div>
+    </nav>
 
-    <div id="scare">
-        <img src="https://i.ibb.co/vYm6z2r/scary-ghost.jpg" alt="JUMPSCARE">
-        <audio id="scream" src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Screaming+Woman&filename=24/244341-c1987b7a-9669-4e4b-9e4a-449e7a83b564.mp3" preload="auto"></audio>
-    </div>
+    <header class="py-20 px-10 text-center bg-gradient-to-r from-blue-700 to-indigo-800 text-white">
+        <h2 class="text-5xl font-extrabold mb-4">Apne Future Mein Invest Karein</h2>
+        <p class="text-xl mb-8 opacity-90">Sahi jagah, sahi waqt aur sahi return. Aaj hi apna account banayein.</p>
+        <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full transition">Get Started Now</button>
+    </header>
 
-    <script>
-        function startPrank() {
-            let status = document.getElementById('status');
-            status.innerHTML = "Connecting to Satellite...";
-            
-            // Step 1: Loading Suspense
-            setTimeout(() => { status.innerHTML = "Accessing Database... [34%]"; }, 1000);
-            setTimeout(() => { status.innerHTML = "Bypassing Security... [89%]"; }, 2000);
-            
-            // Step 2: THE JUMPSCARE
-            setTimeout(() => {
-                let scareDiv = document.getElementById('scare');
-                let audio = document.getElementById('scream');
-                
-                scareDiv.style.display = 'block'; // Show Ghost
-                audio.play().catch(e => console.log("Audio need interaction")); // Play Scream
-                
-                // Force Fullscreen (Android/Chrome special)
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                }
-            }, 3500);
-        }
-    </script>
+    <section class="py-16 px-10">
+        <h3 class="text-3xl font-bold text-center mb-12">Popular Investment Options</h3>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-blue-500 text-center">
+                <h4 class="text-xl font-bold mb-2">Stocks</h4>
+                <p class="text-gray-500 mb-4">High Risk, High Return</p>
+                <p class="text-2xl font-bold text-green-600">Up to 15% p.a.</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-yellow-500 text-center">
+                <h4 class="text-xl font-bold mb-2">Gold</h4>
+                <p class="text-gray-500 mb-4">Safe & Consistent</p>
+                <p class="text-2xl font-bold text-green-600">Up to 8% p.a.</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-purple-500 text-center">
+                <h4 class="text-xl font-bold mb-2">Mutual Funds</h4>
+                <p class="text-gray-500 mb-4">Diversified Portfolio</p>
+                <p class="text-2xl font-bold text-green-600">Up to 12% p.a.</p>
+            </div>
+        </div>
+    </section>
 
 </body>
 </html>
