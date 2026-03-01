@@ -5,7 +5,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <title>MintCrest Gold | Trusted Asset Custody</title>
+    <title>MintCrest Gold | Professional Asset Vault</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000103; color: white; overflow-x: hidden; }
@@ -47,7 +47,7 @@
             <div class="glass p-10 rounded-[3rem] mb-6 border-l-8 border-blue-600 shadow-xl">
                 <p class="text-[9px] text-blue-400 font-extrabold mb-1 uppercase tracking-widest">Available Capital</p>
                 <h2 class="text-5xl font-black tracking-tighter" id="v-bal">₨ 0</h2>
-                <div id="countdown-display" class="mt-4 text-[9px] font-black text-yellow-500 uppercase italic">System Syncing...</div>
+                <div id="countdown-display" class="mt-4 text-[9px] font-black text-yellow-500 uppercase italic italic">System Syncing...</div>
                 <div class="mt-6 flex gap-3">
                     <span class="text-[8px] bg-green-500/10 text-green-400 px-4 py-2 rounded-full font-bold border border-green-500/20 uppercase">Profit: <span id="v-profit">₨ 0</span></span>
                     <span id="tier-tag" class="text-[8px] bg-white/5 text-gray-400 px-4 py-2 rounded-full font-bold uppercase italic border border-white/5">No Active Fleet</span>
@@ -72,13 +72,13 @@
         <div id="p-more" class="page p-6 space-y-6 pb-12">
             <div class="glass p-8 rounded-[3rem] text-center border-b-4 border-green-500">
                 <h3 class="text-green-500 font-black text-[10px] uppercase mb-2">Official Community</h3>
-                <p class="text-[7px] text-gray-500 mb-4 uppercase">Latest Proofs & Updates</p>
-                <a href="https://whatsapp.com/channel/YOUR_LINK_HERE" class="inline-block bg-white/5 border border-green-500/30 px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">📢 Join Channel</a>
+                <p class="text-[7px] text-gray-500 mb-4 uppercase italic">Latest Proofs & Updates</p>
+                <a href="https://whatsapp.com/channel/0029VbCGQ4Q8kyySSN8Knq0O" class="inline-block bg-white/5 border border-green-500/30 px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">📢 Join Channel</a>
             </div>
 
             <div class="glass p-8 rounded-[3rem]">
                 <h3 class="text-blue-500 font-black text-[11px] uppercase mb-4 italic text-center">Admin Help Desk</h3>
-                <textarea id="support-msg" placeholder="Write your message to Admin here..." class="w-full bg-white/5 p-5 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 h-24 font-bold"></textarea>
+                <textarea id="support-msg" placeholder="Describe your issue to Admin..." class="w-full bg-white/5 p-5 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 h-24 font-bold"></textarea>
                 <button id="sup-btn" onclick="sendSupport()" class="w-full bg-blue-600 py-4 rounded-2xl font-black text-[10px] uppercase">Send Message</button>
             </div>
 
@@ -86,16 +86,6 @@
                 <p class="text-[8px] font-bold text-gray-500 mb-4 uppercase italic">Referral Link</p>
                 <input type="text" id="ref-link" readonly class="w-full bg-white/5 p-4 rounded-2xl text-[10px] text-center font-bold mb-4 border border-white/5 outline-none">
                 <button onclick="copyRef()" class="bg-blue-600 px-10 py-3 rounded-2xl font-black text-[9px] uppercase">Copy Invite</button>
-            </div>
-
-            <div class="glass p-8 rounded-[3rem]">
-                <h3 class="text-gray-400 font-black text-[10px] uppercase mb-4 italic">Security & Policy</h3>
-                <p class="text-[9px] text-gray-500 leading-relaxed font-bold uppercase tracking-tighter">
-                    • 100% Capital Protection <br>
-                    • TID + Image Proof Verification <br>
-                    • Encrypted Asset Management <br>
-                    • 24-Hour Withdrawal Cycle
-                </p>
             </div>
 
             <button onclick="logout()" class="w-full glass p-6 rounded-[2.5rem] text-center text-[10px] font-black text-red-500 uppercase">Terminate Session</button>
@@ -114,7 +104,7 @@
                 <input type="text" id="dep-promo" placeholder="PROMO CODE (IF ANY)" class="w-full bg-blue-500/5 p-4 rounded-2xl mb-6 text-center text-[9px] font-bold uppercase outline-none border border-blue-500/20 text-blue-400">
 
                 <label class="block w-full bg-white/5 p-5 rounded-2xl mb-8 border border-dashed border-white/20 cursor-pointer">
-                    <span id="file-label" class="text-[9px] font-bold opacity-50 uppercase">📸 Upload Screenshot Proof</span>
+                    <span id="file-label" class="text-[9px] font-bold opacity-50 uppercase italic">📸 Upload Screenshot Proof</span>
                     <input type="file" id="dep-proof" accept="image/*" class="hidden" onchange="document.getElementById('file-label').innerText = 'Screenshot Ready ✅'">
                 </label>
 
@@ -149,15 +139,15 @@
         <div id="adm-sec-users" class="adm-tab hidden space-y-3"></div>
 
         <div id="adm-sec-broadcast" class="adm-tab hidden glass p-8 rounded-[3rem]">
-            <h3 class="text-yellow-500 font-black text-xs uppercase mb-4 text-center">App Ticker Update</h3>
-            <textarea id="bc-msg" placeholder="Write Promo News / Announcement..." class="w-full bg-white/5 p-5 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 h-24 font-bold"></textarea>
+            <h3 class="text-yellow-500 font-black text-xs uppercase mb-4 text-center italic">App Ticker Update</h3>
+            <textarea id="bc-msg" placeholder="Write Promo / News for the ticker bar..." class="w-full bg-white/5 p-5 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 h-24 font-bold"></textarea>
             <button onclick="sendBroadcast()" class="w-full bg-yellow-600 py-4 rounded-2xl font-black text-[10px] uppercase">🚀 Broadcast Now</button>
         </div>
 
         <div class="glass p-8 rounded-[3rem] mt-10">
-            <h3 class="text-[9px] font-black uppercase mb-4 opacity-30 text-center tracking-widest">Profit/Balance Injection</h3>
-            <input type="text" id="adm-user" placeholder="User Name" class="w-full bg-white/5 p-4 rounded-xl mb-2 text-center text-[10px] font-bold border border-white/5 outline-none">
-            <input type="number" id="adm-val" placeholder="Amount" class="w-full bg-white/5 p-4 rounded-xl mb-4 text-center text-[10px] font-bold border border-white/5 outline-none">
+            <h3 class="text-[9px] font-black uppercase mb-4 opacity-30 text-center tracking-widest italic">Manual Fund Injection</h3>
+            <input type="text" id="adm-user" placeholder="Target User Name" class="w-full bg-white/5 p-4 rounded-xl mb-2 text-center text-[10px] font-bold border border-white/5 outline-none">
+            <input type="number" id="adm-val" placeholder="Amount (PKR)" class="w-full bg-white/5 p-4 rounded-xl mb-4 text-center text-[10px] font-bold border border-white/5 outline-none">
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="manualEdit('balance')" class="bg-blue-600 py-3 rounded-xl font-black text-[9px] uppercase">Add Bal</button>
                 <button onclick="manualEdit('profit')" class="bg-green-600 py-3 rounded-xl font-black text-[9px] uppercase">Add Prof</button>
@@ -178,14 +168,14 @@
         let user = null; let tapCount = 0;
 
         const plans = [
-            { n: "Micro-Elite I", p: 200, r: 3 }, { n: "Micro-Elite II", p: 500, r: 3.2 },
-            { n: "Bronze-S", p: 1000, r: 3.5 }, { n: "Bronze-X", p: 2000, r: 3.8 },
-            { n: "Silver-S", p: 3000, r: 4.2 }, { n: "Silver-X", p: 5000, r: 4.5 },
-            { n: "Gold-S", p: 7000, r: 5 }, { n: "Gold-X", p: 10000, r: 5.5 },
-            { n: "Gold-Master", p: 15000, r: 6 }, { n: "Platinum-S", p: 20000, r: 6.5 },
-            { n: "Platinum-X", p: 30000, r: 7 }, { n: "Diamond-S", p: 40000, r: 7.5 },
-            { n: "Diamond-X", p: 50000, r: 8 }, { n: "Royal-S", p: 75000, r: 9 },
-            { n: "Royal-Grand", p: 100000, r: 10 },
+            { n: "Micro-Elite I", p: 200, r: 3, d: 30 }, { n: "Micro-Elite II", p: 500, r: 3.2, d: 30 },
+            { n: "Bronze-S", p: 1000, r: 3.5, d: 30 }, { n: "Bronze-X", p: 2000, r: 3.8, d: 30 },
+            { n: "Silver-S", p: 3000, r: 4.2, d: 30 }, { n: "Silver-X", p: 5000, r: 4.5, d: 30 },
+            { n: "Gold-S", p: 7000, r: 5, d: 30 }, { n: "Gold-X", p: 10000, r: 5.5, d: 30 },
+            { n: "Gold-Master", p: 15000, r: 6, d: 30 }, { n: "Platinum-S", p: 20000, r: 6.5, d: 30 },
+            { n: "Platinum-X", p: 30000, r: 7, d: 30 }, { n: "Diamond-S", p: 40000, r: 7.5, d: 30 },
+            { n: "Diamond-X", p: 50000, r: 8, d: 30 }, { n: "Royal-S", p: 75000, r: 9, d: 30 },
+            { n: "Royal-Grand", p: 100000, r: 10, d: 30 },
             { n: "⚡ FLASH 24H", p: 500, r: 12, s: true },
             { n: "⭐ VIP ACCESS", p: 2500, r: 14, s: true },
             { n: "💎 ELITE PASS", p: 8000, r: 15, s: true },
@@ -222,7 +212,7 @@
         function startSync(name) {
             db.collection("users").doc(name).onSnapshot(doc => { if(doc.exists) { user = doc.data(); document.getElementById('v-bal').innerText = "₨ " + (user.balance || 0).toLocaleString(); document.getElementById('v-profit').innerText = "₨ " + (user.profit || 0).toLocaleString(); document.getElementById('tier-tag').innerText = user.tierName; checkProfitReq(user); } });
             db.collection("requests").where("user", "==", name).onSnapshot(snap => {
-                const list = document.getElementById('user-history'); list.innerHTML = snap.empty ? '<p class="text-center opacity-20 py-20 text-[9px] font-black uppercase">Ledger is Empty</p>' : '';
+                const list = document.getElementById('user-history'); list.innerHTML = snap.empty ? '<p class="text-center opacity-20 py-20 text-[9px] font-black uppercase tracking-widest italic">Ledger is Empty</p>' : '';
                 let items = []; snap.forEach(doc => items.push(doc.data())); items.sort((a,b) => b.time - a.time);
                 items.forEach(d => { const clr = d.type.includes('dep') ? 'border-blue-500' : (d.type.includes('Profit') ? 'border-green-500' : 'border-red-500'); list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center border-l-4 ${clr} mb-2 text-[9px] font-black uppercase"><div>${d.type}<br><span class="opacity-30 text-[7px] font-bold">${new Date(d.time).toLocaleString()}</span></div><div class="text-right">₨ ${d.amount}<br><span class="badge-${d.status}">${d.status}</span></div></div>`; });
             });
@@ -232,7 +222,10 @@
             const list = document.getElementById('plans-list'); list.innerHTML = '';
             plans.forEach(p => {
                 const style = p.s ? 'background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3) !important;' : '';
-                list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass p-5 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer" style="${style}"><div><h4 class="font-black text-[10px] uppercase ${p.s ? 'text-blue-400' : 'text-gray-400'}">${p.n}</h4><p class="text-[8px] text-green-400 font-bold uppercase">${p.r}% Daily Yield</p></div><p class="font-black text-[12px]">₨ ${p.p}</p></div>`;
+                const dayText = p.d ? `<p class="text-[7px] text-gray-500 font-bold uppercase italic mt-1">⏳ ${p.d} Days Contract</p>` : '';
+                const totalText = p.d ? `<p class="text-[6px] opacity-30 font-bold uppercase tracking-tighter italic">Total: ₨ ${((p.p * p.r / 100) * p.d).toLocaleString()}</p>` : '';
+                
+                list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass p-5 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer mb-2" style="${style}"><div><h4 class="font-black text-[10px] uppercase ${p.s ? 'text-blue-400' : 'text-gray-400'}">${p.n}</h4><p class="text-[8px] text-green-400 font-bold uppercase">${p.r}% Daily Yield</p>${dayText}</div><div class="text-right"><p class="font-black text-[12px]">₨ ${p.p.toLocaleString()}</p>${totalText}</div></div>`;
             });
         }
 
@@ -277,14 +270,14 @@
             db.collection("requests").where("status", "==", "pending").onSnapshot(snap => {
                 const list = document.getElementById('adm-sec-requests'); list.innerHTML = '';
                 snap.forEach(doc => { const d = doc.data(); 
-                    const pBtn = d.proof ? `<button onclick="window.open().document.write('<img src=\\'${d.proof}\\' style=\\'width:100%\\' />')" class="bg-blue-400 px-2 py-1 rounded text-[7px] uppercase font-black">📸</button>` : '';
+                    const pBtn = d.proof ? `<button onclick="window.open().document.write('<img src=\\'${d.proof}\\' style=\\'width:100%\\' />')" class="bg-blue-400 px-2 py-1 rounded text-[7px] uppercase font-black italic">📸</button>` : '';
                     list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${d.user}<br>Rs ${d.amount} (${d.type})<br>PROMO: ${d.promo||'No'}<br>${d.message||''}</div><div class="flex gap-2">${pBtn}<button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-2 py-1 rounded">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-2 py-1 rounded">NO</button></div></div>`;
                 });
             });
-            db.collection("users").onSnapshot(snap => { const list = document.getElementById('adm-sec-users'); list.innerHTML = ''; snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${u.name}</div><div>Bal: ${u.balance}</div><button onclick="deleteUser('${u.name}')" class="text-red-500 font-bold">❌</button></div>`; }); });
+            db.collection("users").onSnapshot(snap => { const list = document.getElementById('adm-sec-users'); list.innerHTML = ''; snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${u.name}</div><div>Bal: ${u.balance}</div><button onclick="deleteUser('${u.name}')" class="text-red-500 font-bold italic">❌</button></div>`; }); });
         }
         async function handle(id, u, amt, act, type) { const ref = db.collection("users").doc(u); const doc = await ref.get(); if(act==='approved') { if(type==='deposit'||type.includes('Profit')) await ref.update({ balance: (doc.data().balance||0)+amt }); } else if(type==='withdraw') await ref.update({ balance: (doc.data().balance||0)+amt }); await db.collection("requests").doc(id).update({ status: act }); }
-        async function manualEdit(f) { const u = document.getElementById('adm-user').value; const v = parseInt(document.getElementById('adm-val').value); const ref = db.collection("users").doc(u); const d = await ref.get(); if(d.exists) await ref.update({ [f]: (d.data()[f]||0)+v }); alert("Balance Injected!"); }
+        async function manualEdit(f) { const u = document.getElementById('adm-user').value; const v = parseInt(document.getElementById('adm-val').value); const ref = db.collection("users").doc(u); const d = await ref.get(); if(d.exists) await ref.update({ [f]: (d.data()[f]||0)+v }); alert("Funds Injected!"); }
         async function deleteUser(n) { if(confirm("Delete user "+n+"?")) await db.collection("users").doc(n).delete(); }
     </script>
 </body>
