@@ -233,11 +233,27 @@
             const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const p = document.getElementById('dep-promo').value.trim(); const f = document.getElementById('dep-proof'); const b = document.getElementById('dep-btn');
             if(!a || !t || !f.files[0]) return alert("Missing Details/Proof!"); b.disabled = true; b.innerText = "UPLOADING...";
             const r = new FileReader(); r.readAsDataURL(f.files[0]); r.onload = async () => {
-                await db.collection("requests").addDate.now() });
-            await db.collection("users").doc(user.name).update({ balance: user.balance - parseInt(a) }); alert("Requested Successfully!"); changePage('activity');
+                await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, promo: p||"None", proof: r.result, type: "deposit", status: "pending", time: Date.now() });
+                alert("Request Logged! Admin will verify TID & Proof."); b.disabled = false; b.innerText = "VERIFY FUNDING"; changePage('activity');
+            };
         }
 
-        async function checkProfitReq(u) { if (u.activeTier > 0 && (Date.now() - u.lastReqTime) >= 86400000) { const amt = (u.activeTier * u.tierROI) / 100; await db.collection("requests").add({ user: u.name, amount: amt, type: "Daily Profit Yield", status: "pending", time: Date.now() }); await db.collection("users").doc(u.name).update({ lastReqTime: Date.now() }); } }
+        async function sendSupport() {
+            const m = document.getElementById('support-msg').value.trim(); if(!m) return alert("Write message!");
+            await db.collection("requests").add({ user: user.name, message: m, type: "Support Ticket", status: "pending", time: Date.now(), amount: 0 });
+            alert("Ticket Sent to Admin!"); document.getElementById('support-msg').value = '';
+        }
+
+        async function buy(p, roi, tName) {
+            if(user.balance < p) { alert("Low Funds!"); changePage('wallet'); }
+            else { if(confirm("Activate "+tName+" for ₨ "+p+"?")) { const exp = Date.now() + (30 * 86400000); await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: tName, tierExpiry: exp, lastReqTime: Date.now() }); await db.collection("requests").add({ user: user.name, amount: p, type: "Tier Activation", status: "approved", time: Date.now() }); alert("Success!"); changePage('activity'); } }
+        }
+
+        async function submitWithdraw() {
+            const a = document.getElementById('wd-amt').value; const acc = document.getElementById('wd-acc').value; if(!a || !acc || parseInt(a) > user.balance) return alert("Invalid Amount!");
+            await db.collection("requests").add({ user: user.name, amount: parseInt(a), acc: acc, type: "withdraw", status: "pending", time: Date.now() });
+            await db.collection("users").doc(user.name).update({ balance: user.balance - parseInt(a) }); alert("Requested Successfully!"); changePage('activity');
+        }async function checkProfitReq(u) { if (u.activeTier > 0 && (Date.now() - u.lastReqTime) >= 86400000) { const amt = (u.activeTier * u.tierROI) / 100; await db.collection("requests").add({ user: u.name, amount: amt, type: "Daily Profit Yield", status: "pending", time: Date.now() }); await db.collection("users").doc(u.name).update({ lastReqTime: Date.now() }); } }
         function updateCountdown() { if (user && user.activeTier > 0) { const d = (user.lastReqTime + 86400000) - Date.now(); if(d>0) { const h = Math.floor(d/3600000); const m = Math.floor((d%3600000)/60000); const s = Math.floor((d%60000)/1000); document.getElementById('countdown-display').innerText = `YIELD IN: ${h}H ${m}M ${s}S`; } else { document.getElementById('countdown-display').innerText = "YIELD READY"; } } else { document.getElementById('countdown-display').innerText = "SYSTEM IDLE"; } }
         function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active-tab')); document.getElementById('p-'+p).classList.add('active-page'); if(p!=='wallet'&&p!=='withdraw') document.getElementById('n-'+p).classList.add('active-tab'); }
         function logout() { if(confirm("Terminate Session?")) { localStorage.removeItem('mc_user'); location.reload(); } }
@@ -245,14 +261,14 @@
         function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
         function showAdmTab(t) { document.querySelectorAll('.adm-tab').forEach(s=>s.classList.add('hidden')); document.getElementById('adm-sec-'+t).classList.remove('hidden'); }
         function copyRef() { const c = document.getElementById('ref-link'); c.select(); document.execCommand('copy'); alert("Link Copied!"); }
-
         async function sendBroadcast() { const m = document.getElementById('bc-msg').value.trim(); if(!m) return; await db.collection("app_data").doc("announcement").set({ message: m, time: Date.now() }); alert("Broadcast Sent!"); }
 
         async function syncAdmin() {
             db.collection("requests").where("status", "==", "pending").onSnapshot(snap => {
                 const list = document.getElementById('adm-sec-requests'); list.innerHTML = '';
                 snap.forEach(doc => { const d = doc.data(); 
-                    const pBtn = d.proof ? `<button onclick="window.open().document.write('<img src=\\'${d.proof}\\' style=\\'width:100%\\' />')" class="bg-blue-400 px-2 py-1 rounded text-[7px] uppercase font-black italic">📸</button>` : '';list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${d.user}<br>Rs ${d.amount} (${d.type})<br>PROMO: ${d.promo||'No'}<br>${d.message||''}</div><div class="flex gap-2">${pBtn}<button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-2 py-1 rounded">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-2 py-1 rounded">NO</button></div></div>`;
+                    const pBtn = d.proof ? `<button onclick="window.open().document.write('<img src=\\'${d.proof}\\' style=\\'width:100%\\' />')" class="bg-blue-400 px-2 py-1 rounded text-[7px] uppercase font-black italic">📸</button>` : '';
+                    list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${d.user}<br>Rs ${d.amount} (${d.type})<br>PROMO: ${d.promo||'No'}<br>${d.message||''}</div><div class="flex gap-2">${pBtn}<button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-2 py-1 rounded">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-2 py-1 rounded">NO</button></div></div>`;
                 });
             });
             db.collection("users").onSnapshot(snap => { const list = document.getElementById('adm-sec-users'); list.innerHTML = ''; snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${u.name}</div><div>Bal: ${u.balance}</div><button onclick="deleteUser('${u.name}')" class="text-red-500 font-bold italic">❌</button></div>`; }); });
