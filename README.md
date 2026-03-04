@@ -20,15 +20,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let currentUser=null, adminClicks=0, promoApplied=false;
+const plans=[]; for(let i=1;i<=20;i++) plans.push({name:"Plan "+i,price:200*i,daily:3+(i*0.2)});
 
-// Plans
-const plans=[];
-for(let i=1;i<=20;i++) plans.push({name:"Plan "+i,price:200*i,daily:3+(i*0.2)});
-
-// Login
+// LOGIN
 window.login=async function(){
   const name=document.getElementById("username").value.trim().toUpperCase();
-  if(!name)return alert("Enter username");
+  if(!name) return alert("Enter username");
   currentUser=name;
   const uRef=doc(db,"users",name);
   const uSnap=await getDoc(uRef);
@@ -40,7 +37,7 @@ window.login=async function(){
   loadUserData(); renderPlans(); syncBroadcast(); loadActivity();
 }
 
-// Load User Data
+// LOAD USER DATA
 async function loadUserData(){
   const uRef=doc(db,"users",currentUser);
   onSnapshot(uRef,docSnap=>{
@@ -51,7 +48,7 @@ async function loadUserData(){
   });
 }
 
-// Render Plans
+// RENDER PLANS
 window.renderPlans=function(){
   const container=document.getElementById("plans");
   container.innerHTML="";
@@ -63,60 +60,60 @@ window.renderPlans=function(){
   });
 }
 
-// Buy Plan
+// BUY PLAN
 window.buyPlan=async function(name,price,daily){
   await addDoc(collection(db,"requests"),{user:currentUser,type:"PLAN",planName:name,amount:price,daily:daily,status:"pending",time:Date.now()});
   alert("Plan request sent to admin!");
 }
 
-// Deposit
+// DEPOSIT
 window.deposit=async function(){
   const amt=parseInt(document.getElementById("depAmount").value);
   const method=document.getElementById("depMethod").value;
   const tid=document.getElementById("depTid").value;
-  if(!amt||!method||!tid)return alert("Fill all fields");
+  if(!amt||!method||!tid) return alert("Fill all fields");
   await addDoc(collection(db,"requests"),{user:currentUser,type:"DEPOSIT",amount:amt,method:method,tid:tid,status:"pending",time:Date.now()});
   alert("Deposit request sent!");
 }
 
-// Withdraw
+// WITHDRAW
 window.withdraw=async function(){
   const amt=parseInt(document.getElementById("wdAmount").value);
   const det=document.getElementById("wdDetails").value;
-  if(!amt||!det)return alert("Fill all fields");
+  if(!amt||!det) return alert("Fill all fields");
   await addDoc(collection(db,"requests"),{user:currentUser,type:"WITHDRAW",amount:amt,details:det,status:"pending",time:Date.now()});
   alert("Withdraw request sent!");
 }
 
-// Promo code
+// PROMO CODE
 window.applyPromo=async function(){
-  if(promoApplied)return alert("Already applied code");
+  if(promoApplied) return alert("Already applied code");
   const code=document.getElementById("promoCode").value.trim();
-  if(!code)return alert("Enter code");
+  if(!code) return alert("Enter code");
   await addDoc(collection(db,"requests"),{user:currentUser,type:"PROMO",code:code,status:"pending",time:Date.now()});
   alert("Promo code request sent!");
 }
 
-// Secret Admin
+// SECRET ADMIN PANEL
 document.getElementById("siteTitle").addEventListener("click",()=>{
   adminClicks++;
   if(adminClicks>=4){
     const key=prompt("Enter Admin Key");
-    if(key==="mint786")document.getElementById("adminBox").classList.remove("hidden");
+    if(key==="mint786") document.getElementById("adminBox").classList.remove("hidden");
     else alert("Wrong key");
     adminClicks=0;
   }
 });
 
-// Broadcast sync
+// BROADCAST SYNC
 async function syncBroadcast(){
   const ref=doc(db,"settings","broadcast");
   onSnapshot(ref,docSnap=>{
-    if(docSnap.exists()&&!promoApplied)alert("🎉 Promo/Message: "+docSnap.data().msg);
+    if(docSnap.exists() && !promoApplied) alert("🎉 Promo/Message: "+docSnap.data().msg);
   });
 }
 
-// Activity section
+// ACTIVITY
 async function loadActivity(){
   const q=query(collection(db,"requests"),where("user","==",currentUser),orderBy("time","desc"));
   onSnapshot(q,snap=>{
@@ -132,7 +129,7 @@ async function loadActivity(){
   });
 }
 
-// Navigation
+// NAVIGATION
 window.showPage=function(page,btn){
   document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
   document.getElementById("page-"+page).classList.remove("hidden");
@@ -143,17 +140,16 @@ window.showPage=function(page,btn){
 </head>
 <body class="bg-gray-900 text-white font-sans">
 
-<!-- Login -->
+<!-- LOGIN -->
 <div id="loginBox" class="max-w-sm mx-auto mt-16 p-4">
   <h1 id="siteTitle" class="text-3xl font-bold text-center mb-4 cursor-pointer">MINTCRESTGOLD</h1>
   <input id="username" placeholder="Username" class="w-full p-3 rounded-xl mb-2 bg-white/10 text-white">
   <button onclick="login()" class="w-full bg-blue-600 p-3 rounded-xl font-bold">Login</button>
 </div>
 
-<!-- App Dashboard -->
+<!-- DASHBOARD -->
 <div id="appBox" class="hidden max-w-md mx-auto space-y-4 p-4">
 
-<!-- Wallet -->
 <div class="page" id="page-home">
   <div class="bg-white/5 rounded-2xl p-4 text-center mb-3">
     <h2 class="text-gray-400 text-sm">Wallet Balance</h2>
