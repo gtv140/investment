@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MINTCRESTGOLD | Dashboard</title>
+<title>MINTCRESTGOLD | Ultimate Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -21,7 +21,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // Variables
-let currentUser=null, adminClicks=0, promoApplied=false;
+let currentUser=null, adminClicks=0, promoApplied=false, spinCooldown=0;
 const plans=[];
 for(let i=1;i<=25;i++){
   plans.push({name:`Plan ${i}`,price:(i<=20?200*i:(i-20)*2000),daily:3+(i*0.2)});
@@ -35,7 +35,7 @@ window.login=async function(){
   const uRef=doc(db,"users",name);
   const uSnap=await getDoc(uRef);
   if(!uSnap.exists()){
-    await setDoc(uRef,{balance:0,activePlan:null,lastProfit:0,redeemedCodes:[],pin:"0000"});
+    await setDoc(uRef,{balance:0,activePlan:null,lastProfit:0,redeemedCodes:[],pin:"0000",spinLast:0});
   }
   document.getElementById("loginBox").classList.add("hidden");
   document.getElementById("appBox").classList.remove("hidden");
@@ -50,6 +50,7 @@ async function loadUserData(){
     document.getElementById("balance").innerText="₨ "+d.balance;
     document.getElementById("activePlan").innerText=d.activePlan?`Active: ${d.activePlan}`:"No Active Plan";
     promoApplied=d.redeemedCodes && d.redeemedCodes.length>0;
+    spinCooldown=d.spinLast||0;
   });
 }
 
@@ -105,6 +106,18 @@ window.applyPromo=async function(){
   alert("Promo code request sent!");
 }
 
+// SPIN WHEEL
+window.spinWheel=async function(){
+  const now=Date.now();
+  if(now-spinCooldown<86400000) return alert("Spin available once per 24h");
+  const reward=Math.floor(Math.random()*200)+50; // 50-250 reward
+  const uRef=doc(db,"users",currentUser);
+  const uSnap=await getDoc(uRef);
+  await updateDoc(uRef,{balance:uSnap.data().balance+reward,spinLast:now});
+  await addDoc(collection(db,"requests"),{user:currentUser,type:"SPIN REWARD",amount:reward,status:"approved",time:now});
+  alert(`🎉 You won ₨ ${reward}`);
+}
+
 // SECRET ADMIN PANEL
 document.getElementById("siteTitle").addEventListener("click",()=>{
   adminClicks++;
@@ -120,7 +133,7 @@ document.getElementById("siteTitle").addEventListener("click",()=>{
 async function syncBroadcast(){
   const ref=doc(db,"settings","broadcast");
   onSnapshot(ref,docSnap=>{
-    if(docSnap.exists() && !promoApplied) alert("🎉 Promo/Message: "+docSnap.data().msg);
+    if(docSnap.exists()) alert("📢 Broadcast: "+docSnap.data().msg);
   });
 }
 
@@ -202,6 +215,12 @@ window.showPage=function(page,btn){
     <h3 class="font-bold mb-2">🎁 Promo Code</h3>
     <input id="promoCode" placeholder="Enter Code" class="w-full p-2 rounded-xl mb-2 bg-white/10">
     <button onclick="applyPromo()" class="w-full bg-purple-600 p-2 rounded-xl">Apply</button>
+  </div>
+
+  <!-- Spin Wheel -->
+  <div class="bg-white/5 rounded-2xl p-4 mb-3">
+    <h3 class="font-bold mb-2">🎡 Spin Wheel</h3>
+    <button onclick="spinWheel()" class="w-full bg-yellow-500 p-2 rounded-xl">Spin & Win</button>
   </div>
 
   <!-- Activity -->
