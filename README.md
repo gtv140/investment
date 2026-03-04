@@ -14,9 +14,9 @@
         .page { display: none; animation: slideUp 0.3s ease; }
         .active-page { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .badge-pending { @apply bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded text-[7px] font-bold uppercase; }
-        .badge-approved { @apply bg-green-500/10 text-green-400 px-2 py-1 rounded text-[7px] font-bold uppercase; }
-        .badge-rejected { @apply bg-red-500/10 text-red-500 px-2 py-1 rounded text-[7px] font-bold uppercase; }
+        .badge-pending { background: rgba(234, 179, 8, 0.1); color: #eab308; padding: 2px 4px; border-radius: 4px; font-size: 7px; font-weight: bold; text-transform: uppercase; }
+        .badge-approved { background: rgba(34, 197, 94, 0.1); color: #4ade80; padding: 2px 4px; border-radius: 4px; font-size: 7px; font-weight: bold; text-transform: uppercase; }
+        .badge-rejected { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 2px 4px; border-radius: 4px; font-size: 7px; font-weight: bold; text-transform: uppercase; }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .animate-marquee { display: inline-block; animation: marquee 15s linear infinite; white-space: nowrap; }
     </style>
@@ -47,7 +47,7 @@
             <div class="glass p-10 rounded-[3rem] mb-6 border-l-8 border-blue-600 shadow-xl">
                 <p class="text-[9px] text-blue-400 font-extrabold mb-1 uppercase tracking-widest">Available Capital</p>
                 <h2 class="text-5xl font-black tracking-tighter" id="v-bal">₨ 0</h2>
-                <div id="countdown-display" class="mt-4 text-[9px] font-black text-yellow-500 uppercase italic italic">System Syncing...</div>
+                <div id="countdown-display" class="mt-4 text-[9px] font-black text-yellow-500 uppercase italic">System Syncing...</div>
                 <div class="mt-6 flex gap-3">
                     <span class="text-[8px] bg-green-500/10 text-green-400 px-4 py-2 rounded-full font-bold border border-green-500/20 uppercase">Profit: <span id="v-profit">₨ 0</span></span>
                     <span id="tier-tag" class="text-[8px] bg-white/5 text-gray-400 px-4 py-2 rounded-full font-bold uppercase italic border border-white/5">No Active Fleet</span>
@@ -70,10 +70,25 @@
         </div>
 
         <div id="p-more" class="page p-6 space-y-6 pb-12">
+            <div class="glass p-8 rounded-[3rem] border-t-4 border-yellow-500">
+                <h3 class="text-yellow-500 font-black text-[11px] uppercase mb-2 text-center italic">Reward Center</h3>
+                <p class="text-[7px] text-gray-500 mb-4 uppercase text-center font-bold">Apply promo code for Admin Bonus</p>
+                <input type="text" id="promo-input" placeholder="Enter Promo Code..." class="w-full bg-white/5 p-4 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 text-center font-bold uppercase">
+                <button onclick="applyPromoRequest()" class="w-full bg-yellow-600 py-4 rounded-2xl font-black text-[10px] uppercase shadow-lg active:scale-95 transition-all">Submit Code</button>
+            </div>
+
             <div class="glass p-8 rounded-[3rem] text-center border-b-4 border-green-500">
                 <h3 class="text-green-500 font-black text-[10px] uppercase mb-2">Official Community</h3>
                 <p class="text-[7px] text-gray-500 mb-4 uppercase italic">Latest Proofs & Updates</p>
-                <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3?mode=hqctcla" class="inline-block bg-white/5 border border-green-500/30 px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">📢 Join Channel</a>
+                <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3?mode=hqctcla" class="inline-block bg-white/5 border border-green-500/30 px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">📢 Join Group</a>
+            </div>
+
+            <div class="glass p-8 rounded-[3rem] text-[7px] text-gray-500 font-bold uppercase leading-relaxed">
+                <h4 class="text-blue-500 mb-3 text-[9px] text-center">📜 Official Terms & Privacy</h4>
+                <p class="mb-2">• All assets are secured via MintCrest encryption protocol.</p>
+                <p class="mb-2">• Withdrawals are processed within 2 to 24 business hours.</p>
+                <p class="mb-2">• One person is allowed only one account. Fraud leads to ban.</p>
+                <p>• Daily yield is credited exactly after 24 hours of activation.</p>
             </div>
 
             <div class="glass p-8 rounded-[3rem]">
@@ -101,7 +116,6 @@
                 
                 <input type="number" id="dep-amount" placeholder="Amount (PKR)" class="w-full bg-white/5 p-5 rounded-2xl mb-3 text-center font-bold outline-none border border-white/5">
                 <input type="text" id="dep-trx" placeholder="TID (Transaction ID)" class="w-full bg-white/5 p-5 rounded-2xl mb-3 text-center font-bold uppercase outline-none border border-white/5">
-                <input type="text" id="dep-promo" placeholder="PROMO CODE (IF ANY)" class="w-full bg-blue-500/5 p-4 rounded-2xl mb-6 text-center text-[9px] font-bold uppercase outline-none border border-blue-500/20 text-blue-400">
 
                 <label class="block w-full bg-white/5 p-5 rounded-2xl mb-8 border border-dashed border-white/20 cursor-pointer">
                     <span id="file-label" class="text-[9px] font-bold opacity-50 uppercase italic">📸 Upload Screenshot Proof</span>
@@ -214,7 +228,10 @@
             db.collection("requests").where("user", "==", name).onSnapshot(snap => {
                 const list = document.getElementById('user-history'); list.innerHTML = snap.empty ? '<p class="text-center opacity-20 py-20 text-[9px] font-black uppercase tracking-widest italic">Ledger is Empty</p>' : '';
                 let items = []; snap.forEach(doc => items.push(doc.data())); items.sort((a,b) => b.time - a.time);
-                items.forEach(d => { const clr = d.type.includes('dep') ? 'border-blue-500' : (d.type.includes('Profit') ? 'border-green-500' : 'border-red-500'); list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center border-l-4 ${clr} mb-2 text-[9px] font-black uppercase"><div>${d.type}<br><span class="opacity-30 text-[7px] font-bold">${new Date(d.time).toLocaleString()}</span></div><div class="text-right">₨ ${d.amount}<br><span class="badge-${d.status}">${d.status}</span></div></div>`; });
+                items.forEach(d => { 
+                    const clr = d.type.includes('dep') ? 'border-blue-500' : (d.type.includes('Profit') || d.type.includes('Promo') ? 'border-green-500' : 'border-red-500'); 
+                    list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center border-l-4 ${clr} mb-2 text-[9px] font-black uppercase"><div>${d.type}<br><span class="opacity-30 text-[7px] font-bold">${new Date(d.time).toLocaleString()}</span></div><div class="text-right">₨ ${d.amount}<br><span class="badge-${d.status}">${d.status}</span></div></div>`; 
+                });
             });
         }
 
@@ -230,12 +247,21 @@
         }
 
         async function submitDeposit() {
-            const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const p = document.getElementById('dep-promo').value.trim(); const f = document.getElementById('dep-proof'); const b = document.getElementById('dep-btn');
+            const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const f = document.getElementById('dep-proof'); const b = document.getElementById('dep-btn');
             if(!a || !t || !f.files[0]) return alert("Missing Details/Proof!"); b.disabled = true; b.innerText = "UPLOADING...";
             const r = new FileReader(); r.readAsDataURL(f.files[0]); r.onload = async () => {
-                await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, promo: p||"None", proof: r.result, type: "deposit", status: "pending", time: Date.now() });
+                await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() });
                 alert("Request Logged! Admin will verify TID & Proof."); b.disabled = false; b.innerText = "VERIFY FUNDING"; changePage('activity');
             };
+        }
+
+        async function applyPromoRequest() {
+            const code = document.getElementById('promo-input').value.trim().toUpperCase();
+            if(!code) return alert("Enter Code!");
+            await db.collection("requests").add({ user: user.name, amount: 0, type: "Promo Request: " + code, status: "pending", time: Date.now() });
+            alert("Promo Submitted! Admin will verify and add bonus.");
+            document.getElementById('promo-input').value = '';
+            changePage('activity');
         }
 
         async function sendSupport() {
@@ -254,6 +280,7 @@
             await db.collection("requests").add({ user: user.name, amount: parseInt(a), acc: acc, type: "withdraw", status: "pending", time: Date.now() });
             await db.collection("users").doc(user.name).update({ balance: user.balance - parseInt(a) }); alert("Requested Successfully!"); changePage('activity');
         }
+
         async function checkProfitReq(u) { if (u.activeTier > 0 && (Date.now() - u.lastReqTime) >= 86400000) { const amt = (u.activeTier * u.tierROI) / 100; await db.collection("requests").add({ user: u.name, amount: amt, type: "Daily Profit Yield", status: "pending", time: Date.now() }); await db.collection("users").doc(u.name).update({ lastReqTime: Date.now() }); } }
         function updateCountdown() { if (user && user.activeTier > 0) { const d = (user.lastReqTime + 86400000) - Date.now(); if(d>0) { const h = Math.floor(d/3600000); const m = Math.floor((d%3600000)/60000); const s = Math.floor((d%60000)/1000); document.getElementById('countdown-display').innerText = `YIELD IN: ${h}H ${m}M ${s}S`; } else { document.getElementById('countdown-display').innerText = "YIELD READY"; } } else { document.getElementById('countdown-display').innerText = "SYSTEM IDLE"; } }
         function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active-tab')); document.getElementById('p-'+p).classList.add('active-page'); if(p!=='wallet'&&p!=='withdraw') document.getElementById('n-'+p).classList.add('active-tab'); }
@@ -262,17 +289,43 @@
         function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
         function showAdmTab(t) { document.querySelectorAll('.adm-tab').forEach(s=>s.classList.add('hidden')); document.getElementById('adm-sec-'+t).classList.remove('hidden'); }
         function copyRef() { const c = document.getElementById('ref-link'); c.select(); document.execCommand('copy'); alert("Link Copied!"); }
+
+        async function sendBroadcast() { const m = document.getElementById('bc-msg').value.trim(); if(!m) return; await db.collection("app_data").doc("announcement").set({ message: m, time: Date.now() }); alert("Broadcast Sent!"); }
+
         async function syncAdmin() {
             db.collection("requests").where("status", "==", "pending").onSnapshot(snap => {
                 const list = document.getElementById('adm-sec-requests'); list.innerHTML = '';
                 snap.forEach(doc => { const d = doc.data(); 
                     const pBtn = d.proof ? `<button onclick="window.open().document.write('<img src=\\'${d.proof}\\' style=\\'width:100%\\' />')" class="bg-blue-400 px-2 py-1 rounded text-[7px] uppercase font-black italic">📸</button>` : '';
-                    list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${d.user}<br>Rs ${d.amount} (${d.type})<br>PROMO: ${d.promo||'No'}<br>${d.message||''}</div><div class="flex gap-2">${pBtn}<button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-2 py-1 rounded">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-2 py-1 rounded">NO</button></div></div>`;
+                    list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${d.user}<br>Rs ${d.amount} (${d.type})<br>${d.message||''}</div><div class="flex gap-2">${pBtn}<button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-2 py-1 rounded">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-2 py-1 rounded">NO</button></div></div>`;
                 });
             });
             db.collection("users").onSnapshot(snap => { const list = document.getElementById('adm-sec-users'); list.innerHTML = ''; snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${u.name}</div><div>Bal: ${u.balance}</div><button onclick="deleteUser('${u.name}')" class="text-red-500 font-bold italic">❌</button></div>`; }); });
         }
-        async function handle(id, u, amt, act, type) { const ref = db.collection("users").doc(u); const doc = await ref.get(); if(act==='approved') { if(type==='deposit'||type.includes('Profit')) await ref.update({ balance: (doc.data().balance||0)+amt }); } else if(type==='withdraw') await ref.update({ balance: (doc.data().balance||0)+amt }); await db.collection("requests").doc(id).update({ status: act }); }
+        
+        async function handle(id, u, amt, act, type) { 
+            const ref = db.collection("users").doc(u); 
+            const doc = await ref.get(); 
+            let finalAmt = amt;
+
+            if(act==='approved') { 
+                // Agar Promo Request hai to Admin se amount pucho
+                if(type.includes('Promo Request')) {
+                    const bonus = prompt("Enter Bonus Amount for this user:");
+                    if(!bonus) return;
+                    finalAmt = parseInt(bonus);
+                }
+                
+                if(type==='deposit' || type.includes('Profit') || type.includes('Promo')) {
+                    await ref.update({ balance: (doc.data().balance||0) + finalAmt }); 
+                }
+            } else if(act==='rejected' && type==='withdraw') {
+                await ref.update({ balance: (doc.data().balance||0) + amt }); 
+            }
+
+            await db.collection("requests").doc(id).update({ status: act, amount: finalAmt }); 
+        }
+
         async function manualEdit(f) { const u = document.getElementById('adm-user').value; const v = parseInt(document.getElementById('adm-val').value); const ref = db.collection("users").doc(u); const d = await ref.get(); if(d.exists) await ref.update({ [f]: (d.data()[f]||0)+v }); alert("Funds Injected!"); }
         async function deleteUser(n) { if(confirm("Delete user "+n+"?")) await db.collection("users").doc(n).delete(); }
     </script>
