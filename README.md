@@ -5,17 +5,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <title>MintCrest Gold | Persistent Vault</title>
+    <title>MintCrest Gold | Ultimate Master</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000103; color: white; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(35px); border: 1px solid rgba(255,255,255,0.08); }
         .active-tab { color: #3b82f6; border-top: 3px solid #3b82f6; background: linear-gradient(to top, rgba(59,130,246,0.1), transparent); }
-        .page { display: none; animation: fadeIn 0.4s ease; }
+        .page { display: none; animation: slideUp 0.4s ease forwards; }
         .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .badge-pending { background: rgba(234, 179, 8, 0.1); color: #eab308; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 800; }
-        .badge-approved { background: rgba(34, 197, 94, 0.1); color: #22c55e; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 800; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .badge-pending { background: rgba(234, 179, 8, 0.1); color: #eab308; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 800; text-transform: uppercase; }
+        .badge-approved { background: rgba(34, 197, 94, 0.1); color: #22c55e; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 800; text-transform: uppercase; }
+        .badge-rejected { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 800; text-transform: uppercase; }
     </style>
 </head>
 <body class="h-screen flex flex-col">
@@ -23,32 +24,50 @@
     <section id="auth-ui" class="fixed inset-0 z-[1000] bg-[#000103] flex items-center justify-center p-8">
         <div class="w-full max-w-sm text-center">
             <h1 onclick="adminTap()" class="text-5xl font-black italic mb-2 tracking-tighter cursor-pointer uppercase">MINT<span class="text-blue-500">CREST</span></h1>
-            <p class="text-gray-500 text-[8px] uppercase tracking-[0.4em] mb-12">Authorized Node Access</p>
-            <div class="glass p-10 rounded-[3rem] border-t-2 border-blue-600">
-                <input type="text" id="user-name" placeholder="User Identifier" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 outline-none text-center font-bold mb-5 uppercase text-white">
-                <button onclick="login()" class="w-full bg-blue-600 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 shadow-xl">Secure Session</button>
+            <p class="text-gray-500 text-[8px] uppercase tracking-[0.4em] mb-12">Premier Asset Protection</p>
+            <div class="glass p-10 rounded-[3.5rem] border-t-2 border-blue-600 shadow-2xl">
+                <input type="text" id="user-name" placeholder="User Identifier" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 outline-none text-center font-bold mb-5 uppercase text-white focus:border-blue-500">
+                <button onclick="login()" class="w-full bg-blue-600 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 shadow-lg">Access Vault</button>
             </div>
         </div>
     </section>
 
     <main id="app-ui" class="hidden flex-1 overflow-y-auto pb-32">
+        
         <div id="p-home" class="page active-page p-6">
-            <div class="flex justify-between items-center mb-6 px-2">
+            <div class="flex justify-between items-center mb-6">
                 <div>
-                    <p class="text-[8px] text-gray-500 uppercase font-black">Agent</p>
-                    <h3 class="text-sm font-black text-blue-400" id="dash-user">GUEST</h3>
+                    <p class="text-[8px] text-gray-500 uppercase font-black tracking-widest">Active Agent</p>
+                    <h3 class="text-sm font-black text-blue-400 uppercase" id="dash-user">GUEST</h3>
                 </div>
+                <div class="text-[8px] bg-green-500/10 text-green-400 px-3 py-1 rounded-full font-bold uppercase border border-green-500/20">System Online</div>
             </div>
-            <div class="glass p-10 rounded-[3rem] mb-6 border-l-8 border-blue-600 shadow-xl">
-                <p class="text-[9px] text-blue-400 font-extrabold mb-1 uppercase tracking-widest">Total Liquidity</p>
+            
+            <div class="glass p-10 rounded-[3rem] mb-6 border-l-8 border-blue-600 shadow-xl relative overflow-hidden">
+                <p class="text-[9px] text-blue-400 font-extrabold mb-1 uppercase tracking-widest">Vault Balance</p>
                 <h2 class="text-5xl font-black tracking-tighter" id="v-bal">₨ 0</h2>
                 <div class="mt-6 flex gap-3">
-                    <span class="text-[8px] bg-green-500/10 text-green-400 px-4 py-2 rounded-full font-bold uppercase">Profit: <span id="v-profit">₨ 0</span></span>
+                    <span class="text-[8px] bg-white/5 text-gray-400 px-4 py-2 rounded-full font-bold uppercase border border-white/5 italic">Profit: <span id="v-profit" class="text-green-400">₨ 0</span></span>
                 </div>
             </div>
+
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="changePage('wallet')" class="glass p-8 rounded-[2rem] text-center active:scale-95">📥 <span class="text-[9px] font-black block mt-2 uppercase">Funding</span></button>
-                <button onclick="changePage('more')" class="glass p-8 rounded-[2rem] text-center active:scale-95">🎡 <span class="text-[9px] font-black block mt-2 uppercase">Services</span></button>
+                <button onclick="changePage('wallet')" class="glass p-8 rounded-[2rem] text-center active:scale-95 border-b-2 border-blue-500/30">
+                    <span class="text-2xl">📥</span>
+                    <span class="text-[9px] font-black block mt-2 uppercase tracking-widest">Deposit</span>
+                </button>
+                <button onclick="changePage('withdraw')" class="glass p-8 rounded-[2rem] text-center active:scale-95 border-b-2 border-red-500/30">
+                    <span class="text-2xl">📤</span>
+                    <span class="text-[9px] font-black block mt-2 uppercase tracking-widest text-red-400">Withdraw</span>
+                </button>
+                <button onclick="changePage('more')" class="glass p-8 rounded-[2rem] text-center active:scale-95">
+                    <span class="text-2xl">🎡</span>
+                    <span class="text-[9px] font-black block mt-2 uppercase tracking-widest text-yellow-500">Lucky Spin</span>
+                </button>
+                <button onclick="changePage('promo')" class="glass p-8 rounded-[2rem] text-center active:scale-95">
+                    <span class="text-2xl">🎫</span>
+                    <span class="text-[9px] font-black block mt-2 uppercase tracking-widest text-purple-400">Promo Code</span>
+                </button>
             </div>
         </div>
 
@@ -57,43 +76,56 @@
             <div id="plans-list" class="grid grid-cols-1 gap-3 pb-10"></div>
         </div>
 
+        <div id="p-withdraw" class="page p-6">
+            <div class="glass p-10 rounded-[3rem] border-t-8 border-red-600">
+                <h3 class="text-red-500 font-black text-[12px] uppercase mb-6 italic text-center">Request Payout</h3>
+                <input type="number" id="wd-amount" placeholder="Amount (PKR)" class="w-full bg-white/5 p-4 rounded-xl mb-3 text-center font-bold outline-none border border-white/5">
+                <input type="text" id="wd-method" placeholder="Account Title & Number" class="w-full bg-white/5 p-4 rounded-xl mb-8 text-center font-bold uppercase outline-none border border-white/5">
+                <p class="text-[8px] text-gray-500 mb-6 text-center uppercase font-bold">Standard processing time: 2 - 24 Hours</p>
+                <button onclick="submitWithdraw()" class="w-full bg-red-600 py-5 rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-red-600/20">Confirm Withdrawal</button>
+            </div>
+        </div>
+
+        <div id="p-promo" class="page p-6">
+            <div class="glass p-10 rounded-[3rem] border-t-8 border-purple-600 text-center">
+                <h3 class="text-purple-500 font-black mb-6 uppercase italic tracking-widest">Voucher Terminal</h3>
+                <input type="text" id="promo-input" placeholder="ENTER CODE" class="w-full bg-white/5 p-5 rounded-2xl mb-8 text-center font-black text-purple-400 border border-white/5 outline-none uppercase tracking-widest">
+                <button onclick="submitPromo()" class="w-full bg-purple-600 py-5 rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-purple-600/20">Authorize Code</button>
+            </div>
+        </div>
+
         <div id="p-firm" class="page p-6 space-y-4 pb-24">
             <div class="glass p-6 rounded-3xl">
-                <h4 class="text-blue-500 font-black uppercase text-[10px] mb-2">About Firm</h4>
-                <p class="text-[9px] text-gray-400 leading-relaxed font-bold uppercase italic">MintCrest Gold is a premier asset management firm. We specialize in high-frequency trading fleets and global node protection. Established 2026.</p>
+                <h4 class="text-blue-500 font-black uppercase text-[10px] mb-2">About MintCrest Gold</h4>
+                <p class="text-[9px] text-gray-400 leading-relaxed font-bold uppercase italic">Official Asset Management Node. Established 2026. Specialized in retail capital growth and high-frequency trading protection.</p>
             </div>
             <div class="glass p-6 rounded-3xl">
-                <h4 class="text-blue-500 font-black uppercase text-[10px] mb-2">Privacy & Security</h4>
-                <p class="text-[9px] text-gray-400 leading-relaxed font-bold uppercase italic">Your financial identifiers are encrypted using blockchain node security. No data sharing with third parties. Assets are held in multi-sig vaults.</p>
+                <h4 class="text-blue-500 font-black uppercase text-[10px] mb-2">Privacy Protocol</h4>
+                <p class="text-[9px] text-gray-500 leading-relaxed font-bold uppercase">All user identifiers are encrypted via AES-256. Transaction logs are decentralized and kept for 90 days. We do not share data with external financial agencies.</p>
             </div>
         </div>
 
         <div id="p-activity" class="page p-6">
-            <h2 class="text-center font-black italic mb-8 uppercase text-blue-400">Vault Ledger</h2>
+            <h2 class="text-center font-black italic mb-8 uppercase text-blue-400">Vault History</h2>
             <div id="user-history" class="space-y-2 pb-10"></div>
         </div>
 
-        <div id="p-more" class="page p-6 space-y-6 pb-20">
-            <div class="glass p-10 rounded-[3rem] text-center border-t-4 border-yellow-500">
-                <h3 class="text-yellow-500 font-black text-[12px] uppercase mb-4 italic">Lucky Spin Node</h3>
-                <div id="wheel" class="text-5xl mb-4 transition-all duration-[4s] inline-block">🎡</div><br>
-                <button onclick="spinNow()" class="bg-yellow-600 px-8 py-3 rounded-xl font-black text-[9px] uppercase">Spin for Bonus</button>
+        <div id="p-more" class="page p-6 space-y-6">
+            <div class="glass p-10 rounded-[3rem] text-center border-t-4 border-yellow-500 shadow-xl">
+                <h3 class="text-yellow-500 font-black text-[12px] uppercase mb-4 italic">Lucky Node Wheel</h3>
+                <div id="wheel" class="text-6xl mb-6 transition-all duration-[4s] inline-block">🎡</div><br>
+                <button onclick="spinNow()" class="bg-yellow-600 px-8 py-3 rounded-xl font-black text-[9px] uppercase shadow-lg shadow-yellow-600/20">Spin for Capital</button>
             </div>
-            <div class="glass p-8 rounded-3xl">
-                <h4 class="text-center font-black text-[10px] uppercase text-purple-400 mb-4">Promo Voucher</h4>
-                <input type="text" id="promo-input" placeholder="ENTER CODE" class="w-full bg-white/5 p-4 rounded-xl mb-4 text-center font-black outline-none border border-white/5 uppercase">
-                <button onclick="submitPromo()" class="w-full bg-purple-600 py-4 rounded-xl font-black text-[9px] uppercase">Claim Bonus</button>
-            </div>
-            <button onclick="logout()" class="w-full glass p-5 rounded-[2rem] text-red-500 font-black text-[10px] uppercase tracking-widest">Terminate Session</button>
+            <button onclick="logout()" class="w-full glass p-5 rounded-3xl text-red-500 font-black text-[10px] uppercase tracking-[0.2em] border-red-500/10">Terminate Current Session</button>
         </div>
 
         <div id="p-wallet" class="page p-6">
-            <div class="glass p-8 rounded-[3rem] border-t-8 border-blue-600 shadow-2xl">
-                <h3 class="font-black text-blue-500 mb-6 uppercase text-center italic">Capital Injection</h3>
-                <div class="bg-white/5 p-4 rounded-xl mb-4 text-[9px] font-bold text-center">EASYPAISA: 03379827882 | JAZZCASH: 03705519562</div>
+            <div class="glass p-8 rounded-[3rem] border-t-8 border-blue-600 shadow-2xl text-center">
+                <h3 class="font-black text-blue-500 mb-6 uppercase italic tracking-widest">Injection Terminal</h3>
+                <div class="bg-white/5 p-4 rounded-xl mb-4 text-[9px] font-black uppercase border border-white/5">EASYPAISA: 03379827882<br>JAZZCASH: 03705519562</div>
                 <input type="number" id="dep-amount" placeholder="Amount (PKR)" class="w-full bg-white/5 p-4 rounded-xl mb-3 text-center font-bold">
-                <input type="text" id="dep-trx" placeholder="Transaction ID (TID)" class="w-full bg-white/5 p-4 rounded-xl mb-6 text-center font-bold uppercase">
-                <button onclick="submitDeposit()" class="w-full bg-blue-600 py-5 rounded-xl font-black text-[10px] uppercase">Verify Funding</button>
+                <input type="text" id="dep-trx" placeholder="Transaction ID (TID)" class="w-full bg-white/5 p-4 rounded-xl mb-8 text-center font-bold uppercase">
+                <button onclick="submitDeposit()" class="w-full bg-blue-600 py-5 rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-blue-600/20">Submit For Verification</button>
             </div>
         </div>
     </main>
@@ -107,23 +139,26 @@
     </nav>
 
     <div id="admin-panel" class="fixed inset-0 bg-[#000103] z-[5000] p-6 hidden overflow-y-auto">
-        <div class="flex justify-between items-center mb-8"><h2 class="text-xl font-black text-blue-500 uppercase italic">Master Console</h2><button onclick="closeAdmin()" class="bg-red-500/20 text-red-500 px-4 py-2 rounded-xl font-black">EXIT</button></div>
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-black text-blue-500 uppercase italic tracking-tighter">Super Admin</h2>
+            <button onclick="closeAdmin()" class="bg-red-500/20 text-red-500 px-4 py-2 rounded-xl text-[10px] font-black">EXIT</button>
+        </div>
         
-        <h4 class="text-[10px] font-black text-yellow-500 uppercase mb-4">Pending Verifications</h4>
+        <h4 class="text-[10px] font-black text-yellow-500 uppercase mb-4 tracking-widest italic">Pending Logs</h4>
         <div id="adm-requests" class="space-y-3 mb-10"></div>
 
-        <h4 class="text-[10px] font-black text-blue-400 uppercase mb-4">Manual User Control</h4>
-        <div class="glass p-5 rounded-3xl mb-10">
-            <input type="text" id="adm-edit-user" placeholder="User Name (Exact)" class="w-full bg-black/40 p-3 rounded-xl mb-2 text-[10px] font-bold text-white uppercase">
-            <div class="grid grid-cols-2 gap-2 mb-4">
-                <input type="number" id="adm-edit-bal" placeholder="Set Balance" class="bg-black/40 p-3 rounded-xl text-[10px] font-bold">
-                <input type="number" id="adm-edit-prof" placeholder="Set Profit" class="bg-black/40 p-3 rounded-xl text-[10px] font-bold">
+        <h4 class="text-[10px] font-black text-blue-400 uppercase mb-4 tracking-widest italic">Manual Control</h4>
+        <div class="glass p-6 rounded-[2rem] mb-10 shadow-xl border-t-2 border-blue-500/20">
+            <input type="text" id="adm-edit-user" placeholder="Target User Name" class="w-full bg-black/40 p-4 rounded-xl mb-3 text-[10px] font-bold text-white uppercase border border-white/5">
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <input type="number" id="adm-edit-bal" placeholder="Set Balance" class="bg-black/40 p-4 rounded-xl text-[10px] font-bold border border-white/5">
+                <input type="number" id="adm-edit-prof" placeholder="Set Profit" class="bg-black/40 p-4 rounded-xl text-[10px] font-bold border border-white/5">
             </div>
-            <button onclick="manualSave()" class="w-full bg-blue-600 py-3 rounded-xl text-[9px] font-black uppercase">Update Account</button>
+            <button onclick="manualSave()" class="w-full bg-blue-600 py-4 rounded-xl text-[10px] font-black uppercase">Commit Changes</button>
         </div>
 
-        <h4 class="text-[10px] font-black text-gray-500 uppercase mb-4 italic">Registry List</h4>
-        <div id="adm-users-list" class="space-y-2 pb-10"></div>
+        <h4 class="text-[10px] font-black text-gray-500 uppercase mb-4 tracking-widest italic">User Registry</h4>
+        <div id="adm-users-list" class="space-y-2 pb-20"></div>
     </div>
 
     <script>
@@ -132,58 +167,61 @@
         let user = null; let tapCount = 0;
 
         const plans = [
-            {n:"Basic-X 1", p:200, r:3, d:30}, {n:"Basic-X 2", p:500, r:3.2, d:30}, {n:"Basic-X 3", p:1000, r:3.5, d:30},
-            {n:"Silver-X 1", p:5000, r:4.5, d:60}, {n:"Silver-X 2", p:10000, r:5, d:60}, {n:"Gold-Elite", p:25000, r:6.5, d:90},
-            {n:"👑 CROWN KING", p:50000, r:15, d:30}, {n:"⚡ FLASH", p:1000, r:10, d:7}
+            {n:"Basic Fleet I", p:200, r:3, d:30}, {n:"Basic Fleet II", p:500, r:3.2, d:30}, {n:"Silver Node I", p:1000, r:3.5, d:45},
+            {n:"Silver Node II", p:3000, r:4, d:45}, {n:"Gold Master X", p:10000, r:5.5, d:60}, {n:"Gold Master Pro", p:25000, r:7, d:90},
+            {n:"Elite Vault", p:50000, r:9, d:120}, {n:"👑 CROWN KING", p:25000, r:22, d:30}, {n:"⚡ FLASH", p:1000, r:15, d:7},
+            {n:"Diamond Asset", p:100000, r:12, d:180}, {n:"VIP Master", p:150000, r:15, d:200} // Expanded list
         ];
 
-        // SESSION CHECK ON LOAD (Anti-Refresh Logout)
         window.onload = () => {
-            const savedUser = localStorage.getItem('mc_user_session');
-            if(savedUser) { 
-                document.getElementById('user-name').value = savedUser;
-                login(); 
-            }
+            const saved = localStorage.getItem('mc_vault_session');
+            if(saved) { document.getElementById('user-name').value = saved; login(); }
         };
 
         async function login() {
             const name = document.getElementById('user-name').value.trim().toUpperCase(); if(!name) return;
-            localStorage.setItem('mc_user_session', name); // Persist Session
+            localStorage.setItem('mc_vault_session', name);
             const ref = db.collection("users").doc(name); const doc = await ref.get();
             if(!doc.exists) await ref.set({ name: name, balance: 0, profit: 0, lastSpin: 0, time: Date.now() });
-            
             db.collection("users").doc(name).onSnapshot(d => { user = d.data(); updateUI(); });
             db.collection("requests").where("user", "==", name).orderBy("time", "desc").onSnapshot(snap => {
                 const list = document.getElementById('user-history'); list.innerHTML = '';
-                snap.forEach(d => { const r = d.data(); list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center mb-2 text-[8px] font-black uppercase"><div>${r.type}<br><span class="opacity-30">${new Date(r.time).toLocaleDateString()}</span></div><div>₨ ${r.amount} <span class="badge-${r.status}">${r.status}</span></div></div>`; });
+                snap.forEach(d => { const r = d.data(); list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center mb-2 text-[8px] font-black uppercase"><div>${r.type}<br><span class="opacity-30">${new Date(r.time).toLocaleTimeString()}</span></div><div>₨ ${r.amount} <span class="badge-${r.status}">${r.status}</span></div></div>`; });
             });
-            
             document.getElementById('dash-user').innerText = name;
             document.getElementById('auth-ui').classList.add('hidden'); document.getElementById('app-ui').classList.remove('hidden'); document.getElementById('bottom-nav').classList.remove('hidden');
             renderPlans();
         }
 
+        async function submitWithdraw() {
+            const a = parseInt(document.getElementById('wd-amount').value), m = document.getElementById('wd-method').value.trim();
+            if(!a || !m || a < 500) return alert("Min Withdraw Rs 500!");
+            if(user.balance < a) return alert("Insufficient Funds, Sweetie!");
+            await db.collection("requests").add({ user: user.name, amount: a, details: m, type: "WITHDRAWAL", status: "pending", time: Date.now() });
+            await db.collection("users").doc(user.name).update({ balance: user.balance - a });
+            alert("Withdrawal request logged!"); changePage('activity');
+        }
+
         async function submitPromo() {
             const c = document.getElementById('promo-input').value.trim().toUpperCase(); if(!c) return;
             await db.collection("requests").add({ user: user.name, promo: c, type: "PROMO CODE", amount: 0, status: "pending", time: Date.now() });
-            alert("Promo code submitted! Bonus will be added after validation.");
-            document.getElementById('promo-input').value = '';
+            alert("Promo code submitted for validation!"); document.getElementById('promo-input').value = '';
         }
 
         async function submitDeposit() {
             const a = document.getElementById('dep-amount').value, t = document.getElementById('dep-trx').value;
-            if(!a || !t) return alert("Fill all details!");
+            if(!a || !t) return alert("All fields are mandatory, sweetie!");
             await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, type: "DEPOSIT", status: "pending", time: Date.now() });
-            alert("Funding request sent!"); changePage('activity');
+            alert("Capital deposit submitted!"); changePage('activity');
         }
 
         function spinNow() {
-            if(Date.now() - (user.lastSpin || 0) < 86400000) return alert("Next spin available in 24h, sweetie!");
-            document.getElementById('wheel').style.transform = `rotate(${Math.floor(3000+Math.random()*2000)}deg)`;
+            if(Date.now() - (user.lastSpin || 0) < 86400000) return alert("Try again in 24 hours!");
+            document.getElementById('wheel').style.transform = `rotate(${Math.floor(4000+Math.random()*4000)}deg)`;
             setTimeout(async () => {
-                const win = Math.floor(Math.random()*200)+50;
-                alert("Sweetie! You won Rs "+win+"! Admin will credit it shortly.");
-                await db.collection("requests").add({ user: user.name, amount: win, type: "SPIN REWARD", status: "pending", time: Date.now() });
+                const win = Math.floor(Math.random()*150)+50;
+                alert("Boom! You won Rs "+win+"! Waiting for admin to credit.");
+                await db.collection("requests").add({ user: user.name, amount: win, type: "SPIN WIN", status: "pending", time: Date.now() });
                 await db.collection("users").doc(user.name).update({ lastSpin: Date.now() });
             }, 4000);
         }
@@ -195,10 +233,10 @@
 
         function renderPlans() {
             const l = document.getElementById('plans-list'); l.innerHTML = '';
-            plans.forEach(p => { l.innerHTML += `<div onclick="buy(${p.p},'${p.n}')" class="glass p-5 rounded-[2rem] flex justify-between items-center mb-2 active:scale-95 cursor-pointer"><div><h4 class="font-black text-[10px] text-blue-400 uppercase">${p.n}</h4><p class="text-[7px] text-gray-500 uppercase">${p.r}% Daily • ${p.d} Days</p></div><p class="font-black text-[11px]">₨ ${p.p.toLocaleString()}</p></div>`; });
+            plans.forEach(p => { l.innerHTML += `<div onclick="buy(${p.p},'${p.n}')" class="glass p-5 rounded-[2rem] flex justify-between items-center mb-2 active:scale-95 cursor-pointer border-l-4 border-blue-500/20"><div><h4 class="font-black text-[10px] text-blue-400 uppercase">${p.n}</h4><p class="text-[7px] text-gray-500 uppercase font-bold">${p.r}% Daily • ${p.d} Days</p></div><p class="font-black text-[11px]">₨ ${p.p.toLocaleString()}</p></div>`; });
         }
 
-        async function buy(p, n) { if(user.balance < p) return alert("Sweetie, top-up your vault!"); if(confirm("Activate "+n+"?")) { await db.collection("users").doc(user.name).update({ balance: user.balance-p, tierName: n }); alert("Fleet Initialized!"); } }
+        async function buy(p, n) { if(user.balance < p) return alert("Low balance!"); if(confirm("Activate "+n+"?")) { await db.collection("users").doc(user.name).update({ balance: user.balance-p, tierName: n }); alert("Fleet Active!"); } }
         function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.getElementById('p-'+p).classList.add('active-page'); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active-tab')); document.getElementById('n-'+p).classList.add('active-tab'); }
         function adminTap() { tapCount++; if(tapCount>=5) { if(prompt("Master Key:")==="mint786") { document.getElementById('admin-panel').classList.remove('hidden'); syncAdmin(); } tapCount=0; } }
         function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
@@ -206,19 +244,24 @@
         function syncAdmin() {
             db.collection("requests").where("status","==","pending").onSnapshot(snap => {
                 const list = document.getElementById('adm-requests'); list.innerHTML = '';
-                snap.forEach(doc => { const d = doc.data(); list.innerHTML += `<div class="glass p-4 text-[8px] font-black uppercase mb-2 border-l-4 border-yellow-500 flex justify-between items-center"><div>${d.user}<br>${d.type} - Rs ${d.amount}<br>ID: ${d.tid||d.promo||'N/A'}</div><div class="flex gap-2"><button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved')" class="bg-green-600 px-3 py-1 rounded">YES</button><button onclick="handle('${doc.id}','${d.user}',0,'rejected')" class="bg-red-600 px-3 py-1 rounded">NO</button></div></div>`; });
-            });
+                snap.forEach(doc => { const d = doc.data(); list.innerHTML += `<div class="glass p-4 text-[8px] font-black uppercase mb-2 border-l-4 border-yellow-500 flex justify-between items-center"><div>${d.user}<br>${d.type} - Rs ${d.amount}<br>ID: ${d.tid||d.promo||d.details||'N/A'}</div><div class="flex gap-2"><button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-3 py-1 rounded">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-3 py-1 rounded">NO</button></div></div>`; });
+             });
             db.collection("users").onSnapshot(snap => {
                 const list = document.getElementById('adm-users-list'); list.innerHTML = '';
-                snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-3 flex justify-between items-center text-[8px] font-black uppercase mb-2"><div>${u.name}<br><span class="text-blue-400">Bal: ${u.balance}</span></div><div class="flex gap-2"><button onclick="loadToEdit('${u.name}',${u.balance},${u.profit})" class="bg-blue-600 px-2 py-1 rounded">EDIT</button><button onclick="deleteUser('${u.name}')" class="bg-red-600 px-2 py-1 rounded text-red-400 font-bold">DEL</button></div></div>`; });
+                snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-3 flex justify-between items-center text-[8px] font-black uppercase mb-2"><div>${u.name}<br><span class="text-blue-400">Bal: ${u.balance}</span></div><div class="flex gap-2"><button onclick="loadToEdit('${u.name}',${u.balance},${u.profit})" class="bg-blue-600 px-2 py-1 rounded">EDIT</button><button onclick="deleteUser('${u.name}')" class="text-red-500 font-black">X</button></div></div>`; });
             });
         }
 
-        async function handle(id, u, amt, act) {
-            let bonus = 0; if(act==='approved') bonus = parseInt(prompt("Sweetie, add any bonus/extra amount?", "0") || 0);
+        async function handle(id, u, amt, act, type) {
+            let bonus = 0; if(act==='approved') bonus = parseInt(prompt("Add extra bonus/amount?", "0") || 0);
             const ref = db.collection("users").doc(u); const doc = await ref.get();
-            if(act==='approved') await ref.update({ balance: (doc.data().balance||0) + amt + bonus });
-            await db.collection("requests").doc(id).update({ status: act }); alert("Done!");
+            if(act==='approved') {
+                if(type === "WITHDRAWAL") { /* Balance already deducted */ }
+                else { await ref.update({ balance: (doc.data().balance||0) + amt + bonus }); }
+            } else {
+                if(type === "WITHDRAWAL") await ref.update({ balance: (doc.data().balance||0) + amt });
+            }
+            await db.collection("requests").doc(id).update({ status: act }); alert("Action Finalized!");
         }
 
         function loadToEdit(n, b, p) { 
@@ -232,12 +275,11 @@
             const b = parseInt(document.getElementById('adm-edit-bal').value);
             const p = parseInt(document.getElementById('adm-edit-prof').value);
             if(!n) return;
-            await db.collection("users").doc(n).update({ balance: b, profit: p });
-            alert("Account modified, sweetie!");
+            await db.collection("users").doc(n).update({ balance: b, profit: p }); alert("Registry Updated!");
         }
 
-        async function deleteUser(name) { if(confirm("Erase "+name+" registry?")) await db.collection("users").doc(name).delete(); }
-        function logout() { localStorage.removeItem('mc_user_session'); location.reload(); }
+        async function deleteUser(name) { if(confirm("Erase "+name+"?")) await db.collection("users").doc(name).delete(); }
+        function logout() { localStorage.removeItem('mc_vault_session'); location.reload(); }
     </script>
 </body>
 </html>
