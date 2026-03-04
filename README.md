@@ -73,7 +73,7 @@
             <div class="glass p-8 rounded-[3rem] text-center border-b-4 border-green-500">
                 <h3 class="text-green-500 font-black text-[10px] uppercase mb-2">Official Community</h3>
                 <p class="text-[7px] text-gray-500 mb-4 uppercase italic">Latest Proofs & Updates</p>
-                <a href="https://whatsapp.com/channel/0029VbCGQ4Q8kyySSN8Knq0O" class="inline-block bg-white/5 border border-green-500/30 px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">📢 Join Channel</a>
+                <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3?mode=hqctcla" class="inline-block bg-white/5 border border-green-500/30 px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">📢 Join Channel</a>
             </div>
 
             <div class="glass p-8 rounded-[3rem]">
