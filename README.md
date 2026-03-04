@@ -70,16 +70,27 @@
         </div>
 
         <div id="p-more" class="page p-6 space-y-6 pb-12">
-            <div class="glass p-8 rounded-[3rem] text-center border-b-4 border-green-500">
-                <h3 class="text-green-500 font-black text-[10px] uppercase mb-2">Official Community</h3>
-                <p class="text-[7px] text-gray-500 mb-4 uppercase italic">Latest Proofs & Updates</p>
-                <a href="https://whatsapp.com/channel/0029VbCGQ4Q8kyySSN8Knq0O" class="inline-block bg-white/5 border border-green-500/30 px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">📢 Join Channel</a>
+            <div class="glass p-8 rounded-[3rem] text-center border-t-4 border-yellow-500">
+                <h3 class="text-yellow-500 font-black text-[10px] uppercase mb-2">🎁 Special Promo Claim</h3>
+                <p class="text-[7px] text-gray-500 mb-4 uppercase italic">Enter the code from Broadcast</p>
+                <input type="text" id="user-promo-input" placeholder="ENTER CODE HERE" class="w-full bg-white/5 p-4 rounded-2xl text-[10px] text-center font-bold mb-4 border border-yellow-500/20 outline-none uppercase">
+                <button onclick="claimPromo()" class="bg-yellow-600 px-10 py-3 rounded-2xl font-black text-[9px] uppercase">Claim Bonus</button>
             </div>
 
-            <div class="glass p-8 rounded-[3rem]">
-                <h3 class="text-blue-500 font-black text-[11px] uppercase mb-4 italic text-center">Admin Help Desk</h3>
-                <textarea id="support-msg" placeholder="Describe your issue to Admin..." class="w-full bg-white/5 p-5 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 h-24 font-bold"></textarea>
-                <button id="sup-btn" onclick="sendSupport()" class="w-full bg-blue-600 py-4 rounded-2xl font-black text-[10px] uppercase">Send Message</button>
+            <div class="glass p-8 rounded-[3rem] space-y-4">
+                <h3 class="text-blue-400 font-black text-[10px] uppercase text-center italic">Legal & Info</h3>
+                <details class="group">
+                    <summary class="list-none cursor-pointer bg-white/5 p-4 rounded-2xl text-[9px] font-bold uppercase flex justify-between items-center">
+                        📖 About MintCrest Gold <span class="group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <p class="p-4 text-[8px] text-gray-500 leading-relaxed italic">MintCrest Gold is a premier digital asset vault founded in 2026. We specialize in micro-investments and high-yield trading fleets to provide financial growth for everyone.</p>
+                </details>
+                <details class="group">
+                    <summary class="list-none cursor-pointer bg-white/5 p-4 rounded-2xl text-[9px] font-bold uppercase flex justify-between items-center">
+                        🔐 Privacy Policy <span class="group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <p class="p-4 text-[8px] text-gray-500 leading-relaxed italic">Hum aapka data kisi teesre banday ko nahi dete. Tamam records hamare Security Ledger mein mahfooz hain aur sirf admin hi dekh sakta hai.</p>
+                </details>
             </div>
 
             <div class="glass p-8 rounded-[3rem] text-center">
@@ -98,16 +109,8 @@
                     <div class="glass p-5 rounded-2xl flex justify-between bg-blue-500/5"><span>JAZZCASH/SADAPAY</span><span class="text-blue-400">03705519562</span></div>
                     <div class="glass p-5 rounded-2xl flex justify-between bg-green-500/5"><span>EASYPAISA</span><span class="text-green-400">03379827882</span></div>
                 </div>
-                
                 <input type="number" id="dep-amount" placeholder="Amount (PKR)" class="w-full bg-white/5 p-5 rounded-2xl mb-3 text-center font-bold outline-none border border-white/5">
                 <input type="text" id="dep-trx" placeholder="TID (Transaction ID)" class="w-full bg-white/5 p-5 rounded-2xl mb-3 text-center font-bold uppercase outline-none border border-white/5">
-                <input type="text" id="dep-promo" placeholder="PROMO CODE (IF ANY)" class="w-full bg-blue-500/5 p-4 rounded-2xl mb-6 text-center text-[9px] font-bold uppercase outline-none border border-blue-500/20 text-blue-400">
-
-                <label class="block w-full bg-white/5 p-5 rounded-2xl mb-8 border border-dashed border-white/20 cursor-pointer">
-                    <span id="file-label" class="text-[9px] font-bold opacity-50 uppercase italic">📸 Upload Screenshot Proof</span>
-                    <input type="file" id="dep-proof" accept="image/*" class="hidden" onchange="document.getElementById('file-label').innerText = 'Screenshot Ready ✅'">
-                </label>
-
                 <button id="dep-btn" onclick="submitDeposit()" class="w-full bg-blue-600 py-6 rounded-2xl font-black text-[10px] uppercase shadow-lg">Verify Funding</button>
             </div>
         </div>
@@ -118,7 +121,7 @@
                 <input type="number" id="wd-amt" placeholder="Amount (PKR)" class="w-full bg-white/5 p-5 rounded-2xl mb-3 text-center font-bold outline-none border border-white/5">
                 <input type="text" id="wd-acc" placeholder="Account Name & Number" class="w-full bg-white/5 p-5 rounded-2xl mb-8 text-center text-[9px] font-bold outline-none border border-white/5">
                 <button onclick="submitWithdraw()" class="w-full bg-red-600 py-6 rounded-2xl font-black text-[10px] uppercase shadow-lg">Authorize Payout</button>
-                <p class="mt-4 text-[7px] text-gray-500 font-bold uppercase tracking-widest">Processed in 2-24 Hours</p>
+                <p class="mt-4 text-[7px] text-gray-500 font-bold uppercase tracking-widest">Min Withdrawal: Rs 100 | Processed in 2-24 Hours</p>
             </div>
         </div>
     </main>
@@ -131,7 +134,7 @@
         
         <div class="flex gap-2 mb-8 overflow-x-auto">
             <button onclick="showAdmTab('requests')" class="bg-blue-600 px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">Orders/Msgs</button>
-            <button onclick="showAdmTab('users')" class="glass px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">Users</button>
+            <button onclick="showAdmTab('users')" class="glass px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">Users & Stats</button>
             <button onclick="showAdmTab('broadcast')" class="bg-yellow-600 px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">Broadcast</button>
         </div>
 
@@ -177,9 +180,6 @@
             { n: "Diamond-X", p: 50000, r: 8, d: 30 }, { n: "Royal-S", p: 75000, r: 9, d: 30 },
             { n: "Royal-Grand", p: 100000, r: 10, d: 30 },
             { n: "⚡ FLASH 24H", p: 500, r: 12, s: true },
-            { n: "⭐ VIP ACCESS", p: 2500, r: 14, s: true },
-            { n: "💎 ELITE PASS", p: 8000, r: 15, s: true },
-            { n: "🚀 ROCKET PRO", p: 12000, r: 18, s: true },
             { n: "👑 CROWN KING", p: 25000, r: 22, s: true }
         ];
 
@@ -222,63 +222,74 @@
             const list = document.getElementById('plans-list'); list.innerHTML = '';
             plans.forEach(p => {
                 const style = p.s ? 'background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3) !important;' : '';
-                const dayText = p.d ? `<p class="text-[7px] text-gray-500 font-bold uppercase italic mt-1">⏳ ${p.d} Days Contract</p>` : '';
-                const totalText = p.d ? `<p class="text-[6px] opacity-30 font-bold uppercase tracking-tighter italic">Total: ₨ ${((p.p * p.r / 100) * p.d).toLocaleString()}</p>` : '';
-                
-                list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass p-5 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer mb-2" style="${style}"><div><h4 class="font-black text-[10px] uppercase ${p.s ? 'text-blue-400' : 'text-gray-400'}">${p.n}</h4><p class="text-[8px] text-green-400 font-bold uppercase">${p.r}% Daily Yield</p>${dayText}</div><div class="text-right"><p class="font-black text-[12px]">₨ ${p.p.toLocaleString()}</p>${totalText}</div></div>`;
+                list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass p-5 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer mb-2" style="${style}"><div><h4 class="font-black text-[10px] uppercase ${p.s ? 'text-blue-400' : 'text-gray-400'}">${p.n}</h4><p class="text-[8px] text-green-400 font-bold uppercase">${p.r}% Daily Yield</p></div><div class="text-right"><p class="font-black text-[12px]">₨ ${p.p.toLocaleString()}</p></div></div>`;
             });
         }
 
         async function submitDeposit() {
-            const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const p = document.getElementById('dep-promo').value.trim(); const f = document.getElementById('dep-proof'); const b = document.getElementById('dep-btn');
+            const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const f = document.getElementById('dep-proof'); const b = document.getElementById('dep-btn');
             if(!a || !t || !f.files[0]) return alert("Missing Details/Proof!"); b.disabled = true; b.innerText = "UPLOADING...";
             const r = new FileReader(); r.readAsDataURL(f.files[0]); r.onload = async () => {
-                await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, promo: p||"None", proof: r.result, type: "deposit", status: "pending", time: Date.now() });
-                alert("Request Logged! Admin will verify TID & Proof."); b.disabled = false; b.innerText = "VERIFY FUNDING"; changePage('activity');
+                await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() });
+                alert("Request Logged!"); b.disabled = false; b.innerText = "VERIFY FUNDING"; changePage('activity');
             };
         }
 
-        async function sendSupport() {
-            const m = document.getElementById('support-msg').value.trim(); if(!m) return alert("Write message!");
-            await db.collection("requests").add({ user: user.name, message: m, type: "Support Ticket", status: "pending", time: Date.now(), amount: 0 });
-            alert("Ticket Sent to Admin!"); document.getElementById('support-msg').value = '';
+        async function submitWithdraw() {
+            const a = document.getElementById('wd-amt').value; const acc = document.getElementById('wd-acc').value; 
+            if(!a || parseInt(a) < 100) return alert("Minimum Withdrawal Rs 100 hai!");
+            if(!acc || parseInt(a) > user.balance) return alert("Invalid Amount ya Balance kam hai!");
+            await db.collection("requests").add({ user: user.name, amount: parseInt(a), acc: acc, type: "withdraw", status: "pending", time: Date.now() });
+            await db.collection("users").doc(user.name).update({ balance: user.balance - parseInt(a) }); 
+            alert("Requested Successfully!"); changePage('activity');
+        }
+
+        async function claimPromo() {
+            const code = document.getElementById('user-promo-input').value.trim(); if(!code) return alert("Pehle code likhein!");
+            await db.collection("requests").add({ user: user.name, promo: code, type: "Promo Claim", status: "pending", time: Date.now(), amount: 0 });
+            alert("Promo Claim Bheja Gaya!"); document.getElementById('user-promo-input').value = ''; changePage('activity');
         }
 
         async function buy(p, roi, tName) {
             if(user.balance < p) { alert("Low Funds!"); changePage('wallet'); }
-            else { if(confirm("Activate "+tName+" for ₨ "+p+"?")) { const exp = Date.now() + (30 * 86400000); await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: tName, tierExpiry: exp, lastReqTime: Date.now() }); await db.collection("requests").add({ user: user.name, amount: p, type: "Tier Activation", status: "approved", time: Date.now() }); alert("Success!"); changePage('activity'); } }
-        }
-
-        async function submitWithdraw() {
-            const a = document.getElementById('wd-amt').value; const acc = document.getElementById('wd-acc').value; if(!a || !acc || parseInt(a) > user.balance) return alert("Invalid Amount!");
-            await db.collection("requests").add({ user: user.name, amount: parseInt(a), acc: acc, type: "withdraw", status: "pending", time: Date.now() });
-            await db.collection("users").doc(user.name).update({ balance: user.balance - parseInt(a) }); alert("Requested Successfully!"); changePage('activity');
+            else { if(confirm("Activate "+tName+" for ₨ "+p+"?")) { const exp = Date.now() + (30 * 86400000); await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: tName, tierExpiry: exp, lastReqTime: Date.now() }); alert("Success!"); changePage('activity'); } }
         }
 
         async function checkProfitReq(u) { if (u.activeTier > 0 && (Date.now() - u.lastReqTime) >= 86400000) { const amt = (u.activeTier * u.tierROI) / 100; await db.collection("requests").add({ user: u.name, amount: amt, type: "Daily Profit Yield", status: "pending", time: Date.now() }); await db.collection("users").doc(u.name).update({ lastReqTime: Date.now() }); } }
         function updateCountdown() { if (user && user.activeTier > 0) { const d = (user.lastReqTime + 86400000) - Date.now(); if(d>0) { const h = Math.floor(d/3600000); const m = Math.floor((d%3600000)/60000); const s = Math.floor((d%60000)/1000); document.getElementById('countdown-display').innerText = `YIELD IN: ${h}H ${m}M ${s}S`; } else { document.getElementById('countdown-display').innerText = "YIELD READY"; } } else { document.getElementById('countdown-display').innerText = "SYSTEM IDLE"; } }
         function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active-tab')); document.getElementById('p-'+p).classList.add('active-page'); if(p!=='wallet'&&p!=='withdraw') document.getElementById('n-'+p).classList.add('active-tab'); }
         function logout() { if(confirm("Terminate Session?")) { localStorage.removeItem('mc_user'); location.reload(); } }
+        
         function adminTap() { tapCount++; if(tapCount >= 4) { if(prompt("Access Key:") === "mint786") { document.getElementById('admin-panel').classList.remove('hidden'); syncAdmin(); } tapCount=0; } setTimeout(()=>tapCount=0,3000); }
         function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
         function showAdmTab(t) { document.querySelectorAll('.adm-tab').forEach(s=>s.classList.add('hidden')); document.getElementById('adm-sec-'+t).classList.remove('hidden'); }
-        function copyRef() { const c = document.getElementById('ref-link'); c.select(); document.execCommand('copy'); alert("Link Copied!"); }
-
-        async function sendBroadcast() { const m = document.getElementById('bc-msg').value.trim(); if(!m) return; await db.collection("app_data").doc("announcement").set({ message: m, time: Date.now() }); alert("Broadcast Sent!"); }
+        
+        function filterUsers() {
+            const term = document.getElementById('user-search').value.toLowerCase();
+            document.querySelectorAll('.user-card').forEach(card => card.style.display = card.getAttribute('data-name').toLowerCase().includes(term) ? 'block' : 'none');
+        }
 
         async function syncAdmin() {
             db.collection("requests").where("status", "==", "pending").onSnapshot(snap => {
                 const list = document.getElementById('adm-sec-requests'); list.innerHTML = '';
                 snap.forEach(doc => { const d = doc.data(); 
-                    const pBtn = d.proof ? `<button onclick="window.open().document.write('<img src=\\'${d.proof}\\' style=\\'width:100%\\' />')" class="bg-blue-400 px-2 py-1 rounded text-[7px] uppercase font-black italic">📸</button>` : '';
-                    list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${d.user}<br>Rs ${d.amount} (${d.type})<br>PROMO: ${d.promo||'No'}<br>${d.message||''}</div><div class="flex gap-2">${pBtn}<button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-2 py-1 rounded">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-2 py-1 rounded">NO</button></div></div>`;
+                    const pBtn = d.proof ? `<button onclick="window.open().document.write('<img src=\\'${d.proof}\\' style=\\'width:100%\\' />')" class="bg-blue-400 px-2 py-1 rounded text-[7px] uppercase font-black italic">📸 Proof</button>` : '';
+                    list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase mb-2"><div>${d.user}<br>Rs ${d.amount} (${d.type})<br>CODE: ${d.promo||'No'}</div><div class="flex gap-2">${pBtn}<button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-2 py-1 rounded">YES</button></div></div>`;
                 });
             });
-            db.collection("users").onSnapshot(snap => { const list = document.getElementById('adm-sec-users'); list.innerHTML = ''; snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${u.name}</div><div>Bal: ${u.balance}</div><button onclick="deleteUser('${u.name}')" class="text-red-500 font-bold italic">❌</button></div>`; }); });
+
+            db.collection("users").onSnapshot(snap => {
+                const list = document.getElementById('adm-sec-users'); let sysBal = 0; let activePlans = 0;
+                snap.forEach(u => { sysBal += (u.data().balance || 0); if(u.data().activeTier > 0) activePlans++; });
+                list.innerHTML = `<div class="grid grid-cols-3 gap-2 mb-6 text-center"><div class="glass p-3 rounded-2xl border-b-2 border-blue-500"><p class="text-[6px] opacity-50 uppercase">Total Users</p><p class="text-[10px] font-black">${snap.size}</p></div><div class="glass p-3 rounded-2xl border-b-2 border-green-500"><p class="text-[6px] opacity-50 uppercase">System Bal</p><p class="text-[10px] font-black">₨ ${sysBal.toLocaleString()}</p></div><div class="glass p-3 rounded-2xl border-b-2 border-yellow-500"><p class="text-[6px] opacity-50 uppercase">Active Plans</p><p class="text-[10px] font-black">${activePlans}</p></div></div><input type="text" id="user-search" onkeyup="filterUsers()" placeholder="🔍 Search User Name..." class="w-full bg-white/5 p-4 rounded-xl mb-4 text-[10px] font-bold border border-blue-500/20 outline-none">`;
+                snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="user-card glass p-4 rounded-xl mb-2 border-l-4 border-blue-500 text-[8px] font-black uppercase" data-name="${u.name}"><div class="flex justify-between items-center mb-2"><span class="text-blue-400">👤 ${u.name}</span><button onclick="document.getElementById('adm-user').value='${u.name}'; window.scrollTo(0,document.body.scrollHeight);" class="bg-blue-600 px-2 py-1 rounded-[5px] text-[6px]">ADD BAL</button></div><div class="grid grid-cols-2 gap-2 opacity-80"><div>💰 Bal: ₨ ${u.balance || 0}</div><div>📦 Plan: ${u.tierName || 'None'}</div></div></div>`; });
+            });
         }
-        async function handle(id, u, amt, act, type) { const ref = db.collection("users").doc(u); const doc = await ref.get(); if(act==='approved') { if(type==='deposit'||type.includes('Profit')) await ref.update({ balance: (doc.data().balance||0)+amt }); } else if(type==='withdraw') await ref.update({ balance: (doc.data().balance||0)+amt }); await db.collection("requests").doc(id).update({ status: act }); }
-        async function manualEdit(f) { const u = document.getElementById('adm-user').value; const v = parseInt(document.getElementById('adm-val').value); const ref = db.collection("users").doc(u); const d = await ref.get(); if(d.exists) await ref.update({ [f]: (d.data()[f]||0)+v }); alert("Funds Injected!"); }
-        async function deleteUser(n) { if(confirm("Delete user "+n+"?")) await db.collection("users").doc(n).delete(); }
+
+        async function handle(id, u, amt, act, type) { const ref = db.collection(\"users\").doc(u); const doc = await ref.get(); if(act==='approved') { if(type==='deposit'||type.includes('Profit')||type.includes('Promo')) await ref.update({ balance: (doc.data().balance||0)+amt }); } await db.collection(\"requests\").doc(id).update({ status: act }); }
+        async function manualEdit(f) { const u = document.getElementById('adm-user').value; const v = parseInt(document.getElementById('adm-val').value); if(!u || !v) return; const ref = db.collection("users").doc(u); const d = await ref.get(); if(d.exists) await ref.update({ [f]: (d.data()[f]||0)+v }); alert("Funds Injected!"); }
+        async function sendBroadcast() { const m = document.getElementById('bc-msg').value.trim(); if(!m) return; await db.collection("app_data").doc("announcement").set({ message: m, time: Date.now() }); alert("Broadcast Sent!"); }
+        function copyRef() { const c = document.getElementById('ref-link'); c.select(); document.execCommand('copy'); alert("Link Copied!"); }
     </script>
 </body>
 </html>
