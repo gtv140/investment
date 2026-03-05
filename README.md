@@ -34,7 +34,8 @@
             <h1 onclick="adminTap()" class="text-5xl font-black italic tracking-tighter mb-2 cursor-pointer uppercase">MINT<span class="text-blue-500">CREST</span></h1>
             <p class="text-gray-500 text-[8px] uppercase tracking-[0.4em] mb-12 font-bold italic">Official Digital Asset Vault</p>
             <div class="glass p-10 rounded-[3.5rem] border-t-2 border-blue-600 shadow-2xl">
-                <input type="text" id="user-name" placeholder="Legal Full Name" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 outline-none text-center font-bold mb-5 focus:border-blue-500 transition-all">
+                <input type="text" id="user-name" placeholder="Full Name" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 outline-none text-center font-bold mb-4 focus:border-blue-500 transition-all">
+                <input type="text" id="ref-by" placeholder="Referral Name (Optional)" class="w-full bg-white/5 p-4 rounded-xl border border-white/5 outline-none text-center text-[10px] mb-6 font-bold">
                 <button onclick="login()" class="w-full bg-blue-600 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl active:scale-95 transition-all">Secure Access</button>
             </div>
             <p class="mt-8 text-[7px] text-gray-600 uppercase font-bold tracking-widest">© 2026 MintCrest Gold Enterprise</p>
@@ -69,14 +70,15 @@
         </div>
 
         <div id="p-more" class="page p-6 space-y-6 pb-12">
+            <div class="glass p-8 rounded-[3rem] border-t-4 border-blue-500">
+                <h3 class="text-blue-500 font-black text-[11px] uppercase mb-2 text-center italic">Referral ID</h3>
+                <div id="my-ref-id" class="text-center font-black text-lg py-2 text-white">---</div>
+                <p class="text-[7px] text-center text-gray-500 uppercase">Share your name to earn 10% commission on referrals!</p>
+            </div>
             <div class="glass p-8 rounded-[3rem] border-t-4 border-yellow-500">
                 <h3 class="text-yellow-500 font-black text-[11px] uppercase mb-2 text-center italic">Reward Center</h3>
                 <input type="text" id="promo-input" placeholder="Enter Promo Code..." class="w-full bg-white/5 p-4 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 text-center font-bold uppercase">
                 <button onclick="applyPromoRequest()" class="w-full bg-yellow-600 py-4 rounded-2xl font-black text-[10px] uppercase shadow-lg active:scale-95 transition-all">Submit Code</button>
-            </div>
-            <div class="glass p-8 rounded-[3rem] text-center border-b-4 border-green-500">
-                <h3 class="text-green-500 font-black text-[10px] uppercase mb-2">Official Community</h3>
-                <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3?mode=hqctcla" class="inline-block bg-white/5 border border-green-500/30 px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">📢 Join Group</a>
             </div>
             <button onclick="logout()" class="w-full glass p-6 rounded-[2.5rem] text-center text-[10px] font-black text-red-500 uppercase">Terminate Session</button>
         </div>
@@ -111,7 +113,7 @@
     <div id="admin-panel" class="fixed inset-0 bg-[#000103] z-[5000] p-6 hidden overflow-y-auto">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-xl font-black text-blue-500 uppercase italic">Master Console 2.0</h2>
-            <button onclick="closeAdmin()" class="bg-red-500/10 text-red-500 px-6 py-2 rounded-xl text-[10px] font-black">EXIT</button>
+            <button onclick="closeAdmin()" class="bg-red-500/10 text-red-500 px-6 py-2 rounded-xl text-[10px] font-black uppercase">Exit</button>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-8">
@@ -147,7 +149,7 @@
             <div class="glass p-8 rounded-[3rem] border-t-4 border-blue-600">
                 <h3 class="text-blue-500 font-black text-[10px] uppercase mb-4 text-center italic">Manual Injection</h3>
                 <input type="text" id="adm-user" placeholder="User Name" class="w-full bg-white/5 p-4 rounded-xl mb-2 text-center text-[10px] font-bold border border-white/5 outline-none">
-                <input type="number" id="adm-val" placeholder="Amount" class="w-full bg-white/5 p-4 rounded-xl mb-4 text-center text-[10px] font-bold border border-white/5 outline-none">
+                <input type="number" id="adm-val" placeholder="Amount" class="w-full bg-white/5 p-4 rounded-xl mb-4 text-center text-[10px] font-bold border border-white/5 outline-none text-white">
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="manualEdit('balance', 1)" class="bg-blue-600 py-3 rounded-xl font-black text-[9px] uppercase">Add Bal</button>
                     <button onclick="manualEdit('balance', -1)" class="bg-red-600 py-3 rounded-xl font-black text-[9px] uppercase">Minus Bal</button>
@@ -169,14 +171,14 @@
         let user = null; let tapCount = 0;
 
         const plans = [
-            { n: "Micro-Elite I", p: 200, r: 3, d: 30 }, { n: "Micro-Elite II", p: 500, r: 3.2, d: 30 },
-            { n: "Bronze-S", p: 1000, r: 3.5, d: 30 }, { n: "Bronze-X", p: 2000, r: 3.8, d: 30 },
-            { n: "Silver-S", p: 3000, r: 4.2, d: 30 }, { n: "Silver-X", p: 5000, r: 4.5, d: 30 },
-            { n: "Gold-S", p: 7000, r: 5, d: 30 }, { n: "Gold-X", p: 10000, r: 5.5, d: 30 },
-            { n: "Gold-Master", p: 15000, r: 6, d: 30 }, { n: "Platinum-S", p: 20000, r: 6.5, d: 30 },
-            { n: "Platinum-X", p: 30000, r: 7, d: 30 }, { n: "Diamond-S", p: 40000, r: 7.5, d: 30 },
-            { n: "Diamond-X", p: 50000, r: 8, d: 30 }, { n: "Royal-S", p: 75000, r: 9, d: 30 },
-            { n: "Royal-Grand", p: 100000, r: 10, d: 30 },
+            { n: "Micro-Elite I", p: 200, r: 3 }, { n: "Micro-Elite II", p: 500, r: 3.2 },
+            { n: "Bronze-S", p: 1000, r: 3.5 }, { n: "Bronze-X", p: 2000, r: 3.8 },
+            { n: "Silver-S", p: 3000, r: 4.2 }, { n: "Silver-X", p: 5000, r: 4.5 },
+            { n: "Gold-S", p: 7000, r: 5 }, { n: "Gold-X", p: 10000, r: 5.5 },
+            { n: "Gold-Master", p: 15000, r: 6 }, { n: "Platinum-S", p: 20000, r: 6.5 },
+            { n: "Platinum-X", p: 30000, r: 7 }, { n: "Diamond-S", p: 40000, r: 7.5 },
+            { n: "Diamond-X", p: 50000, r: 8 }, { n: "Royal-S", p: 75000, r: 9 },
+            { n: "Royal-Grand", p: 100000, r: 10 },
             { n: "⚡ FLASH 24H", p: 500, r: 12, s: true },
             { n: "🚀 ROCKET PRO", p: 12000, r: 18, s: true },
             { n: "👑 CROWN KING", p: 25000, r: 22, s: true }
@@ -199,12 +201,14 @@
         }
 
         async function login() {
-            const name = document.getElementById('user-name').value.trim(); if(!name) return;
+            const name = document.getElementById('user-name').value.trim(); 
+            const refBy = document.getElementById('ref-by').value.trim();
+            if(!name) return;
             localStorage.setItem('mc_user', name);
             const ref = db.collection("users").doc(name); const doc = await ref.get();
-            if(!doc.exists) await ref.set({ name: name, balance: 0, profit: 0, time: Date.now(), activeTier: 0, tierROI: 0, lastReqTime: Date.now(), tierExpiry: 0, tierName: "Inactive" });
+            if(!doc.exists) await ref.set({ name: name, balance: 0, profit: 0, time: Date.now(), activeTier: 0, tierROI: 0, lastReqTime: Date.now(), tierName: "Inactive", referredBy: refBy || "Direct" });
             startSync(name); document.getElementById('auth-ui').style.display='none'; document.getElementById('app-ui').classList.remove('hidden'); document.getElementById('bottom-nav').classList.remove('hidden');
-            renderPlans();
+            renderPlans(); document.getElementById('my-ref-id').innerText = name;
         }
 
         function startSync(name) {
@@ -213,7 +217,7 @@
                 const list = document.getElementById('user-history'); list.innerHTML = snap.empty ? '<p class="text-center opacity-20 py-20 text-[9px] font-black uppercase italic">Ledger is Empty</p>' : '';
                 let items = []; snap.forEach(doc => items.push(doc.data())); items.sort((a,b) => b.time - a.time);
                 items.forEach(d => { 
-                    const clr = d.type.includes('dep') ? 'border-blue-500' : (d.type.includes('Profit') ? 'border-green-500' : 'border-red-500'); 
+                    const clr = d.type.includes('dep') ? 'border-blue-500' : (d.type.includes('Profit') ? 'border-green-500' : (d.type.includes('Ref') ? 'border-yellow-500' : 'border-red-500')); 
                     list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center border-l-4 ${clr} mb-2 text-[9px] font-black uppercase"><div>${d.type}<br><span class="opacity-30 text-[7px] font-bold">${new Date(d.time).toLocaleString()}</span></div><div class="text-right">₨ ${d.amount}<br><span class="badge-${d.status}">${d.status}</span></div></div>`; 
                 });
             });
@@ -231,8 +235,8 @@
             const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const f = document.getElementById('dep-proof');
             if(!a || !t || !f.files[0]) return alert("Missing Details!");
             const r = new FileReader(); r.readAsDataURL(f.files[0]); r.onload = async () => {
-                await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() });
-                alert("Request Logged!"); changePage('activity');
+                await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now(), referredBy: user.referredBy || "Direct" });
+                alert("Request Logged, Sweetie!"); changePage('activity');
             };
         }
 
@@ -258,7 +262,7 @@
         function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
         function showAdmTab(t) { document.querySelectorAll('.adm-tab').forEach(s=>s.classList.add('hidden')); document.getElementById('adm-sec-'+t).classList.remove('hidden'); }
 
-        // --- MASTER ADMIN LOGIC ---
+        // --- ADMIN MASTER LOGIC ---
         async function syncAdmin() {
             db.collection("users").onSnapshot(snap => {
                 document.getElementById('adm-stat-users').innerText = snap.size;
@@ -273,29 +277,48 @@
                 snap.forEach(doc => {
                     const d = doc.data(); let info = "";
                     if(d.type === 'deposit') info = `<div class="mt-2 text-blue-400">TID: ${d.tid}</div><button onclick="viewProof('${d.proof}')" class="mt-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-lg text-[7px]">VIEW PROOF 📸</button>`;
-                    else if(d.type === 'withdraw') info = `<div class="mt-2 text-red-400 italic">ACC: ${d.acc}</div>`;
+                    else if(d.type === 'withdraw') info = `<div class="mt-2 text-red-400 italic font-bold">ACC: ${d.acc}</div>`;
                     list.innerHTML += `<div class="glass p-5 rounded-3xl border-l-4 ${d.type==='deposit'?'border-blue-500':'border-red-500'} mb-4"><div class="flex justify-between items-start"><div class="text-[9px] font-black uppercase">USER: ${d.user}<br>TYPE: ${d.type}<br><span class="text-lg">₨ ${d.amount}</span>${info}</div><div class="flex flex-col gap-2"><button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-4 py-2 rounded-xl text-[8px] font-black">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-4 py-2 rounded-xl text-[8px] font-black">NO</button></div></div></div>`;
                 });
             });
         }
 
         async function handle(id, u, amt, act, type) { 
-            const ref = db.collection("users").doc(u); const doc = await ref.get(); 
-            if(act==='approved' && (type==='deposit' || type.includes('Profit'))) await ref.update({ balance: (doc.data().balance||0) + amt }); 
-            else if(act==='rejected' && type==='withdraw') await ref.update({ balance: (doc.data().balance||0) + amt }); 
-            await db.collection("requests").doc(id).update({ status: act }); 
+            const ref = db.collection("users").doc(u); const doc = await ref.get(); const data = doc.data();
+            const reqRef = db.collection("requests").doc(id);
+            const reqSnap = await reqRef.get();
+            const reqData = reqSnap.data();
+
+            if(act==='approved') {
+                if(type==='deposit' || type.includes('Profit')) {
+                    await ref.update({ balance: (data.balance||0) + amt });
+                    // Referral Commission Logic (10%)
+                    if(type==='deposit' && reqData.referredBy && reqData.referredBy !== "Direct") {
+                        const refUser = db.collection("users").doc(reqData.referredBy);
+                        const refDoc = await refUser.get();
+                        if(refDoc.exists) {
+                            const comm = amt * 0.10;
+                            await refUser.update({ balance: (refDoc.data().balance||0) + comm });
+                            await db.collection("requests").add({ user: reqData.referredBy, amount: comm, type: "Ref Commission from "+u, status: "approved", time: Date.now() });
+                        }
+                    }
+                }
+            } else if(act==='rejected' && type==='withdraw') {
+                await ref.update({ balance: (data.balance||0) + amt });
+            }
+            await reqRef.update({ status: act }); 
         }
 
         async function manualEdit(field, mult) {
             const u = document.getElementById('adm-user').value; const v = parseInt(document.getElementById('adm-val').value) * mult;
             const ref = db.collection("users").doc(u); const d = await ref.get();
-            if(d.exists) { await ref.update({ [field]: (d.data()[field] || 0) + v }); alert("Updated!"); }
+            if(d.exists) { await ref.update({ [field]: (d.data()[field] || 0) + v }); alert("Updated, Sweetie!"); }
         }
 
         function filterUsers() { const q = document.getElementById('user-search').value.toLowerCase(); document.querySelectorAll('.user-card').forEach(c => c.style.display = c.dataset.name.toLowerCase().includes(q) ? 'flex' : 'none'); }
-        function viewProof(s) { const w = window.open(""); w.document.write(`<img src="${s}" style="width:100%;">`); }
+        function viewProof(s) { const w = window.open(""); w.document.write(`<body style="margin:0;background:#000;display:flex;justify-content:center;"><img src="${s}" style="max-width:100%;height:auto;"></body>`); }
         async function sendBroadcast() { const m = document.getElementById('bc-msg').value; await db.collection("app_data").doc("announcement").set({ message: m }); alert("Sent!"); }
-        async function deleteUser(n) { if(confirm("Delete?")) await db.collection("users").doc(n).delete(); }
+        async function deleteUser(n) { if(confirm("Delete "+n+"?")) await db.collection("users").doc(n).delete(); }
     </script>
 </body>
 </html>
