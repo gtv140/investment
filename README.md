@@ -42,7 +42,6 @@
     </section>
 
     <main id="app-ui" class="hidden flex-1 overflow-y-auto pb-32">
-        
         <div id="p-home" class="page active-page p-6">
             <div class="glass p-10 rounded-[3rem] mb-6 border-l-8 border-blue-600 shadow-xl">
                 <p class="text-[9px] text-blue-400 font-extrabold mb-1 uppercase tracking-widest">Available Capital</p>
@@ -72,37 +71,13 @@
         <div id="p-more" class="page p-6 space-y-6 pb-12">
             <div class="glass p-8 rounded-[3rem] border-t-4 border-yellow-500">
                 <h3 class="text-yellow-500 font-black text-[11px] uppercase mb-2 text-center italic">Reward Center</h3>
-                <p class="text-[7px] text-gray-500 mb-4 uppercase text-center font-bold">Apply promo code for Admin Bonus</p>
                 <input type="text" id="promo-input" placeholder="Enter Promo Code..." class="w-full bg-white/5 p-4 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 text-center font-bold uppercase">
                 <button onclick="applyPromoRequest()" class="w-full bg-yellow-600 py-4 rounded-2xl font-black text-[10px] uppercase shadow-lg active:scale-95 transition-all">Submit Code</button>
             </div>
-
             <div class="glass p-8 rounded-[3rem] text-center border-b-4 border-green-500">
                 <h3 class="text-green-500 font-black text-[10px] uppercase mb-2">Official Community</h3>
-                <p class="text-[7px] text-gray-500 mb-4 uppercase italic">Latest Proofs & Updates</p>
                 <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3?mode=hqctcla" class="inline-block bg-white/5 border border-green-500/30 px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest">📢 Join Group</a>
             </div>
-
-            <div class="glass p-8 rounded-[3rem] text-[7px] text-gray-500 font-bold uppercase leading-relaxed">
-                <h4 class="text-blue-500 mb-3 text-[9px] text-center">📜 Official Terms & Privacy</h4>
-                <p class="mb-2">• All assets are secured via MintCrest encryption protocol.</p>
-                <p class="mb-2">• Withdrawals are processed within 2 to 24 business hours.</p>
-                <p class="mb-2">• One person is allowed only one account. Fraud leads to ban.</p>
-                <p>• Daily yield is credited exactly after 24 hours of activation.</p>
-            </div>
-
-            <div class="glass p-8 rounded-[3rem]">
-                <h3 class="text-blue-500 font-black text-[11px] uppercase mb-4 italic text-center">Admin Help Desk</h3>
-                <textarea id="support-msg" placeholder="Describe your issue to Admin..." class="w-full bg-white/5 p-5 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 h-24 font-bold"></textarea>
-                <button id="sup-btn" onclick="sendSupport()" class="w-full bg-blue-600 py-4 rounded-2xl font-black text-[10px] uppercase">Send Message</button>
-            </div>
-
-            <div class="glass p-8 rounded-[3rem] text-center">
-                <p class="text-[8px] font-bold text-gray-500 mb-4 uppercase italic">Referral Link</p>
-                <input type="text" id="ref-link" readonly class="w-full bg-white/5 p-4 rounded-2xl text-[10px] text-center font-bold mb-4 border border-white/5 outline-none">
-                <button onclick="copyRef()" class="bg-blue-600 px-10 py-3 rounded-2xl font-black text-[9px] uppercase">Copy Invite</button>
-            </div>
-
             <button onclick="logout()" class="w-full glass p-6 rounded-[2.5rem] text-center text-[10px] font-black text-red-500 uppercase">Terminate Session</button>
         </div>
 
@@ -113,15 +88,12 @@
                     <div class="glass p-5 rounded-2xl flex justify-between bg-blue-500/5"><span>JAZZCASH/SADAPAY</span><span class="text-blue-400">03705519562</span></div>
                     <div class="glass p-5 rounded-2xl flex justify-between bg-green-500/5"><span>EASYPAISA</span><span class="text-green-400">03379827882</span></div>
                 </div>
-                
                 <input type="number" id="dep-amount" placeholder="Amount (PKR)" class="w-full bg-white/5 p-5 rounded-2xl mb-3 text-center font-bold outline-none border border-white/5">
                 <input type="text" id="dep-trx" placeholder="TID (Transaction ID)" class="w-full bg-white/5 p-5 rounded-2xl mb-3 text-center font-bold uppercase outline-none border border-white/5">
-
                 <label class="block w-full bg-white/5 p-5 rounded-2xl mb-8 border border-dashed border-white/20 cursor-pointer">
                     <span id="file-label" class="text-[9px] font-bold opacity-50 uppercase italic">📸 Upload Screenshot Proof</span>
                     <input type="file" id="dep-proof" accept="image/*" class="hidden" onchange="document.getElementById('file-label').innerText = 'Screenshot Ready ✅'">
                 </label>
-
                 <button id="dep-btn" onclick="submitDeposit()" class="w-full bg-blue-600 py-6 rounded-2xl font-black text-[10px] uppercase shadow-lg">Verify Funding</button>
             </div>
         </div>
@@ -132,39 +104,54 @@
                 <input type="number" id="wd-amt" placeholder="Amount (PKR)" class="w-full bg-white/5 p-5 rounded-2xl mb-3 text-center font-bold outline-none border border-white/5">
                 <input type="text" id="wd-acc" placeholder="Account Name & Number" class="w-full bg-white/5 p-5 rounded-2xl mb-8 text-center text-[9px] font-bold outline-none border border-white/5">
                 <button onclick="submitWithdraw()" class="w-full bg-red-600 py-6 rounded-2xl font-black text-[10px] uppercase shadow-lg">Authorize Payout</button>
-                <p class="mt-4 text-[7px] text-gray-500 font-bold uppercase tracking-widest">Processed in 2-24 Hours</p>
             </div>
         </div>
     </main>
 
     <div id="admin-panel" class="fixed inset-0 bg-[#000103] z-[5000] p-6 hidden overflow-y-auto">
-        <div class="flex justify-between items-center mb-10">
-            <h2 class="text-xl font-black text-blue-500 uppercase italic">Master Console</h2>
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-black text-blue-500 uppercase italic">Master Console 2.0</h2>
             <button onclick="closeAdmin()" class="bg-red-500/10 text-red-500 px-6 py-2 rounded-xl text-[10px] font-black">EXIT</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-8">
+            <div class="glass p-4 rounded-2xl border-b-2 border-blue-500 text-center">
+                <p class="text-[7px] text-gray-500 uppercase font-black">Total Users</p>
+                <span id="adm-stat-users" class="text-blue-500 font-black text-sm">0</span>
+            </div>
+            <div class="glass p-4 rounded-2xl border-b-2 border-green-500 text-center">
+                <p class="text-[7px] text-gray-500 uppercase font-black">Vault Capital</p>
+                <span id="adm-stat-cap" class="text-green-500 font-black text-sm">₨ 0</span>
+            </div>
         </div>
         
         <div class="flex gap-2 mb-8 overflow-x-auto">
-            <button onclick="showAdmTab('requests')" class="bg-blue-600 px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">Orders/Msgs</button>
-            <button onclick="showAdmTab('users')" class="glass px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">Users</button>
-            <button onclick="showAdmTab('broadcast')" class="bg-yellow-600 px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">Broadcast</button>
+            <button onclick="showAdmTab('requests')" class="bg-blue-600 px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">Orders/TID</button>
+            <button onclick="showAdmTab('users')" class="glass px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">User List</button>
+            <button onclick="showAdmTab('control')" class="bg-red-600 px-6 py-2 rounded-xl text-[9px] font-black uppercase whitespace-nowrap">System Lock</button>
         </div>
 
         <div id="adm-sec-requests" class="adm-tab space-y-3"></div>
-        <div id="adm-sec-users" class="adm-tab hidden space-y-3"></div>
 
-        <div id="adm-sec-broadcast" class="adm-tab hidden glass p-8 rounded-[3rem]">
-            <h3 class="text-yellow-500 font-black text-xs uppercase mb-4 text-center italic">App Ticker Update</h3>
-            <textarea id="bc-msg" placeholder="Write Promo / News for the ticker bar..." class="w-full bg-white/5 p-5 rounded-2xl text-[10px] border border-white/10 outline-none mb-4 h-24 font-bold"></textarea>
-            <button onclick="sendBroadcast()" class="w-full bg-yellow-600 py-4 rounded-2xl font-black text-[10px] uppercase">🚀 Broadcast Now</button>
+        <div id="adm-sec-users" class="adm-tab hidden space-y-3">
+            <input type="text" id="user-search" oninput="filterUsers()" placeholder="Search User Name..." class="w-full bg-white/5 p-4 rounded-xl mb-4 text-[10px] font-bold border border-white/10 outline-none">
+            <div id="user-list-container" class="space-y-3"></div>
         </div>
 
-        <div class="glass p-8 rounded-[3rem] mt-10">
-            <h3 class="text-[9px] font-black uppercase mb-4 opacity-30 text-center tracking-widest italic">Manual Fund Injection</h3>
-            <input type="text" id="adm-user" placeholder="Target User Name" class="w-full bg-white/5 p-4 rounded-xl mb-2 text-center text-[10px] font-bold border border-white/5 outline-none">
-            <input type="number" id="adm-val" placeholder="Amount (PKR)" class="w-full bg-white/5 p-4 rounded-xl mb-4 text-center text-[10px] font-bold border border-white/5 outline-none">
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="manualEdit('balance')" class="bg-blue-600 py-3 rounded-xl font-black text-[9px] uppercase">Add Bal</button>
-                <button onclick="manualEdit('profit')" class="bg-green-600 py-3 rounded-xl font-black text-[9px] uppercase">Add Prof</button>
+        <div id="adm-sec-control" class="adm-tab hidden space-y-4">
+            <div class="glass p-8 rounded-[3rem] border-t-4 border-yellow-500">
+                <h3 class="text-yellow-400 font-black text-[10px] uppercase mb-4 text-center italic">Ticker Message</h3>
+                <textarea id="bc-msg" placeholder="Write Promo News..." class="w-full bg-white/5 p-4 rounded-2xl text-[10px] border border-white/10 outline-none h-20 mb-3"></textarea>
+                <button onclick="sendBroadcast()" class="w-full bg-yellow-600 py-3 rounded-xl font-black text-[9px] uppercase">Update Ticker</button>
+            </div>
+            <div class="glass p-8 rounded-[3rem] border-t-4 border-blue-600">
+                <h3 class="text-blue-500 font-black text-[10px] uppercase mb-4 text-center italic">Manual Injection</h3>
+                <input type="text" id="adm-user" placeholder="User Name" class="w-full bg-white/5 p-4 rounded-xl mb-2 text-center text-[10px] font-bold border border-white/5 outline-none">
+                <input type="number" id="adm-val" placeholder="Amount" class="w-full bg-white/5 p-4 rounded-xl mb-4 text-center text-[10px] font-bold border border-white/5 outline-none">
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="manualEdit('balance', 1)" class="bg-blue-600 py-3 rounded-xl font-black text-[9px] uppercase">Add Bal</button>
+                    <button onclick="manualEdit('balance', -1)" class="bg-red-600 py-3 rounded-xl font-black text-[9px] uppercase">Minus Bal</button>
+                </div>
             </div>
         </div>
     </div>
@@ -191,8 +178,6 @@
             { n: "Diamond-X", p: 50000, r: 8, d: 30 }, { n: "Royal-S", p: 75000, r: 9, d: 30 },
             { n: "Royal-Grand", p: 100000, r: 10, d: 30 },
             { n: "⚡ FLASH 24H", p: 500, r: 12, s: true },
-            { n: "⭐ VIP ACCESS", p: 2500, r: 14, s: true },
-            { n: "💎 ELITE PASS", p: 8000, r: 15, s: true },
             { n: "🚀 ROCKET PRO", p: 12000, r: 18, s: true },
             { n: "👑 CROWN KING", p: 25000, r: 22, s: true }
         ];
@@ -207,9 +192,8 @@
         function listenForPromos() {
             db.collection("app_data").doc("announcement").onSnapshot(doc => {
                 if(doc.exists) {
-                    const d = doc.data();
                     document.getElementById('promo-ticker').classList.remove('hidden');
-                    document.getElementById('ticker-text').innerText = d.message;
+                    document.getElementById('ticker-text').innerText = doc.data().message;
                 }
             });
         }
@@ -220,16 +204,16 @@
             const ref = db.collection("users").doc(name); const doc = await ref.get();
             if(!doc.exists) await ref.set({ name: name, balance: 0, profit: 0, time: Date.now(), activeTier: 0, tierROI: 0, lastReqTime: Date.now(), tierExpiry: 0, tierName: "Inactive" });
             startSync(name); document.getElementById('auth-ui').style.display='none'; document.getElementById('app-ui').classList.remove('hidden'); document.getElementById('bottom-nav').classList.remove('hidden');
-            renderPlans(); document.getElementById('ref-link').value = window.location.origin + window.location.pathname + "?ref=" + name;
+            renderPlans();
         }
 
         function startSync(name) {
             db.collection("users").doc(name).onSnapshot(doc => { if(doc.exists) { user = doc.data(); document.getElementById('v-bal').innerText = "₨ " + (user.balance || 0).toLocaleString(); document.getElementById('v-profit').innerText = "₨ " + (user.profit || 0).toLocaleString(); document.getElementById('tier-tag').innerText = user.tierName; checkProfitReq(user); } });
             db.collection("requests").where("user", "==", name).onSnapshot(snap => {
-                const list = document.getElementById('user-history'); list.innerHTML = snap.empty ? '<p class="text-center opacity-20 py-20 text-[9px] font-black uppercase tracking-widest italic">Ledger is Empty</p>' : '';
+                const list = document.getElementById('user-history'); list.innerHTML = snap.empty ? '<p class="text-center opacity-20 py-20 text-[9px] font-black uppercase italic">Ledger is Empty</p>' : '';
                 let items = []; snap.forEach(doc => items.push(doc.data())); items.sort((a,b) => b.time - a.time);
                 items.forEach(d => { 
-                    const clr = d.type.includes('dep') ? 'border-blue-500' : (d.type.includes('Profit') || d.type.includes('Promo') ? 'border-green-500' : 'border-red-500'); 
+                    const clr = d.type.includes('dep') ? 'border-blue-500' : (d.type.includes('Profit') ? 'border-green-500' : 'border-red-500'); 
                     list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center border-l-4 ${clr} mb-2 text-[9px] font-black uppercase"><div>${d.type}<br><span class="opacity-30 text-[7px] font-bold">${new Date(d.time).toLocaleString()}</span></div><div class="text-right">₨ ${d.amount}<br><span class="badge-${d.status}">${d.status}</span></div></div>`; 
                 });
             });
@@ -239,95 +223,79 @@
             const list = document.getElementById('plans-list'); list.innerHTML = '';
             plans.forEach(p => {
                 const style = p.s ? 'background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3) !important;' : '';
-                const dayText = p.d ? `<p class="text-[7px] text-gray-500 font-bold uppercase italic mt-1">⏳ ${p.d} Days Contract</p>` : '';
-                const totalText = p.d ? `<p class="text-[6px] opacity-30 font-bold uppercase tracking-tighter italic">Total: ₨ ${((p.p * p.r / 100) * p.d).toLocaleString()}</p>` : '';
-                
-                list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass p-5 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer mb-2" style="${style}"><div><h4 class="font-black text-[10px] uppercase ${p.s ? 'text-blue-400' : 'text-gray-400'}">${p.n}</h4><p class="text-[8px] text-green-400 font-bold uppercase">${p.r}% Daily Yield</p>${dayText}</div><div class="text-right"><p class="font-black text-[12px]">₨ ${p.p.toLocaleString()}</p>${totalText}</div></div>`;
+                list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass p-5 rounded-[2.5rem] flex justify-between items-center active:scale-95 cursor-pointer mb-2" style="${style}"><div><h4 class="font-black text-[10px] uppercase ${p.s ? 'text-blue-400' : 'text-gray-400'}">${p.n}</h4><p class="text-[8px] text-green-400 font-bold uppercase">${p.r}% Daily Yield</p></div><div class="text-right"><p class="font-black text-[12px]">₨ ${p.p.toLocaleString()}</p></div></div>`;
             });
         }
 
         async function submitDeposit() {
-            const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const f = document.getElementById('dep-proof'); const b = document.getElementById('dep-btn');
-            if(!a || !t || !f.files[0]) return alert("Missing Details/Proof!"); b.disabled = true; b.innerText = "UPLOADING...";
+            const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const f = document.getElementById('dep-proof');
+            if(!a || !t || !f.files[0]) return alert("Missing Details!");
             const r = new FileReader(); r.readAsDataURL(f.files[0]); r.onload = async () => {
                 await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() });
-                alert("Request Logged! Admin will verify TID & Proof."); b.disabled = false; b.innerText = "VERIFY FUNDING"; changePage('activity');
+                alert("Request Logged!"); changePage('activity');
             };
-        }
-
-        async function applyPromoRequest() {
-            const code = document.getElementById('promo-input').value.trim().toUpperCase();
-            if(!code) return alert("Enter Code!");
-            await db.collection("requests").add({ user: user.name, amount: 0, type: "Promo Request: " + code, status: "pending", time: Date.now() });
-            alert("Promo Submitted! Admin will verify and add bonus.");
-            document.getElementById('promo-input').value = '';
-            changePage('activity');
-        }
-
-        async function sendSupport() {
-            const m = document.getElementById('support-msg').value.trim(); if(!m) return alert("Write message!");
-            await db.collection("requests").add({ user: user.name, message: m, type: "Support Ticket", status: "pending", time: Date.now(), amount: 0 });
-            alert("Ticket Sent to Admin!"); document.getElementById('support-msg').value = '';
-        }
-
-        async function buy(p, roi, tName) {
-            if(user.balance < p) { alert("Low Funds!"); changePage('wallet'); }
-            else { if(confirm("Activate "+tName+" for ₨ "+p+"?")) { const exp = Date.now() + (30 * 86400000); await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: tName, tierExpiry: exp, lastReqTime: Date.now() }); await db.collection("requests").add({ user: user.name, amount: p, type: "Tier Activation", status: "approved", time: Date.now() }); alert("Success!"); changePage('activity'); } }
         }
 
         async function submitWithdraw() {
             const a = document.getElementById('wd-amt').value; const acc = document.getElementById('wd-acc').value; if(!a || !acc || parseInt(a) > user.balance) return alert("Invalid Amount!");
             await db.collection("requests").add({ user: user.name, amount: parseInt(a), acc: acc, type: "withdraw", status: "pending", time: Date.now() });
-            await db.collection("users").doc(user.name).update({ balance: user.balance - parseInt(a) }); alert("Requested Successfully!"); changePage('activity');
+            await db.collection("users").doc(user.name).update({ balance: user.balance - parseInt(a) }); alert("Requested!"); changePage('activity');
+        }
+
+        async function buy(p, roi, tName) {
+            if(user.balance < p) return alert("Low Funds!");
+            if(confirm("Activate "+tName+"?")) { 
+                await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: tName, lastReqTime: Date.now() }); 
+                alert("Success!"); changePage('activity');
+            }
         }
 
         async function checkProfitReq(u) { if (u.activeTier > 0 && (Date.now() - u.lastReqTime) >= 86400000) { const amt = (u.activeTier * u.tierROI) / 100; await db.collection("requests").add({ user: u.name, amount: amt, type: "Daily Profit Yield", status: "pending", time: Date.now() }); await db.collection("users").doc(u.name).update({ lastReqTime: Date.now() }); } }
         function updateCountdown() { if (user && user.activeTier > 0) { const d = (user.lastReqTime + 86400000) - Date.now(); if(d>0) { const h = Math.floor(d/3600000); const m = Math.floor((d%3600000)/60000); const s = Math.floor((d%60000)/1000); document.getElementById('countdown-display').innerText = `YIELD IN: ${h}H ${m}M ${s}S`; } else { document.getElementById('countdown-display').innerText = "YIELD READY"; } } else { document.getElementById('countdown-display').innerText = "SYSTEM IDLE"; } }
         function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active-tab')); document.getElementById('p-'+p).classList.add('active-page'); if(p!=='wallet'&&p!=='withdraw') document.getElementById('n-'+p).classList.add('active-tab'); }
-        function logout() { if(confirm("Terminate Session?")) { localStorage.removeItem('mc_user'); location.reload(); } }
+        function logout() { localStorage.removeItem('mc_user'); location.reload(); }
         function adminTap() { tapCount++; if(tapCount >= 4) { if(prompt("Access Key:") === "mint786") { document.getElementById('admin-panel').classList.remove('hidden'); syncAdmin(); } tapCount=0; } setTimeout(()=>tapCount=0,3000); }
         function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
         function showAdmTab(t) { document.querySelectorAll('.adm-tab').forEach(s=>s.classList.add('hidden')); document.getElementById('adm-sec-'+t).classList.remove('hidden'); }
-        function copyRef() { const c = document.getElementById('ref-link'); c.select(); document.execCommand('copy'); alert("Link Copied!"); }
 
-        async function sendBroadcast() { const m = document.getElementById('bc-msg').value.trim(); if(!m) return; await db.collection("app_data").doc("announcement").set({ message: m, time: Date.now() }); alert("Broadcast Sent!"); }
-
+        // --- MASTER ADMIN LOGIC ---
         async function syncAdmin() {
+            db.collection("users").onSnapshot(snap => {
+                document.getElementById('adm-stat-users').innerText = snap.size;
+                let total = 0; snap.forEach(d => total += (d.data().balance || 0));
+                document.getElementById('adm-stat-cap').innerText = "₨ " + total.toLocaleString();
+                const list = document.getElementById('user-list-container'); list.innerHTML = '';
+                snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase user-card" data-name="${u.name}"><div>${u.name}<br><span class="text-green-400">Bal: ${u.balance}</span></div><button onclick="deleteUser('${u.name}')" class="text-red-500 font-bold">❌</button></div>`; });
+            });
+
             db.collection("requests").where("status", "==", "pending").onSnapshot(snap => {
                 const list = document.getElementById('adm-sec-requests'); list.innerHTML = '';
-                snap.forEach(doc => { const d = doc.data(); 
-                    const pBtn = d.proof ? `<button onclick="window.open().document.write('<img src=\\'${d.proof}\\' style=\\'width:100%\\' />')" class="bg-blue-400 px-2 py-1 rounded text-[7px] uppercase font-black italic">📸</button>` : '';
-                    list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${d.user}<br>Rs ${d.amount} (${d.type})<br>${d.message||''}</div><div class="flex gap-2">${pBtn}<button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-2 py-1 rounded">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-2 py-1 rounded">NO</button></div></div>`;
+                snap.forEach(doc => {
+                    const d = doc.data(); let info = "";
+                    if(d.type === 'deposit') info = `<div class="mt-2 text-blue-400">TID: ${d.tid}</div><button onclick="viewProof('${d.proof}')" class="mt-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-lg text-[7px]">VIEW PROOF 📸</button>`;
+                    else if(d.type === 'withdraw') info = `<div class="mt-2 text-red-400 italic">ACC: ${d.acc}</div>`;
+                    list.innerHTML += `<div class="glass p-5 rounded-3xl border-l-4 ${d.type==='deposit'?'border-blue-500':'border-red-500'} mb-4"><div class="flex justify-between items-start"><div class="text-[9px] font-black uppercase">USER: ${d.user}<br>TYPE: ${d.type}<br><span class="text-lg">₨ ${d.amount}</span>${info}</div><div class="flex flex-col gap-2"><button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 px-4 py-2 rounded-xl text-[8px] font-black">YES</button><button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="bg-red-600 px-4 py-2 rounded-xl text-[8px] font-black">NO</button></div></div></div>`;
                 });
             });
-            db.collection("users").onSnapshot(snap => { const list = document.getElementById('adm-sec-users'); list.innerHTML = ''; snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between items-center text-[8px] font-black uppercase"><div>${u.name}</div><div>Bal: ${u.balance}</div><button onclick="deleteUser('${u.name}')" class="text-red-500 font-bold italic">❌</button></div>`; }); });
         }
-        
+
         async function handle(id, u, amt, act, type) { 
-            const ref = db.collection("users").doc(u); 
-            const doc = await ref.get(); 
-            let finalAmt = amt;
-
-            if(act==='approved') { 
-                // Agar Promo Request hai to Admin se amount pucho
-                if(type.includes('Promo Request')) {
-                    const bonus = prompt("Enter Bonus Amount for this user:");
-                    if(!bonus) return;
-                    finalAmt = parseInt(bonus);
-                }
-                
-                if(type==='deposit' || type.includes('Profit') || type.includes('Promo')) {
-                    await ref.update({ balance: (doc.data().balance||0) + finalAmt }); 
-                }
-            } else if(act==='rejected' && type==='withdraw') {
-                await ref.update({ balance: (doc.data().balance||0) + amt }); 
-            }
-
-            await db.collection("requests").doc(id).update({ status: act, amount: finalAmt }); 
+            const ref = db.collection("users").doc(u); const doc = await ref.get(); 
+            if(act==='approved' && (type==='deposit' || type.includes('Profit'))) await ref.update({ balance: (doc.data().balance||0) + amt }); 
+            else if(act==='rejected' && type==='withdraw') await ref.update({ balance: (doc.data().balance||0) + amt }); 
+            await db.collection("requests").doc(id).update({ status: act }); 
         }
 
-        async function manualEdit(f) { const u = document.getElementById('adm-user').value; const v = parseInt(document.getElementById('adm-val').value); const ref = db.collection("users").doc(u); const d = await ref.get(); if(d.exists) await ref.update({ [f]: (d.data()[f]||0)+v }); alert("Funds Injected!"); }
-        async function deleteUser(n) { if(confirm("Delete user "+n+"?")) await db.collection("users").doc(n).delete(); }
+        async function manualEdit(field, mult) {
+            const u = document.getElementById('adm-user').value; const v = parseInt(document.getElementById('adm-val').value) * mult;
+            const ref = db.collection("users").doc(u); const d = await ref.get();
+            if(d.exists) { await ref.update({ [field]: (d.data()[field] || 0) + v }); alert("Updated!"); }
+        }
+
+        function filterUsers() { const q = document.getElementById('user-search').value.toLowerCase(); document.querySelectorAll('.user-card').forEach(c => c.style.display = c.dataset.name.toLowerCase().includes(q) ? 'flex' : 'none'); }
+        function viewProof(s) { const w = window.open(""); w.document.write(`<img src="${s}" style="width:100%;">`); }
+        async function sendBroadcast() { const m = document.getElementById('bc-msg').value; await db.collection("app_data").doc("announcement").set({ message: m }); alert("Sent!"); }
+        async function deleteUser(n) { if(confirm("Delete?")) await db.collection("users").doc(n).delete(); }
     </script>
 </body>
 </html>
