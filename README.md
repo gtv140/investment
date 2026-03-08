@@ -1,326 +1,287 @@
-<html lang="en" class="dark">
+<html lang="en" id="main-html" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MintCrest Gold | Unlimited Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <title>MintCrest Gold | Global Node</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        :root { --bg: #010409; --card: rgba(13, 17, 23, 0.8); --accent: #3b82f6; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #f0f6fc; padding-bottom: 100px; -webkit-tap-highlight-color: transparent; }
-        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(15px); }
-        .page { display: none; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        :root { --bg: #010409; --card: #0d1117; --text: #f0f6fc; --border: #30363d; --accent: #3b82f6; }
+        .light { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --border: #e2e8f0; --accent: #2563eb; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 100px; overflow-x: hidden; }
+        .glass { background: var(--card); border: 1px solid var(--border); }
+        .page { display: none; animation: slideUp 0.4s ease forwards; }
         .active-page { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .btn-prime { background: linear-gradient(135deg, #1d4ed8, #3b82f6); color: white; border-radius: 22px; font-weight: 800; transition: 0.3s; }
+        .btn-prime { background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; border-radius: 16px; font-weight: 800; transition: 0.2s; }
         .btn-prime:active { transform: scale(0.95); }
-        input, select { background: rgba(22, 27, 34, 0.8); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 15px; border-radius: 20px; width: 100%; outline: none; }
-        .admin-card { background: #0d1117; border: 1px solid #30363d; border-radius: 28px; padding: 20px; margin-bottom: 15px; }
-        .whatsapp-float { position: fixed; bottom: 120px; right: 20px; background: #25d366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; z-index: 3000; box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3); }
+        input, textarea { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 14px; border-radius: 14px; width: 100%; outline: none; font-size: 13px; }
+        .nav-active { color: var(--accent); transform: scale(1.1); opacity: 1 !important; }
+        .animate-marquee { display: inline-block; animation: marquee 15s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <a href="https://chat.whatsapp.com/YOUR_GROUP_LINK" class="whatsapp-float">💬</a>
+    <div id="lock-screen" class="fixed inset-0 z-[1000000] bg-[var(--bg)] hidden flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mb-6 animate-pulse text-4xl">⚠️</div>
+        <h1 id="lock-title" class="text-2xl font-black uppercase italic text-red-500 mb-2">Access Restricted</h1>
+        <p id="lock-msg" class="text-[10px] font-bold opacity-60 uppercase tracking-widest leading-relaxed">System is currently undergoing optimization.</p>
+    </div>
 
-    <header class="p-6 flex justify-between items-center sticky top-0 bg-[#010409]/90 backdrop-blur-md z-[5000] border-b border-white/5">
-        <div onclick="adminTap()" class="flex items-center gap-3 cursor-pointer">
-            <div class="w-11 h-11 bg-blue-600 rounded-[1.2rem] flex items-center justify-center font-black italic shadow-lg shadow-blue-500/20">M</div>
-            <div><p class="text-[11px] font-black uppercase tracking-tight text-blue-500">MintCrest Gold</p><p class="text-[8px] opacity-40 uppercase font-bold tracking-widest">Unlimited v3</p></div>
+    <header class="p-4 flex justify-between items-center sticky top-0 bg-[var(--bg)]/80 backdrop-blur-md border-b border-[var(--border)] z-[5000]">
+        <div class="flex items-center gap-2">
+            <div onclick="adminTap()" class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white italic shadow-lg shadow-blue-500/20">M</div>
+            <span class="font-black text-xs uppercase tracking-tighter">MintCrest <span class="text-blue-500">Gold</span></span>
         </div>
-        <div class="text-right">
-            <p id="top-bal" class="text-sm font-black text-blue-400 italic">₨ 0.00</p>
-            <p id="u-display" class="text-[8px] opacity-40 uppercase font-black"></p>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleTheme()" class="w-8 h-8 glass rounded-full flex items-center justify-center text-sm">🌓</button>
+            <div id="top-bal" class="text-[10px] font-black bg-blue-600/10 text-blue-500 px-4 py-1.5 rounded-full border border-blue-500/20 italic">₨ 0</div>
         </div>
     </header>
 
-    <section id="auth-ui" class="fixed inset-0 z-[10000] bg-[#010409] flex flex-col items-center justify-center p-10">
-        <div class="w-24 h-24 bg-blue-600 rounded-[2.8rem] mb-12 flex items-center justify-center text-5xl font-black italic shadow-2xl shadow-blue-600/40">M</div>
-        <div class="w-full max-w-[320px] space-y-4">
-            <input type="text" id="user-name" placeholder="ENTER USERNAME" class="text-center font-black tracking-widest uppercase">
-            <input type="password" id="user-pass" placeholder="ENTER PASSWORD" class="text-center">
-            <button onclick="login()" class="w-full p-5 btn-prime uppercase text-[11px] tracking-widest shadow-xl">Start Session</button>
+    <section id="auth-ui" class="fixed inset-0 z-[20000] bg-[var(--bg)] flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-16 h-16 bg-blue-600 rounded-[1.5rem] mb-6 flex items-center justify-center text-4xl font-black text-white italic shadow-2xl">M</div>
+        <h1 class="text-2xl font-black italic tracking-tighter mb-8 uppercase">Initialize Node</h1>
+        <div class="w-full max-w-[300px] space-y-4">
+            <input type="text" id="user-name" placeholder="Username" class="text-center font-bold">
+            <input type="password" id="user-pass" placeholder="Password" class="text-center font-bold">
+            <button onclick="login()" class="w-full p-4 btn-prime uppercase text-[10px] tracking-widest shadow-xl">Authorize Access</button>
+            <p onclick="alert('Contact Admin at @MintCrestSupport for reset.')" class="text-[9px] text-blue-400 font-bold uppercase cursor-pointer italic opacity-60">Forgot Identity Key?</p>
         </div>
     </section>
 
     <main id="app-ui" class="hidden p-4 space-y-6">
         
         <div id="p-home" class="page active-page space-y-6">
-            <div class="p-10 rounded-[3.8rem] bg-gradient-to-br from-blue-600 to-blue-900 text-white shadow-2xl relative overflow-hidden">
-                <p class="text-[10px] font-black uppercase opacity-60 italic">Available Balance</p>
-                <h2 class="text-5xl font-black tracking-tighter mt-1" id="v-bal">₨ 0</h2>
-                <div class="absolute -right-10 -bottom-10 opacity-10 text-[10rem] font-black italic">G</div>
+            <div class="bg-blue-600/5 border border-blue-500/10 p-2 rounded-xl overflow-hidden whitespace-nowrap">
+                <p id="v-news" class="animate-marquee inline-block text-[8px] font-black uppercase text-blue-400 italic">
+                    Welcome to MintCrest Gold! Minimum Deposit ₨ 200 | Trusted Node Active...
+                </p>
             </div>
 
-            <div class="glass p-6 rounded-[2.8rem] space-y-4">
-                <p class="text-[10px] font-black uppercase text-blue-500 italic flex items-center gap-2"><span>🎧</span> Live Support Terminal</p>
-                <div id="chat-display" class="h-40 overflow-y-auto space-y-3 p-2 text-[11px]"></div>
-                <div class="flex gap-2">
-                    <input id="chat-msg" placeholder="Write a message..." class="!rounded-full !py-3 !px-5 !text-xs">
-                    <button onclick="sendChat()" class="btn-prime px-6 rounded-full italic text-[10px]">SEND</button>
+            <div class="p-8 rounded-[2.5rem] bg-gradient-to-br from-blue-700 to-blue-900 text-white shadow-2xl relative overflow-hidden">
+                <p class="text-[10px] font-black uppercase opacity-60 tracking-widest">Active Liquidity</p>
+                <h2 class="text-4xl font-black tracking-tighter mt-1" id="v-bal">₨ 0.00</h2>
+                <div class="mt-6 flex justify-between items-center bg-black/20 p-4 rounded-2xl backdrop-blur-md">
+                    <span class="text-[8px] font-bold uppercase italic">Node Status: Online</span>
+                    <button onclick="copyRef()" class="bg-white text-blue-800 px-4 py-2 rounded-xl text-[8px] font-black uppercase">Copy Invite Link</button>
                 </div>
             </div>
 
-            <div id="plans-grid" class="grid grid-cols-1 gap-6 pb-20"></div>
+            <div class="glass p-5 rounded-[2rem] flex gap-2 items-center">
+                <input type="text" id="promo-input" placeholder="Promo Code" class="flex-1 !p-3 font-bold uppercase">
+                <button onclick="applyPromo()" class="btn-prime px-6 py-3 text-[9px] uppercase">Apply</button>
+            </div>
+
+            <div id="timer-box" class="hidden glass p-6 rounded-[2.5rem] border-l-4 border-green-500 bg-green-500/5">
+                <p class="text-[8px] font-black uppercase opacity-60">Yield countdown active</p>
+                <div class="flex justify-between items-end mt-2">
+                    <h3 id="countdown" class="text-3xl font-black italic text-green-500 tracking-tighter">00:00:00</h3>
+                    <p class="text-[7px] font-black opacity-30 uppercase tracking-widest">Auto-Mining Profit</p>
+                </div>
+            </div>
+
+            <div class="flex gap-2 p-1 bg-white/5 rounded-2xl">
+                <button onclick="renderPlans('normal')" id="btn-normal" class="flex-1 p-3 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase">Standard Nodes</button>
+                <button onclick="renderPlans('special')" id="btn-special" class="flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40">VIP Offers</button>
+            </div>
+            <div id="plans-grid" class="grid grid-cols-1 gap-4"></div>
         </div>
 
         <div id="p-wallet" class="page space-y-6">
-            <div class="glass p-7 rounded-[3rem] space-y-4">
-                <p class="text-center font-black text-blue-500 text-[10px] uppercase mb-2">Select Channel</p>
-                <div class="grid grid-cols-2 gap-3">
-                    <div onclick="setPay('EasyPaisa', '03379827882')" class="glass p-4 rounded-3xl text-center border-2 border-transparent hover:border-blue-500 cursor-pointer transition-all">
-                        <p class="text-[11px] font-black italic">EasyPaisa</p>
-                    </div>
-                    <div onclick="setPay('JazzCash', '03705519562')" class="glass p-4 rounded-3xl text-center border-2 border-transparent hover:border-blue-500 cursor-pointer transition-all">
-                        <p class="text-[11px] font-black italic">JazzCash</p>
-                    </div>
+            <h3 class="text-[10px] font-black uppercase opacity-40 text-center italic tracking-widest">Fund Your Node</h3>
+            <div class="space-y-3">
+                <div class="glass p-5 rounded-[2rem] border-l-4 border-red-600 flex justify-between items-center">
+                    <div><p class="text-[8px] font-black text-red-500 uppercase">JazzCash</p><p id="j-num" class="text-lg font-black tracking-widest">03705519562</p></div>
+                    <button onclick="copyText('03705519562')" class="text-[8px] bg-white/5 px-3 py-2 rounded-lg font-bold">COPY</button>
                 </div>
-                <div id="pay-box" class="hidden p-6 bg-blue-600/10 rounded-[2rem] border border-blue-500/20 text-center animate-pulse">
-                    <p id="pay-name" class="text-blue-500 font-black text-[10px] uppercase"></p>
-                    <p id="pay-num" class="text-2xl font-black tracking-widest my-1"></p>
+                <div class="glass p-5 rounded-[2rem] border-l-4 border-green-500 flex justify-between items-center">
+                    <div><p class="text-[8px] font-black text-green-500 uppercase">EasyPaisa</p><p id="e-num" class="text-lg font-black tracking-widest">03379827882</p></div>
+                    <button onclick="copyText('03379827882')" class="text-[8px] bg-white/5 px-3 py-2 rounded-lg font-bold">COPY</button>
                 </div>
-                <input type="number" id="dep-amt" placeholder="Amount (₨)">
+                <div class="glass p-5 rounded-[2rem] border-l-4 border-black flex justify-between items-center">
+                    <div><p class="text-[8px] font-black text-gray-400 uppercase">SadaPay</p><p class="text-lg font-black tracking-widest">03705519562</p></div>
+                    <button onclick="copyText('03705519562')" class="text-[8px] bg-white/5 px-3 py-2 rounded-lg font-bold">COPY</button>
+                </div>
+            </div>
+            <div class="glass p-6 rounded-[2.5rem] space-y-4">
+                <input type="number" id="dep-amt" placeholder="Amount Sent (Min: ₨ 200)">
                 <input type="text" id="dep-tid" placeholder="TID (Transaction ID)">
-                <label class="block w-full p-7 border-2 border-dashed border-blue-500/20 rounded-[2rem] bg-blue-500/5 text-center cursor-pointer">
-                    <span id="proof-label" class="text-[10px] font-black uppercase text-blue-400">📸 Attach Payment Proof</span>
-                    <input type="file" id="proof-input" accept="image/*" class="hidden" onchange="handleImg(this, 'proof-label')">
-                </label>
-                <button onclick="submitDep()" class="w-full p-5 btn-prime uppercase italic text-[11px] tracking-widest">Transmit Assets</button>
+                <div class="relative">
+                    <input type="file" id="dep-file" accept="image/*" class="hidden" onchange="previewImg(this)">
+                    <label for="dep-file" class="w-full p-4 border-2 border-dashed border-[var(--border)] rounded-xl flex flex-col items-center justify-center gap-1 cursor-pointer">
+                        <span id="upload-icon" class="text-xl">📸</span>
+                        <span id="file-label" class="text-[8px] font-black uppercase opacity-50">Upload Proof Screenshot</span>
+                    </label>
+                    <img id="img-preview" class="hidden w-full h-32 object-cover rounded-xl mt-2 border border-blue-500/30">
+                </div>
+                <button onclick="submitDep()" class="w-full p-4 btn-prime uppercase text-[10px] tracking-widest">Confirm Deposit ⚡</button>
             </div>
         </div>
 
         <div id="p-withdraw" class="page space-y-6">
-            <div class="glass p-8 rounded-[3rem] space-y-4">
-                <p class="text-[10px] font-black text-blue-500 uppercase italic">Payout Terminal</p>
-                <input type="number" id="w-amt" placeholder="Amount (₨)">
-                <input type="text" id="w-acc" placeholder="Account Name & Number">
-                <select id="w-method">
-                    <option value="EasyPaisa">EasyPaisa</option>
-                    <option value="JazzCash">JazzCash</option>
-                    <option value="SadaPay">SadaPay</option>
-                </select>
-                <button onclick="submitWith()" class="w-full p-5 btn-prime uppercase italic text-[11px]">Request Withdrawal</button>
-            </div>
-        </div>
-    </main>
-
-    <div id="admin-ui" class="fixed inset-0 bg-[#010409] z-[200000] hidden overflow-y-auto p-4 italic">
-        <div class="flex justify-between items-center mb-8 sticky top-0 bg-[#010409]/95 py-4 border-b border-white/10 z-[200001]">
-            <h2 class="text-xl font-black text-blue-500 uppercase tracking-tighter">God Console 👑</h2>
-            <button onclick="closeAdmin()" class="bg-red-600 px-6 py-2 rounded-2xl text-[10px] font-black uppercase">Close</button>
-        </div>
-
-        <div class="grid grid-cols-3 gap-3 mb-8">
-            <div onclick="admSection('req')" class="glass p-5 rounded-[2rem] text-center flex flex-col items-center gap-1">
-                <span class="text-2xl">⚡</span><p class="text-[8px] font-black uppercase">Requests</p>
-            </div>
-            <div onclick="admSection('user')" class="glass p-5 rounded-[2rem] text-center flex flex-col items-center gap-1">
-                <span class="text-2xl">👤</span><p class="text-[8px] font-black uppercase">Users</p>
-            </div>
-            <div onclick="admSection('plan')" class="glass p-5 rounded-[2rem] text-center flex flex-col items-center gap-1">
-                <span class="text-2xl">💎</span><p class="text-[8px] font-black uppercase">Plan</p>
-            </div>
-        </div>
-
-        <div id="adm-req" class="adm-tab space-y-4">
-            <h3 class="text-[10px] font-black text-yellow-500 uppercase mb-4 tracking-widest">Pending Approvals</h3>
-            <div id="adm-req-list" class="space-y-4"></div>
-        </div>
-
-        <div id="adm-user" class="adm-tab hidden space-y-4">
-            <h3 class="text-[10px] font-black text-blue-400 uppercase mb-4 tracking-widest">Network Database</h3>
-            <div id="adm-user-list" class="space-y-3"></div>
-        </div>
-
-        <div id="adm-plan" class="adm-tab hidden space-y-4">
-            <div class="admin-card">
-                <h3 class="text-[10px] font-black text-green-500 uppercase mb-4">Add New Node</h3>
-                <div class="space-y-3 italic">
-                    <input id="adm-n-name" placeholder="Plan Name">
-                    <input id="adm-n-price" type="number" placeholder="Price (₨)">
-                    <input id="adm-n-profit" type="number" placeholder="Daily Profit %">
-                    <label class="block p-5 border border-white/10 rounded-2xl text-center bg-white/5 cursor-pointer">
-                        <span id="adm-img-lbl" class="text-[10px] font-black uppercase">Upload Plan Photo</span>
-                        <input type="file" accept="image/*" class="hidden" onchange="handleImg(this, 'adm-img-lbl')">
-                    </label>
-                    <button onclick="addPlan()" class="w-full bg-blue-600 p-4 rounded-2xl font-black uppercase text-[10px]">Launch Plan</button>
+            <h3 class="text-[10px] font-black uppercase opacity-40 text-center italic tracking-widest">Request Payout (Tax: 10%)</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="selBank('JazzCash')" id="b-JazzCash" class="bank-card glass p-4 rounded-2xl flex flex-col items-center gap-2 border-2 border-transparent transition-all">
+                    <span class="text-2xl">🔴</span><span class="text-[8px] font-black uppercase">JazzCash</span>
+                </div>
+                <div onclick="selBank('EasyPaisa')" id="b-EasyPaisa" class="bank-card glass p-4 rounded-2xl flex flex-col items-center gap-2 border-2 border-transparent transition-all">
+                    <span class="text-2xl">🟢</span><span class="text-[8px] font-black uppercase">EasyPaisa</span>
                 </div>
             </div>
+            <div class="glass p-6 rounded-[2.5rem] space-y-4">
+                <input type="number" id="w-amt" placeholder="Amount (Min: ₨ 100)">
+                <input type="text" id="w-acc" placeholder="Account Number">
+                <input type="text" id="w-name" placeholder="Account Holder Name">
+                <button onclick="submitWith()" class="w-full p-4 btn-prime uppercase text-[10px] tracking-widest">Withdraw Funds 📤</button>
+            </div>
         </div>
 
-        <div class="mt-10 pb-24">
-            <h3 class="text-[10px] font-black text-purple-500 uppercase mb-4 tracking-widest">Message Center</h3>
-            <div id="adm-chat-list" class="space-y-3"></div>
+        <div id="p-history" class="page space-y-4">
+            <h3 class="text-[10px] font-black uppercase opacity-40 italic tracking-widest">Transaction Log</h3>
+            <div id="history-list" class="space-y-3"></div>
         </div>
+
+    </main>
+
+    <div id="admin-ui" class="fixed inset-0 bg-[#010409] z-[100000] hidden overflow-y-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-8 sticky top-0 bg-[#010409]/90 backdrop-blur-md py-4 z-10">
+            <h2 class="text-xl font-black text-blue-500 italic uppercase">Administration Node</h2>
+            <button onclick="closeAdmin()" class="bg-red-500/10 text-red-500 px-6 py-2 rounded-xl text-[10px] font-black uppercase">Exit</button>
+        </div>
+        <div id="adm-requests-list" class="space-y-4 pb-20"></div>
     </div>
 
-    <nav id="bottom-nav" class="hidden fixed bottom-0 w-full glass border-t border-white/5 p-6 flex justify-around items-center rounded-t-[3.5rem] z-[4000]">
-        <button onclick="changePage('home')" class="flex flex-col items-center gap-1">🏠<span class="text-[8px] font-black">HOME</span></button>
-        <button onclick="changePage('wallet')" class="flex flex-col items-center gap-1">📥<span class="text-[8px] font-black">DEPOSIT</span></button>
-        <button onclick="changePage('withdraw')" class="flex flex-col items-center gap-1">📤<span class="text-[8px] font-black">PAYOUT</span></button>
+    <nav id="bottom-nav" class="hidden fixed bottom-0 w-full glass border-t border-[var(--border)] p-4 flex justify-around items-center rounded-t-[2.5rem] z-[4000]">
+        <button onclick="changePage('home')" id="n-home" class="nav-active opacity-40 flex flex-col items-center gap-1 px-4 py-2">🏠<span class="text-[7px] font-black">NODE</span></button>
+        <button onclick="changePage('wallet')" id="n-wallet" class="opacity-40 flex flex-col items-center gap-1 px-4 py-2">📥<span class="text-[7px] font-black">FUND</span></button>
+        <button onclick="changePage('withdraw')" id="n-withdraw" class="opacity-40 flex flex-col items-center gap-1 px-4 py-2">📤<span class="text-[7px] font-black">PAYOUT</span></button>
+        <button onclick="changePage('history')" id="n-history" class="opacity-40 flex flex-col items-center gap-1 px-4 py-2">📜<span class="text-[7px] font-black">LOGS</span></button>
     </nav>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDt3ChZHyDdtM4Ir1oXRZJUywcOiV30Wtg",
-            authDomain: "investment-84f4e.firebaseapp.com",
-            projectId: "investment-84f4e",
-            storageBucket: "investment-84f4e.firebasestorage.app",
-            messagingSenderId: "975293889308",
-            appId: "1:975293889308:web:6d034a99cc966c75ff58d9"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyDt3ChZHyDdtM4Ir1oXRZJUywcOiV30Wtg", authDomain: "investment-84f4e.firebaseapp.com", projectId: "investment-84f4e", storageBucket: "investment-84f4e.appspot.com", messagingSenderId: "975293889308", appId: "1:975293889308:web:6d034a99cc966c75ff58d9" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        let user = null; let tempImg = ""; let tap = 0;
+        let user = null; let tapCount = 0; let selectedBank = "";
 
-        // AUTH & CORE
+        // --- AUTH & CORE ---
         async function login() {
             const n = document.getElementById('user-name').value.trim().toLowerCase();
             const p = document.getElementById('user-pass').value.trim();
-            if(!n || !p) return alert("Credentials required, sweetie!");
+            if(!n || !p) return alert("Fill credentials.");
+
             const ref = db.collection("users").doc(n);
             const d = await ref.get();
-            if(!d.exists) await ref.set({ name: n, password: p, balance: 0, time: Date.now() });
-            else if(d.data().password !== p) return alert("Security key mismatch!");
-            localStorage.setItem('mc_user', n); enter();
+
+            if(!d.exists) {
+                await ref.set({ name: n, password: p, balance: 0, time: Date.now() });
+                alert("Identity Created.");
+            } else {
+                if(d.data().password !== p) return alert("Wrong Password.");
+                if(d.data().banned) return showLock("BANNED", "Your account is restricted.");
+            }
+            localStorage.setItem('mc_user', n);
+            enterApp(n);
         }
 
-        function enter() {
-            const n = localStorage.getItem('mc_user');
-            document.getElementById('auth-ui').style.display = 'none';
+        function enterApp(n) {
+            document.getElementById('auth-ui').classList.add('hidden');
             document.getElementById('app-ui').classList.remove('hidden');
             document.getElementById('bottom-nav').classList.remove('hidden');
-            document.getElementById('u-display').innerText = "@" + n;
             sync(n);
         }
 
         function sync(n) {
             db.collection("users").doc(n).onSnapshot(d => {
                 user = d.data();
-                document.getElementById('v-bal').innerText = "₨ " + (user.balance||0).toLocaleString();
-                document.getElementById('top-bal').innerText = "₨ " + (user.balance||0).toLocaleString();
+                const bal = (user.balance || 0).toLocaleString();
+                document.getElementById('v-bal').innerText = "₨ " + bal;
+                document.getElementById('top-bal').innerText = "₨ " + bal;
             });
-            syncPlans(); syncChat(n);
         }
 
-        // IMAGE HANDLER
-        function handleImg(input, lbl) {
-            const reader = new FileReader();
-            reader.onloadend = () => { tempImg = reader.result; document.getElementById(lbl).innerText = "✅ IMAGE READY"; };
-            if(input.files[0]) reader.readAsDataURL(input.files[0]);
-        }
-
-        // USER ACTIONS
-        function setPay(n, num) {
-            document.getElementById('pay-box').classList.remove('hidden');
-            document.getElementById('pay-name').innerText = n;
-            document.getElementById('pay-num').innerText = num;
+        // --- DEPOSIT WITH PROOF ---
+        function previewImg(i) {
+            if (i.files && i.files[0]) {
+                const r = new FileReader();
+                r.onload = e => {
+                    document.getElementById('img-preview').src = e.target.result;
+                    document.getElementById('img-preview').classList.remove('hidden');
+                    document.getElementById('file-label').innerText = "Selected";
+                };
+                r.readAsDataURL(i.files[0]);
+            }
         }
 
         async function submitDep() {
-            const a = document.getElementById('dep-amt').value; const t = document.getElementById('dep-tid').value;
-            if(!a || !t || !tempImg) return alert("Please fill all details, sweetie!");
-            await db.collection("requests").add({ user: user.name, type: 'deposit', amount: parseInt(a), tid: t, img: tempImg, status: 'pending', time: Date.now() });
-            alert("Deposit broadcasted to Admin!"); location.reload();
+            const a = parseInt(document.getElementById('dep-amt').value);
+            const t = document.getElementById('dep-tid').value;
+            const f = document.getElementById('dep-file').files[0];
+            if(!a || a < 200) return alert("Minimum deposit is ₨ 200.");
+            if(!t || !f) return alert("Fill all details and upload proof.");
+            
+            const r = new FileReader();
+            r.readAsDataURL(f);
+            r.onload = async () => {
+                await db.collection("requests").add({ user: user.name, amount: a, tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() });
+                alert("Submitted."); location.reload();
+            };
         }
 
+        // --- WITHDRAW WITH TAX ---
+        function selBank(b) { selectedBank = b; document.querySelectorAll('.bank-card').forEach(c=>c.classList.remove('border-blue-600','bg-blue-600/5')); document.getElementById('b-'+b).classList.add('border-blue-600','bg-blue-600/5'); }
         async function submitWith() {
-            const a = document.getElementById('w-amt').value; const d = document.getElementById('w-acc').value;
-            if(!a || a > user.balance) return alert("Insufficient Balance!");
-            await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-a) });
-            await db.collection("requests").add({ user: user.name, type: 'withdrawal', amount: parseInt(a), details: d, status: 'pending', time: Date.now() });
-            alert("Withdrawal request sent!");
+            const a = parseInt(document.getElementById('w-amt').value);
+            const ac = document.getElementById('w-acc').value;
+            const nm = document.getElementById('w-name').value;
+            if(!a || a < 100) return alert("Minimum withdrawal is ₨ 100.");
+            if(!ac || !nm || !selectedBank) return alert("Fill details.");
+            if(a > user.balance) return alert("Low Balance.");
+
+            const tax = a * 0.10;
+            const net = a - tax;
+
+            if(confirm(`Withdraw ₨ ${a}?\nTax (10%): ₨ ${tax}\nPayable: ₨ ${net}`)) {
+                await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-a) });
+                await db.collection("requests").add({ user: user.name, amount: a, tax: tax, receiveAmount: net, method: selectedBank, account: ac, holder: nm, type: "withdrawal", status: "pending", time: Date.now() });
+                alert("Requested."); location.reload();
+            }
         }
 
-        // CHAT LOGIC
-        function syncChat(n) {
-            db.collection("chat").where("user", "==", n).orderBy("time", "asc").onSnapshot(s => {
-                const disp = document.getElementById('chat-display'); disp.innerHTML = '';
-                s.forEach(doc => { const m = doc.data(); disp.innerHTML += `<div class="p-3 rounded-2xl ${m.sender==='admin'?'bg-blue-600/20 text-blue-400 self-start':'bg-white/5 self-end'}">${m.msg}</div>`; });
-                disp.scrollTop = disp.scrollHeight;
-            });
-        }
-        async function sendChat() {
-            const m = document.getElementById('chat-msg').value; if(!m) return;
-            await db.collection("chat").add({ user: user.name, msg: m, sender: user.name, time: Date.now(), status: 'unread' });
-            document.getElementById('chat-msg').value = '';
-        }
-
-        // ADMIN GOD PANEL
-        function adminTap() { tap++; if(tap>=5) { if(prompt("GOD KEY:")==="mint786") { document.getElementById('admin-ui').classList.remove('hidden'); syncAdm(); } tap=0; } }
+        // --- ADMIN SYNC (TAX DISPLAYED) ---
+        function adminTap() { tapCount++; if(tapCount >= 5) { if(prompt("Security Key:")==="mint786") { document.getElementById('admin-ui').classList.remove('hidden'); syncAdm(); } tapCount=0; } }
         function closeAdmin() { document.getElementById('admin-ui').classList.add('hidden'); }
-        function admSection(id) { document.querySelectorAll('.adm-tab').forEach(t => t.classList.add('hidden')); document.getElementById('adm-'+id).classList.remove('hidden'); }
-
-        function syncAdm() {
-            // USERS CARDS
-            db.collection("users").onSnapshot(s => {
-                const l = document.getElementById('adm-user-list'); l.innerHTML = '';
-                s.forEach(d => { const u = d.data();
-                    l.innerHTML += `<div class="admin-card flex justify-between items-center">
-                        <div><p class="font-black text-xs">@${u.name}</p><p class="text-blue-500 font-bold text-[10px]">₨ ${u.balance}</p></div>
-                        <div class="flex gap-2"><input id="b-${u.name}" placeholder="Bonus" class="!w-16 !p-2 !text-[10px] glass"><button onclick="giveBonus('${u.name}')" class="bg-green-600 px-3 py-2 rounded-xl text-[9px] font-black uppercase">Add</button></div>
-                    </div>`;
-                });
-            });
-
-            // REQUESTS CARDS
+        async function syncAdm() {
             db.collection("requests").where("status", "==", "pending").onSnapshot(s => {
-                const q = document.getElementById('adm-req-list'); q.innerHTML = '';
-                s.forEach(d => { const r = d.data();
-                    q.innerHTML += `<div class="admin-card border-l-4 border-yellow-500">
-                        <div class="flex justify-between mb-2 text-[10px] font-black uppercase"><span>@${r.user}</span><span class="text-yellow-500">${r.type}</span></div>
-                        <h4 class="text-xl font-black italic">₨ ${r.amount}</h4>
-                        <div class="mt-2 space-y-1">${r.tid ? `<p class="text-[9px] opacity-40">TID: ${r.tid}</p>` : `<p class="text-[9px] opacity-40">${r.details}</p>`}</div>
-                        <div class="flex gap-2 mt-4">
-                            ${r.img ? `<button onclick="window.open('${r.img}')" class="flex-1 bg-white/5 p-3 rounded-xl text-[9px] font-black uppercase">View Photo</button>` : ''}
-                            <button onclick="appv('${d.id}','${r.user}',${r.amount},'${r.type}')" class="flex-1 bg-blue-600 p-3 rounded-xl text-[9px] font-black uppercase">Approve</button>
+                const rlist = document.getElementById('adm-requests-list'); rlist.innerHTML = '';
+                s.forEach(doc => {
+                    const r = doc.data();
+                    let info = r.type === 'withdrawal' ? `Payable: ₨ ${r.receiveAmount} (Tax: ₨ ${r.tax})` : `Deposit: ₨ ${r.amount}`;
+                    rlist.innerHTML += `<div class="glass p-6 rounded-[2rem] border-l-4 border-blue-500">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            ${r.proof ? `<img src="${r.proof}" class="w-20 h-20 rounded-xl">` : ''}
+                            <div class="flex-1 text-[10px] uppercase font-bold">
+                                <p>${r.user} | ${r.type}</p><p class="text-green-500">${info}</p>
+                                <p>Method: ${r.method || 'N/A'} | Acc: ${r.account || 'N/A'}</p>
+                            </div>
+                            <button onclick="appvReq('${doc.id}','${r.user}', ${r.amount})" class="bg-blue-600 p-2 rounded-xl text-[8px]">APPROVE</button>
                         </div>
                     </div>`;
                 });
             });
+        }
+        async function appvReq(id, u, a) { await db.collection("users").doc(u).update({ balance: firebase.firestore.FieldValue.increment(a) }); await db.collection("requests").doc(id).update({ status: 'approved' }); }
 
-            // CHAT INBOX
-            db.collection("chat").where("status", "==", "unread").onSnapshot(s => {
-                const l = document.getElementById('adm-chat-list'); l.innerHTML = '';
-                s.forEach(d => { const m = d.data(); if(m.sender === 'admin') return;
-                    l.innerHTML += `<div class="admin-card border-l-4 border-purple-500"><p class="text-[11px] font-bold">@${m.user}: ${m.msg}</p><button onclick="replyChat('${m.user}','${d.id}')" class="mt-3 text-purple-400 text-[10px] font-black uppercase">REPLY USER</button></div>`;
-                });
-            });
-        }
+        function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.getElementById('p-'+p).classList.add('active-page'); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('nav-active','opacity-100')); document.getElementById('n-'+p).classList.add('nav-active'); }
+        function toggleTheme() { document.getElementById('main-html').classList.toggle('dark'); document.getElementById('main-html').classList.toggle('light'); }
+        function copyText(t) { navigator.clipboard.writeText(t); alert("Copied."); }
 
-        async function appv(id, u, a, t) { 
-            if(t === 'deposit' || t === 'profit') await db.collection("users").doc(u).update({ balance: firebase.firestore.FieldValue.increment(a) });
-            await db.collection("requests").doc(id).update({ status: 'approved' }); alert("Success!"); 
-        }
-        async function giveBonus(u) { const a = document.getElementById('b-'+u).value; if(!a) return; await db.collection("users").doc(u).update({ balance: firebase.firestore.FieldValue.increment(parseInt(a)) }); alert("Bonus Added!"); }
-        async function replyChat(u, id) { const r = prompt("Your Reply:"); if(!r) return; await db.collection("chat").add({ user: u, msg: r, sender: 'admin', time: Date.now() }); await db.collection("chat").doc(id).update({ status: 'read' }); }
-
-        // PLANS LOGIC
-        function syncPlans() {
-            db.collection("plans").orderBy("time", "desc").onSnapshot(s => {
-                const g = document.getElementById('plans-grid'); g.innerHTML = '';
-                s.forEach(doc => { const p = doc.data(); g.innerHTML += `<div class="glass rounded-[3.5rem] overflow-hidden border-b-4 border-blue-600 shadow-xl"><img src="${p.img}" class="w-full h-48 object-cover"><div class="p-8"><p class="text-[10px] opacity-40 uppercase font-black tracking-widest">${p.name}</p><h3 class="text-3xl font-black text-blue-500">₨ ${p.price}</h3><p class="text-blue-400 text-[10px] font-bold mt-1 uppercase italic">Profit: ${p.profit}% Every 24H</p><button onclick="buyNode('${p.name}',${p.price},${p.profit})" class="w-full mt-6 btn-prime p-5 text-[11px] uppercase italic tracking-widest">Initialise Node</button></div></div>`; });
-            });
-        }
-        async function buyNode(n, p, pr) {
-            if(user.balance < p) return alert("Sweetie, insufficient balance!");
-            const daily = (p * pr / 100);
-            await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-p) });
-            await db.collection("requests").add({ user: user.name, type: 'profit', amount: daily, details: 'Daily Profit Node: '+n, status: 'pending', time: Date.now() });
-            alert("Node Activated! Daily profit request transmitted.");
-        }
-        async function addPlan() {
-            const n = document.getElementById('adm-n-name').value; const p = document.getElementById('adm-n-price').value; const pr = document.getElementById('adm-n-profit').value;
-            if(!n || !p || !tempImg) return alert("Missing plan data!");
-            await db.collection("plans").add({ name:n, price:parseInt(p), profit:parseInt(pr), img:tempImg, time:Date.now() });
-            alert("Plan Broadcasted successfully!");
-        }
-
-        function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.getElementById('p-'+p).classList.add('active-page'); window.scrollTo(0,0); }
-        window.onload = () => { if(localStorage.getItem('mc_user')) enter(); }
+        window.onload = () => { if(localStorage.getItem('mc_user')) enterApp(localStorage.getItem('mc_user')); }
     </script>
 </body>
 </html>
