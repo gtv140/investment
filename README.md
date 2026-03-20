@@ -6,118 +6,84 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>MintCrest Gold | Shield v17.0</title>
+    <title>MintCrest Gold | Secure v18.0</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         :root { --bg: #010409; --card: #0d1117; --text: #f0f6fc; --border: #30363d; --accent: #3b82f6; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; }
         .glass { background: var(--card); border: 1px solid var(--border); backdrop-filter: blur(15px); }
-        .page { display: none; animation: fadeIn 0.3s ease-out; }
+        .page { display: none; animation: fadeIn 0.3s ease; }
         .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-        .btn-prime { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border-radius: 16px; font-weight: 800; border: none; cursor: pointer; transition: 0.3s; }
-        input, select { background: #161b22; border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 12px; width: 100%; outline: none; font-size: 12px; margin-bottom: 8px; }
-        .admin-section { background: rgba(37, 99, 235, 0.05); border: 1px solid rgba(37, 99, 235, 0.1); border-radius: 24px; padding: 16px; margin-bottom: 20px; }
-        .trust-badge { font-size: 7px; background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 2px 6px; border-radius: 4px; font-weight: 900; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .btn-prime { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border-radius: 16px; font-weight: 800; border: none; cursor: pointer; }
+        input { background: #161b22; border: 1px solid var(--border); color: var(--text); padding: 14px; border-radius: 12px; width: 100%; outline: none; font-size: 13px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <header id="main-header" class="hidden sticky top-0 z-[5000] bg-[var(--bg)]/80 backdrop-blur-md border-b border-[var(--border)] p-4 flex justify-between items-center">
         <div class="flex items-center gap-2">
-            <div onclick="adminTap()" class="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center font-black text-white italic shadow-lg">M</div>
-            <div><h1 class="text-[12px] font-black uppercase">MintCrest <span class="text-blue-500">Gold</span></h1><div class="flex gap-1 items-center"><span class="trust-badge"><i class="fa-solid fa-shield-check"></i> SECURED</span></div></div>
+            <div onclick="adminTap()" class="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center font-black text-white italic shadow-lg cursor-pointer">M</div>
+            <div><h1 class="text-[12px] font-black uppercase">MintCrest <span class="text-blue-500">Gold</span></h1><p id="display-user" class="text-[8px] font-bold text-blue-400 uppercase italic">@Verified</p></div>
         </div>
-        <div id="top-bal" class="text-[11px] font-black bg-blue-600/10 text-blue-500 px-4 py-1.5 rounded-full border border-blue-500/20 italic">₨ 0</div>
+        <div class="flex items-center gap-3">
+            <div id="top-bal" class="text-[10px] font-black bg-blue-600/10 text-blue-500 px-4 py-1.5 rounded-full border border-blue-500/20 italic">₨ 0</div>
+            <button onclick="logout()" class="w-8 h-8 rounded-full bg-red-600/10 text-red-500 border border-red-500/20 flex items-center justify-center"><i class="fa-solid fa-power-off text-xs"></i></button>
+        </div>
     </header>
 
     <main id="app-ui" class="hidden p-4 space-y-6">
         <div id="p-home" class="page active-page space-y-6">
             <div class="p-8 rounded-[3rem] bg-gradient-to-br from-blue-700 to-indigo-950 text-white shadow-2xl relative">
-                <p class="text-[10px] font-black uppercase opacity-60 italic">Your Balance</p>
+                <p class="text-[10px] font-black uppercase opacity-60 italic">Current Wealth</p>
                 <h2 class="text-5xl font-black tracking-tighter my-2" id="v-bal">₨ 0.00</h2>
                 <div class="mt-6 flex gap-3">
                    <button onclick="changePage('wallet')" class="flex-1 bg-white/10 p-3 rounded-xl text-[9px] font-black uppercase italic">Deposit</button>
                    <button onclick="changePage('withdraw')" class="flex-1 bg-blue-400/20 p-3 rounded-xl text-[9px] font-black uppercase italic">Withdraw</button>
                 </div>
             </div>
-            <h3 class="text-[11px] font-black uppercase text-blue-500 px-2 italic flex justify-between">Available Nodes <span class="text-[8px] opacity-40">Min Deposit: ₨ 200</span></h3>
             <div id="plans-grid" class="grid grid-cols-1 gap-4 pb-20"></div>
         </div>
 
-        <div id="p-wallet" class="page space-y-6">
-            <div class="glass p-8 rounded-[3rem] space-y-4 text-center">
-                <i class="fa-solid fa-building-columns text-3xl text-blue-500 mb-2"></i>
-                <h3 class="font-black uppercase text-blue-500">Add Funds</h3>
-                <p class="text-[9px] opacity-50 italic">Minimum deposit amount is ₨ 200</p>
-                <div id="qr-area" class="hidden p-4 bg-white rounded-2xl mx-auto w-fit"><img id="qr-img" class="w-40 h-40"></div>
-                <div class="flex gap-2">
-                    <button onclick="showQR('Jazz')" class="flex-1 glass p-3 rounded-xl text-[10px] font-black italic">JAZZCASH</button>
-                    <button onclick="showQR('Easy')" class="flex-1 glass p-3 rounded-xl text-[10px] font-black italic">EASYPAISA</button>
-                </div>
-                <input id="d-amt" type="number" placeholder="Amount (Min 200)">
-                <input id="d-tid" placeholder="Transaction ID (TID)">
-                <button onclick="sendDeposit()" class="w-full p-4 btn-prime text-[11px] font-black uppercase italic">Submit Proof</button>
-            </div>
-        </div>
-
-        <div id="p-withdraw" class="page space-y-6">
-            <div class="glass p-8 rounded-[3rem] space-y-4 text-center">
-                <i class="fa-solid fa-hand-holding-dollar text-3xl text-green-500 mb-2"></i>
-                <h3 class="font-black uppercase text-blue-500">Payout Request</h3>
-                <p class="text-[9px] opacity-50 italic">Minimum withdrawal amount is ₨ 100</p>
-                <input id="w-amt" type="number" placeholder="Amount (Min 100)">
-                <input id="w-acc" placeholder="Account Number">
-                <select id="w-method"><option value="JazzCash">JazzCash</option><option value="EasyPaisa">EasyPaisa</option></select>
-                <button onclick="sendWithdraw()" class="w-full p-4 btn-prime text-[11px] font-black uppercase italic">Confirm Payout</button>
-            </div>
-        </div>
-
         <div id="p-history" class="page space-y-4 pb-20">
-            <h3 class="text-center font-black uppercase text-blue-500 italic">Financial Statement</h3>
+            <h3 class="text-center font-black uppercase text-blue-500 italic"><i class="fa-solid fa-receipt mr-2"></i>History Logs</h3>
             <div id="user-logs-list" class="space-y-3"></div>
         </div>
+
+        <div id="p-wallet" class="page"><div class="glass p-8 rounded-[3rem] space-y-4 text-center">
+            <h3 class="font-black uppercase text-blue-500 italic">Add Funds (Min 200)</h3>
+            <div id="qr-area" class="hidden p-4 bg-white rounded-2xl mx-auto w-fit mb-4"><img id="qr-img" class="w-40 h-40"></div>
+            <div class="flex gap-2 mb-4"><button onclick="showQR('Jazz')" class="flex-1 glass p-3 rounded-xl text-[10px] font-black">JAZZCASH</button><button onclick="showQR('Easy')" class="flex-1 glass p-3 rounded-xl text-[10px] font-black">EASYPAISA</button></div>
+            <input id="d-amt" type="number" placeholder="Amount (Min 200)"><input id="d-tid" placeholder="TID Number"><button onclick="sendDeposit()" class="w-full p-4 btn-prime text-[11px] font-black uppercase italic">Deposit Now</button>
+        </div></div>
+
+        <div id="p-withdraw" class="page"><div class="glass p-8 rounded-[3rem] space-y-4 text-center">
+            <h3 class="font-black uppercase text-blue-500 italic">Payout (Min 100)</h3>
+            <input id="w-amt" type="number" placeholder="Amount"><input id="w-acc" placeholder="Account No"><select id="w-method"><option value="JazzCash">JazzCash</option><option value="EasyPaisa">EasyPaisa</option></select><button onclick="sendWithdraw()" class="w-full p-4 btn-prime text-[11px] font-black uppercase italic">Withdraw Now</button>
+        </div></div>
     </main>
 
     <div id="admin-ui" class="fixed inset-0 bg-[#010409] z-[100000] hidden overflow-y-auto p-6 pb-32">
-        <div class="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
-            <h2 class="text-xl font-black text-blue-500 uppercase italic">Control Panel</h2>
-            <button onclick="closeAdmin()" class="text-red-500 text-[10px] font-black uppercase">Exit</button>
-        </div>
-
-        <div class="admin-section">
-            <h4 class="text-[10px] font-black uppercase text-blue-400 mb-4">Live User Directory</h4>
-            <div id="adm-user-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
-        </div>
-
-        <div class="admin-section">
-            <h4 class="text-[10px] font-black uppercase text-green-400 mb-4">Edit Balance</h4>
-            <input id="adm-un" placeholder="User Name">
-            <input id="adm-ub" type="number" placeholder="New Balance">
-            <button onclick="updateUserBal()" class="w-full p-3 btn-prime text-[9px] uppercase mt-2">Update</button>
-        </div>
-
-        <div class="admin-section">
-            <h4 class="text-[10px] font-black uppercase text-purple-400 mb-4">System Nodes</h4>
-            <input id="p-name" placeholder="Node Name">
-            <div class="flex gap-2"><input id="p-price" type="number" placeholder="Price"><input id="p-profit" type="number" placeholder="Profit %"></div>
-            <button onclick="addPlan()" class="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-[9px] uppercase">Add Plan</button>
-        </div>
-
-        <div id="adm-req-list" class="space-y-4 mt-6"></div>
+        <div class="flex justify-between items-center mb-8"><h2 class="text-xl font-black text-blue-500 uppercase italic">Admin Console</h2><button onclick="closeAdmin()" class="text-red-500 font-black">EXIT</button></div>
+        <div class="glass p-4 rounded-2xl mb-6"><h4 class="text-[10px] font-black text-blue-400 mb-4 uppercase">Users Data</h4><div id="adm-user-list" class="space-y-2"></div></div>
+        <div id="adm-req-list" class="space-y-4"></div>
     </div>
 
-    <nav id="bottom-nav" class="hidden fixed bottom-0 w-full glass border-t border-[var(--border)] p-5 flex justify-around items-center rounded-t-[3rem] z-[4000]">
+    <section id="auth-ui" class="fixed inset-0 z-[20000] bg-[var(--bg)] flex flex-col items-center justify-center p-8">
+        <div class="w-20 h-20 bg-blue-600 rounded-[2rem] mb-10 flex items-center justify-center text-5xl font-black italic text-white shadow-2xl">M</div>
+        <div class="w-full max-w-[320px] space-y-4">
+            <h2 class="text-center font-black uppercase text-blue-500 italic tracking-widest text-lg">MintCrest Access</h2>
+            <input id="l-name" placeholder="YOUR USERNAME" class="text-center font-black uppercase italic">
+            <button onclick="login()" class="w-full p-4 btn-prime uppercase text-[12px] font-black tracking-widest shadow-xl shadow-blue-600/20">Secure Login</button>
+            <p class="text-[8px] text-center opacity-40 uppercase font-black">Prime Solutions © 2026 - Secured Node</p>
+        </div>
+    </section>
+
+    <nav id="bottom-nav" class="hidden fixed bottom-0 w-full glass border-t border-[var(--border)] p-5 flex justify-around items-center rounded-t-[3.5rem] z-[4000]">
         <button onclick="changePage('home')" class="flex flex-col items-center gap-1"><i class="fa-solid fa-layer-group"></i><span class="text-[7px] font-black uppercase">Nodes</span></button>
         <button onclick="changePage('wallet')" class="flex flex-col items-center gap-1"><i class="fa-solid fa-plus-circle"></i><span class="text-[7px] font-black uppercase">Add</span></button>
         <button onclick="changePage('history')" class="flex flex-col items-center gap-1"><i class="fa-solid fa-clock-rotate-left"></i><span class="text-[7px] font-black uppercase">Logs</span></button>
     </nav>
-
-    <section id="auth-ui" class="fixed inset-0 z-[20000] bg-[var(--bg)] flex flex-col items-center justify-center p-8">
-        <div class="w-20 h-20 bg-blue-600 rounded-[2rem] mb-10 flex items-center justify-center text-5xl font-black italic text-white shadow-2xl">M</div>
-        <input id="l-name" placeholder="CHOOSE USERNAME" class="max-w-[300px] text-center font-black uppercase">
-        <button onclick="login()" class="w-full max-w-[300px] p-4 btn-prime uppercase text-[11px]">Start Mining</button>
-    </section>
 
     <script>
         const firebaseConfig = { 
@@ -132,9 +98,21 @@
         const db = firebase.firestore();
         let user = null; let tapCount = 0; let qrLinks = { jazz: '', easy: '' };
 
+        // LOGIN SYSTEM
         function login() {
             const n = document.getElementById('l-name').value.trim().toLowerCase();
-            if(n) { localStorage.setItem('mc_user', n); enterApp(n); }
+            if(n && n.length > 2) {
+                localStorage.setItem('mc_active_user', n);
+                enterApp(n);
+            } else { alert("Please enter a valid username sweetie! 😘"); }
+        }
+
+        // LOGOUT SYSTEM
+        function logout() {
+            if(confirm("Do you want to logout sweetie? 😘")) {
+                localStorage.removeItem('mc_active_user');
+                location.reload(); // Pura app refresh ho kar login screen par aa jayega
+            }
         }
 
         async function enterApp(n) {
@@ -156,45 +134,42 @@
             syncLogs();
         }
 
-        // --- INVESTMENT LOGIC (NEW) ---
+        // AUTO-LOGIN CHECK
+        window.onload = () => {
+            const savedUser = localStorage.getItem('mc_active_user');
+            if(savedUser) { enterApp(savedUser); }
+        }
+
+        // PLAN & DEPOSIT LOGIC
         async function buyPlan(id, price, name) {
-            if(user.balance < price) {
-                alert("Insufficient Balance sweetie! Please deposit at least ₨ " + (price - user.balance) + " more. 😘");
-                return changePage('wallet');
-            }
-            if(confirm(`Activate ${name} for ₨ ${price}?`)) {
+            if(user.balance < price) { alert("Insufficient Balance! 😘"); return changePage('wallet'); }
+            if(confirm(`Activate ${name}?`)) {
                 await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-price) });
                 await db.collection("logs").add({ user: user.name, msg: `Node Active: ${name}`, status: 'approved', time: Date.now() });
-                alert("Node Successfully Activated! 🚀");
+                alert("Activated! 🚀");
             }
         }
 
         async function sendDeposit() {
-            const a = parseInt(document.getElementById('d-amt').value);
-            const t = document.getElementById('d-tid').value;
-            if(!a || a < 200) return alert("Minimum deposit is ₨ 200!");
-            if(!t) return alert("Enter Transaction ID!");
-            
+            const a = parseInt(document.getElementById('d-amt').value); const t = document.getElementById('d-tid').value;
+            if(!a || a < 200 || !t) return alert("Fill details (Min 200)!");
             const id = Date.now().toString();
             await db.collection("requests").doc(id).set({ user: user.name, amount: a, tid: t, status: 'pending', type: 'Deposit', time: Date.now() });
             await db.collection("logs").doc(id).set({ user: user.name, msg: `Deposit: ₨ ${a}`, status: 'pending', time: Date.now() });
-            alert("Verification proof submitted! 😘");
+            alert("Sent for approval!");
         }
 
         async function sendWithdraw() {
-            const a = parseInt(document.getElementById('w-amt').value);
-            const acc = document.getElementById('w-acc').value;
-            if(!a || a < 100) return alert("Minimum withdrawal is ₨ 100!");
-            if(user.balance < a) return alert("Insufficient Balance!");
-            
+            const a = parseInt(document.getElementById('w-amt').value); const acc = document.getElementById('w-acc').value;
+            if(!a || a < 100 || user.balance < a) return alert("Invalid amount/balance!");
             const id = Date.now().toString();
             await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-a) });
             await db.collection("requests").doc(id).set({ user: user.name, amount: a, acc: acc, status: 'pending', type: 'Withdraw', time: Date.now() });
             await db.collection("logs").doc(id).set({ user: user.name, msg: `Withdraw: ₨ ${a}`, status: 'pending', time: Date.now() });
-            alert("Withdrawal request sent!");
+            alert("Withdrawal requested!");
         }
 
-        // --- ADMIN & SYNC ---
+        // ADMIN & UI
         function adminTap() { tapCount++; if(tapCount >= 5) { if(prompt("Goddess Key:")==="mint786") { document.getElementById('admin-ui').classList.remove('hidden'); syncAdm(); } tapCount=0; } }
         function closeAdmin() { document.getElementById('admin-ui').classList.add('hidden'); }
         function showQR(t) { document.getElementById('qr-area').classList.remove('hidden'); document.getElementById('qr-img').src = (t==='Jazz'?qrLinks.jazz:qrLinks.easy); }
@@ -205,8 +180,8 @@
                 s.forEach(doc => {
                     const p = doc.data();
                     g.innerHTML += `<div class="glass p-6 rounded-[2.5rem] flex justify-between items-center border-l-4 border-blue-500">
-                        <div><p class="text-[9px] font-black opacity-40 uppercase">${p.name}</p><h4 class="text-xl font-black italic">₨ ${p.price}</h4><p class="text-[8px] font-bold text-blue-400"><i class="fa-solid fa-circle-check"></i> ${p.profit}% Daily Profit</p></div>
-                        <button onclick="buyPlan('${doc.id}', ${p.price}, '${p.name}')" class="btn-prime px-6 py-3 text-[10px] uppercase font-black italic">Activate</button>
+                        <div><p class="text-[9px] font-black opacity-40 uppercase">${p.name}</p><h4 class="text-xl font-black italic">₨ ${p.price}</h4><p class="text-[8px] font-bold text-blue-400">${p.profit}% Profit</p></div>
+                        <button onclick="buyPlan('${doc.id}', ${p.price}, '${p.name}')" class="btn-prime px-6 py-3 text-[10px] font-black uppercase italic">Buy</button>
                     </div>`;
                 });
             });
@@ -215,13 +190,17 @@
         async function syncAdm() {
             db.collection("users").onSnapshot(s => {
                 const l = document.getElementById('adm-user-list'); l.innerHTML = '';
-                s.forEach(doc => { l.innerHTML += `<div class="flex justify-between items-center p-2 border-b border-white/5"><span class="text-[10px] uppercase font-bold">${doc.data().name}</span><span class="text-[9px] text-blue-400">₨ ${doc.data().balance}</span></div>`; });
+                s.forEach(doc => { l.innerHTML += `<div class="flex justify-between p-2 border-b border-white/5 uppercase font-bold text-[9px] text-white"><span>${doc.data().name}</span><span class="text-blue-500">₨ ${doc.data().balance}</span></div>`; });
             });
             db.collection("requests").where("status", "==", "pending").onSnapshot(s => {
                 const list = document.getElementById('adm-req-list'); list.innerHTML = '';
                 s.forEach(doc => {
                     const r = doc.data();
-                    list.innerHTML += `<div class="glass p-4 rounded-2xl border-l-4 border-yellow-500"><p class="text-[9px] font-black uppercase text-blue-400">${r.user} | ${r.type}</p><h4 class="text-xl font-black">₨ ${r.amount}</h4><p class="text-[8px] opacity-40 italic">ID/Acc: ${r.tid || r.acc}</p><div class="flex gap-2 mt-3"><button onclick="approveReq('${doc.id}', '${r.user}', ${r.amount}, '${r.type}')" class="flex-1 bg-blue-600 p-2 rounded-xl text-[9px] font-black uppercase">Approve</button></div></div>`;
+                    list.innerHTML += `<div class="glass p-4 rounded-2xl border-l-4 border-yellow-500 mb-2">
+                        <p class="text-[9px] font-black uppercase text-blue-400">${r.user} | ${r.type}</p>
+                        <h4 class="text-xl font-black">₨ ${r.amount}</h4>
+                        <div class="flex gap-2 mt-3"><button onclick="approveReq('${doc.id}', '${r.user}', ${r.amount}, '${r.type}')" class="flex-1 bg-blue-600 p-2 rounded-xl text-[9px] font-black uppercase">Approve</button></div>
+                    </div>`;
                 });
             });
         }
@@ -244,7 +223,6 @@
         }
 
         function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.getElementById('p-'+p).classList.add('active-page'); }
-        window.onload = () => { if(localStorage.getItem('mc_user')) enterApp(localStorage.getItem('mc_user')); }
     </script>
 </body>
 </html>
