@@ -6,7 +6,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>MintCrest Gold | v26.0 Pro</title>
+    <title>MintCrest Gold | v27.0 Ultra Admin</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         :root { --bg: #010409; --card: #0d1117; --text: #f0f6fc; --border: #30363d; --accent: #3b82f6; }
@@ -17,127 +17,155 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .btn-prime { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border-radius: 18px; font-weight: 800; border: none; cursor: pointer; transition: 0.3s; }
         input { background: #161b22; border: 1px solid var(--border); color: var(--text); padding: 14px; border-radius: 14px; width: 100%; outline: none; font-size: 13px; margin-bottom: 10px; }
+        .admin-card { background: rgba(37, 99, 235, 0.05); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 20px; margin-bottom: 15px; }
         .full-overlay { position: fixed; inset: 0; background: #000; z-index: 999999; display: none; flex-direction: column; items: center; justify-content: center; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
 
     <div id="maint-screen" class="full-overlay bg-slate-950">
-        <i class="fa-solid fa-clock-rotate-left text-blue-500 text-6xl mb-4 animate-spin-slow"></i>
-        <h1 class="text-2xl font-black uppercase text-white">Maintenance</h1>
-        <p class="opacity-50 text-[10px] mt-2 italic text-blue-300">Wait for us, sweetie! 😘</p>
+        <i class="fa-solid fa-bolt-lightning text-yellow-500 text-6xl mb-4 animate-pulse"></i>
+        <h1 class="text-2xl font-black uppercase">System Optimization</h1>
+        <p class="opacity-50 text-[10px] mt-2 italic">Back in a moment, sweetie! 😘</p>
     </div>
 
     <header id="main-header" class="hidden sticky top-0 z-[5000] bg-[var(--bg)]/90 backdrop-blur-xl border-b border-[var(--border)] p-4 flex justify-between items-center">
         <div class="flex items-center gap-3">
             <div onclick="adminTap()" class="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center font-black text-white italic shadow-lg">M</div>
             <div>
-                <h1 class="text-[12px] font-black uppercase">MintCrest <span class="text-blue-500">Gold</span></h1>
-                <p id="display-user" class="text-[8px] font-bold text-blue-400 italic">@USER</p>
+                <h1 class="text-[12px] font-black uppercase italic">MintCrest <span class="text-blue-500">Gold</span></h1>
+                <p id="display-user" class="text-[8px] font-bold text-blue-400">@USER</p>
             </div>
         </div>
-        <div id="top-bal" class="text-[10px] font-black bg-blue-600/10 text-blue-500 px-4 py-2 rounded-full border border-blue-500/20">₨ 0</div>
+        <div id="top-bal" class="text-[10px] font-black bg-blue-600/10 text-blue-500 px-4 py-2 rounded-full border border-blue-500/20 italic">₨ 0</div>
     </header>
 
     <main id="app-ui" class="hidden p-4 space-y-6">
         
         <div id="p-home" class="page active-page space-y-6">
-            <div id="global-notice-bar" class="hidden glass p-4 rounded-[2rem] text-[10px] font-black uppercase text-blue-400 border-blue-500/20 text-center"><i class="fa-solid fa-star mr-2"></i> <span id="ntc-txt"></span></div>
-            
             <div class="p-10 rounded-[3.5rem] bg-gradient-to-br from-blue-700 to-indigo-950 text-white shadow-2xl relative overflow-hidden text-center">
                 <p class="text-[10px] font-black uppercase opacity-60">Master Balance</p>
                 <h2 class="text-5xl font-black tracking-tighter my-2" id="v-bal">₨ 0.00</h2>
                 <div class="mt-8 flex gap-3">
-                   <button onclick="changePage('wallet')" class="flex-1 bg-white/10 p-4 rounded-2xl text-[10px] font-black uppercase">Add Cash</button>
-                   <button onclick="changePage('withdraw')" class="flex-1 bg-blue-400/20 p-4 rounded-2xl text-[10px] font-black uppercase">Withdraw</button>
+                   <button onclick="changePage('wallet')" class="flex-1 bg-white/10 p-4 rounded-2xl text-[10px] font-black uppercase border border-white/5">Deposit</button>
+                   <button onclick="changePage('withdraw')" class="flex-1 bg-blue-400/20 p-4 rounded-2xl text-[10px] font-black uppercase border border-blue-500/10">Withdraw</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <a href="https://chat.whatsapp.com/YOUR_LINK_HERE" class="glass p-5 rounded-[2.5rem] flex flex-col items-center gap-2 text-green-500">
-                    <i class="fa-brands fa-whatsapp text-2xl"></i>
-                    <span class="text-[9px] font-black uppercase">Join Group</span>
+                <a href="https://chat.whatsapp.com/YOUR_LINK" class="glass p-6 rounded-[2.5rem] flex flex-col items-center gap-2 text-green-500">
+                    <i class="fa-brands fa-whatsapp text-3xl"></i>
+                    <span class="text-[9px] font-black uppercase">Community</span>
                 </a>
-                <button onclick="changePage('about')" class="glass p-5 rounded-[2.5rem] flex flex-col items-center gap-2 text-blue-400">
-                    <i class="fa-solid fa-building-shield text-2xl"></i>
-                    <span class="text-[9px] font-black uppercase">Company Info</span>
+                <button onclick="changePage('about')" class="glass p-6 rounded-[2.5rem] flex flex-col items-center gap-2 text-blue-400">
+                    <i class="fa-solid fa-shield-halved text-3xl"></i>
+                    <span class="text-[9px] font-black uppercase">Security</span>
                 </button>
             </div>
         </div>
 
         <div id="p-nodes" class="page space-y-4 pb-24">
-            <div class="text-center mb-6">
-                <h3 class="text-xl font-black text-blue-500 uppercase italic">Investment Nodes</h3>
-                <p class="text-[9px] opacity-40 uppercase font-bold tracking-widest">Select your profit engine</p>
+            <div class="text-center mb-6 py-4">
+                <h3 class="text-2xl font-black text-white uppercase italic tracking-tighter">Profit Nodes</h3>
+                <p class="text-[9px] text-blue-500 font-black uppercase tracking-[0.3em]">Select Tier</p>
             </div>
             <div id="plans-grid" class="grid grid-cols-1 gap-4"></div>
         </div>
 
-        <div id="p-history" class="page space-y-4 pb-24 text-center">
-            <h3 class="font-black uppercase text-blue-500">Transaction History</h3>
-            <div id="user-logs-list" class="space-y-3"></div>
-        </div>
-
-        <div id="p-about" class="page space-y-6 pb-24">
-            <div class="glass p-8 rounded-[3.5rem] space-y-4 text-[12px] leading-relaxed">
-                <h3 class="text-xl font-black text-blue-500 uppercase italic mb-4">MintCrest Details</h3>
-                <p><b class="text-blue-400">Company:</b> Prime Solutions Digital Assets Management.</p>
-                <p><b class="text-blue-400">Contact Email:</b> webhub262@gmail.com</p>
-                <hr class="border-white/5">
-                <p><b class="text-blue-400">Privacy Policy:</b> We encrypt all user data using Firebase security protocols. Your financial details are kept confidential and withdrawals are processed within 24 hours.</p>
-                <p><b class="text-blue-400">Risk Warning:</b> Crypto and node investments carry risks. Only invest what you can afford to manage. 😘</p>
-            </div>
-        </div>
-
         <div id="p-wallet" class="page"><div class="glass p-8 rounded-[3.5rem] space-y-6 text-center">
-            <h3 class="font-black uppercase text-blue-500">Deposit</h3>
-            <div id="qr-area" class="hidden p-4 bg-white rounded-3xl mx-auto w-fit mb-4"><img id="qr-img" class="w-44 h-44"></div>
-            <div class="flex gap-2"><button onclick="showQR('Jazz')" class="flex-1 glass p-4 rounded-2xl text-[10px] font-black uppercase">JazzCash</button><button onclick="showQR('Easy')" class="flex-1 glass p-4 rounded-2xl text-[10px] font-black uppercase">EasyPaisa</button></div>
-            <div class="p-3 bg-blue-600/5 rounded-xl border border-blue-500/10"><h4 id="pay-num" class="text-lg font-black text-blue-400">---</h4></div>
-            <input id="d-amt" type="number" placeholder="Amount (Min 200)"><input id="d-tid" placeholder="Transaction ID"><button onclick="sendDeposit()" class="w-full p-4 btn-prime text-[11px] font-black uppercase italic">Submit Deposit</button>
+            <h3 class="font-black uppercase text-blue-500 italic">Funding Hub</h3>
+            <div class="space-y-3">
+                <div class="p-4 bg-white/5 border border-white/5 rounded-2xl">
+                    <p class="text-[8px] uppercase opacity-40 mb-1">JazzCash Number</p>
+                    <h4 id="j-num-disp" class="text-xl font-black text-white italic">03XX-XXXXXXX</h4>
+                </div>
+                <div class="p-4 bg-white/5 border border-white/5 rounded-2xl">
+                    <p class="text-[8px] uppercase opacity-40 mb-1">EasyPaisa Number</p>
+                    <h4 id="e-num-disp" class="text-xl font-black text-white italic">03XX-XXXXXXX</h4>
+                </div>
+            </div>
+            <hr class="border-white/5">
+            <input id="d-amt" type="number" placeholder="Deposit Amount">
+            <input id="d-tid" placeholder="Transaction ID (TID)">
+            <div class="text-left">
+                <label class="text-[10px] font-black uppercase ml-2 opacity-50">Upload Screenshot Proof:</label>
+                <input id="d-proof" type="file" accept="image/*" class="mt-2 text-[10px] file:bg-blue-600 file:border-none file:text-white file:rounded-lg file:px-2 cursor-pointer">
+            </div>
+            <button onclick="sendDeposit()" class="w-full p-5 btn-prime text-[11px] font-black uppercase italic shadow-xl">Confirm Deposit</button>
         </div></div>
 
         <div id="p-withdraw" class="page"><div class="glass p-8 rounded-[3.5rem] space-y-6 text-center">
-            <h3 class="font-black uppercase text-blue-500">Withdraw</h3>
-            <input id="w-amt" type="number" placeholder="Min 100"><input id="w-acc" placeholder="Account Number"><button onclick="sendWithdraw()" class="w-full p-4 btn-prime text-[11px] font-black uppercase italic">Request Funds</button>
+            <h3 class="font-black uppercase text-blue-500 italic">Withdrawal</h3>
+            <input id="w-amt" type="number" placeholder="Min 100"><input id="w-acc" placeholder="Account Number"><button onclick="sendWithdraw()" class="w-full p-4 btn-prime text-[11px] font-black uppercase">Request Payout</button>
         </div></div>
 
+        <div id="p-about" class="page space-y-4"><div class="glass p-8 rounded-[3.5rem] italic text-[12px] opacity-70">
+            <h3 class="font-black text-blue-500 uppercase not-italic">Company Profile</h3>
+            <p>Email: webhub262@gmail.com</p>
+            <p>Powered by Prime Solutions Digital.</p>
+        </div></div>
     </main>
 
-    <div id="admin-ui" class="fixed inset-0 bg-[#010409] z-[100000] hidden overflow-y-auto p-6 pb-32">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-black text-blue-500 uppercase italic">Admin Console</h2>
-            <button onclick="closeAdmin()" class="bg-red-600 text-white px-4 py-2 rounded-xl text-[10px] font-black">CLOSE</button>
+    <div id="admin-ui" class="fixed inset-0 bg-[#010409] z-[100000] hidden overflow-y-auto p-6 pb-40">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-2xl font-black text-blue-500 italic uppercase leading-none">Command Hub</h2>
+                <p class="text-[8px] font-bold text-white/30 uppercase mt-1">Goddess Engine v27.0</p>
+            </div>
+            <button onclick="closeAdmin()" class="w-12 h-12 rounded-2xl bg-red-600/20 text-red-500 border border-red-500/20 flex items-center justify-center font-black">X</button>
         </div>
-        <div class="admin-section">
-            <h4 class="text-[10px] font-black uppercase text-red-500 mb-4">Maintenance</h4>
-            <div class="flex gap-2"><button onclick="toggleMaint(true)" class="flex-1 bg-red-600/20 p-3 rounded-xl text-[9px] font-black uppercase">Turn ON</button><button onclick="toggleMaint(false)" class="flex-1 bg-green-600/20 p-3 rounded-xl text-[9px] font-black uppercase">Turn OFF</button></div>
+
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="admin-card bg-blue-600/10 border-blue-500/20"><p class="text-[8px] uppercase font-black opacity-50">Total Users</p><h5 id="adm-count" class="text-xl font-black">0</h5></div>
+            <div class="admin-card bg-green-600/10 border-green-500/20"><p class="text-[8px] uppercase font-black opacity-50">Maintenance</p><h5 id="mnt-status" class="text-xl font-black uppercase">OFF</h5></div>
         </div>
-        <div class="admin-section">
-            <h4 class="text-[10px] font-black uppercase text-purple-400 mb-4">Manage Plans</h4>
+
+        <div class="admin-card">
+            <h4 class="text-[10px] font-black uppercase text-blue-400 mb-4 italic underline decoration-blue-500/50">Payment Settings</h4>
+            <div class="space-y-3">
+                <input id="adm-jnum" placeholder="New JazzCash Number">
+                <input id="adm-enum" placeholder="New EasyPaisa Number">
+                <button onclick="savePaymentSettings()" class="w-full p-3 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase">Update Gateway Numbers</button>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h4 class="text-[10px] font-black uppercase text-red-400 mb-4 italic">Power Switch</h4>
+            <div class="flex gap-2">
+                <button onclick="toggleMaint(true)" class="flex-1 bg-red-600 text-white p-3 rounded-xl text-[9px] font-black uppercase">Maintenance ON</button>
+                <button onclick="toggleMaint(false)" class="flex-1 bg-green-600 text-white p-3 rounded-xl text-[9px] font-black uppercase">Go Live</button>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h4 class="text-[10px] font-black uppercase text-purple-400 mb-4 italic">Plan Forge</h4>
             <div id="adm-plan-manager" class="space-y-2 mb-4"></div>
             <input id="pl-name" placeholder="Name"><div class="flex gap-2"><input id="pl-price" type="number" placeholder="Price"><input id="pl-profit" type="number" placeholder="Profit %"></div>
-            <button onclick="createPlan()" class="w-full p-3 bg-purple-600 rounded-xl text-[9px] font-black uppercase">Add New Plan</button>
+            <button onclick="createPlan()" class="w-full p-3 bg-purple-600 text-white rounded-xl text-[9px] font-black uppercase">Create Node</button>
         </div>
-        <div class="admin-section">
-            <h4 class="text-[10px] font-black uppercase text-blue-400 mb-4">Requests</h4>
-            <div id="adm-req-list" class="space-y-4"></div>
-        </div>
-    </div>
 
-    <section id="auth-ui" class="fixed inset-0 z-[20000] bg-[var(--bg)] flex flex-col items-center justify-center p-8 text-center">
-        <div class="w-20 h-20 bg-blue-600 rounded-[2rem] mb-8 flex items-center justify-center text-4xl font-black italic text-white shadow-2xl">M</div>
-        <h2 class="text-xl font-black uppercase tracking-widest mb-10">MintCrest <span class="text-blue-500 italic">Gold</span></h2>
-        <input id="l-name" placeholder="YOUR NAME" class="max-w-[320px] text-center font-black uppercase italic border-blue-500/20">
-        <button onclick="login()" class="w-full max-w-[320px] p-5 btn-prime uppercase text-[12px] font-black shadow-2xl">Access Dashboard</button>
-    </section>
+        <div class="admin-card">
+            <h4 class="text-[10px] font-black uppercase text-yellow-400 mb-4 italic">User Database</h4>
+            <input id="u-search" onkeyup="filterUsers()" placeholder="Search username..." class="text-[11px] mb-4">
+            <div id="adm-user-list" class="space-y-2 max-h-64 overflow-y-auto pr-2"></div>
+        </div>
+
+        <h4 class="text-[12px] font-black uppercase text-green-500 italic mb-4">Verification Queue</h4>
+        <div id="adm-req-list" class="space-y-4"></div>
+    </div>
 
     <nav id="bottom-nav" class="hidden fixed bottom-0 w-full glass border-t border-[var(--border)] p-6 flex justify-around items-center rounded-t-[3.5rem] z-[4000]">
         <button onclick="changePage('home')" class="flex flex-col items-center gap-1"><i class="fa-solid fa-house"></i><span class="text-[7px] font-black uppercase">Home</span></button>
-        <button onclick="changePage('nodes')" class="flex flex-col items-center gap-1"><i class="fa-solid fa-cube text-blue-500"></i><span class="text-[7px] font-black uppercase">Nodes</span></button>
-        <button onclick="changePage('history')" class="flex flex-col items-center gap-1"><i class="fa-solid fa-receipt"></i><span class="text-[7px] font-black uppercase">History</span></button>
-        <button onclick="logout()" class="flex flex-col items-center gap-1 text-red-500"><i class="fa-solid fa-power-off"></i><span class="text-[7px] font-black uppercase">Exit</span></button>
+        <button onclick="changePage('nodes')" class="flex flex-col items-center gap-1"><i class="fa-solid fa-microchip text-blue-500"></i><span class="text-[7px] font-black uppercase">Nodes</span></button>
+        <button onclick="changePage('wallet')" class="flex flex-col items-center gap-1"><i class="fa-solid fa-wallet"></i><span class="text-[7px] font-black uppercase">Funding</span></button>
+        <button onclick="logout()" class="flex flex-col items-center gap-1 text-red-500"><i class="fa-solid fa-right-from-bracket"></i><span class="text-[7px] font-black uppercase">Exit</span></button>
     </nav>
+
+    <section id="auth-ui" class="fixed inset-0 z-[20000] bg-[var(--bg)] flex flex-col items-center justify-center p-10 text-center">
+        <div class="w-20 h-20 bg-blue-600 rounded-[2rem] mb-12 flex items-center justify-center text-4xl font-black italic text-white shadow-2xl shadow-blue-600/30">M</div>
+        <input id="l-name" placeholder="ENTER USERNAME" class="max-w-[320px] text-center font-black uppercase italic border-blue-500/20">
+        <button onclick="login()" class="w-full max-w-[320px] p-6 btn-prime uppercase text-[12px] font-black tracking-widest active:scale-95 transition-all">Unlock System</button>
+    </section>
 
     <script>
         const firebaseConfig = { 
@@ -154,9 +182,8 @@
 
         function login() {
             const n = document.getElementById('l-name').value.trim().toLowerCase();
-            if(n.length < 3) return alert("Enter your name, sweetie! 😘");
-            localStorage.setItem('mc_session', n);
-            enterApp(n);
+            if(n.length < 3) return alert("Sweetie, enter your name! 😘");
+            localStorage.setItem('mc_session', n); enterApp(n);
         }
 
         async function enterApp(n) {
@@ -168,12 +195,10 @@
 
             db.collection("settings").doc("global").onSnapshot(d => {
                 settings = d.data() || {};
-                const mScreen = document.getElementById('maint-screen');
-                if(settings.maintenance === true) mScreen.style.display = 'flex'; else mScreen.style.display = 'none';
-                if(settings.notice) {
-                    document.getElementById('global-notice-bar').classList.remove('hidden');
-                    document.getElementById('ntc-txt').innerText = settings.notice;
-                }
+                document.getElementById('maint-screen').style.display = settings.maintenance ? 'flex' : 'none';
+                document.getElementById('mnt-status').innerText = settings.maintenance ? 'ON' : 'OFF';
+                document.getElementById('j-num-disp').innerText = settings.jazzNum || 'N/A';
+                document.getElementById('e-num-disp').innerText = settings.easyNum || 'N/A';
             });
 
             db.collection("users").doc(n).onSnapshot(doc => {
@@ -182,76 +207,87 @@
                 document.getElementById('v-bal').innerText = "₨ " + (user.balance || 0).toLocaleString();
                 document.getElementById('top-bal').innerText = "₨ " + (user.balance || 0).toLocaleString();
             });
-
-            syncPlans(); syncLogs();
+            syncPlans();
         }
 
-        // --- ADMIN ---
+        // --- MASTER ADMIN ACTIONS ---
         async function toggleMaint(v) { await db.collection("settings").doc("global").update({ maintenance: v }); }
+        async function savePaymentSettings() {
+            const j = document.getElementById('adm-jnum').value; const e = document.getElementById('adm-enum').value;
+            await db.collection("settings").doc("global").update({ jazzNum: j, easyNum: e }); alert("Numbers Updated! 😘");
+        }
         async function createPlan() {
             const n = document.getElementById('pl-name').value; const p = parseInt(document.getElementById('pl-price').value); const pr = parseInt(document.getElementById('pl-profit').value);
             await db.collection("plans").add({ name: n, price: p, profit: pr }); alert("Node Created! 😘");
         }
-        function adminTap() { tapCount++; if(tapCount >= 5) { if(prompt("Pass:")==="mint786") { document.getElementById('admin-ui').classList.remove('hidden'); syncAdm(); } tapCount=0; } }
+        function adminTap() { tapCount++; if(tapCount >= 5) { if(prompt("Master Key:")==="mint786") { document.getElementById('admin-ui').classList.remove('hidden'); syncAdm(); } tapCount=0; } }
         function closeAdmin() { document.getElementById('admin-ui').classList.add('hidden'); }
+
         async function syncAdm() {
             db.collection("plans").onSnapshot(s => {
                 const l = document.getElementById('adm-plan-manager'); l.innerHTML = '';
-                s.forEach(doc => {
-                    const p = doc.data();
-                    l.innerHTML += `<div class="flex justify-between items-center p-2 border-b border-white/5 uppercase text-[9px] font-bold">
-                        <span>${p.name} (₨ ${p.price})</span>
-                        <button onclick="db.collection('plans').doc('${doc.id}').delete()" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
-                    </div>`;
-                });
+                s.forEach(doc => { l.innerHTML += `<div class="flex justify-between items-center p-3 glass rounded-xl mb-1 text-[9px] font-black uppercase"><span>${doc.data().name}</span><button onclick="db.collection('plans').doc('${doc.id}').delete()" class="text-red-500">DELETE</button></div>`; });
+            });
+            db.collection("users").onSnapshot(s => {
+                document.getElementById('adm-count').innerText = s.size;
+                const l = document.getElementById('adm-user-list'); l.innerHTML = '';
+                s.forEach(doc => { const u = doc.data(); l.innerHTML += `<div class="p-3 glass rounded-xl flex justify-between items-center text-[10px] font-bold"><span>${u.name} (₨ ${u.balance})</span><button onclick="db.collection('users').doc('${u.name}').update({balance: parseInt(prompt('Set Balance:'))})" class="text-blue-500">EDIT</button></div>`; });
             });
             db.collection("requests").where("status", "==", "pending").onSnapshot(s => {
                 const list = document.getElementById('adm-req-list'); list.innerHTML = '';
                 s.forEach(doc => {
                     const r = doc.data();
-                    list.innerHTML += `<div class="glass p-4 rounded-3xl mb-2">
-                        <p class="text-[9px] font-black uppercase text-blue-400">${r.user} | ${r.type}</p>
-                        <h4 class="text-xl font-black">₨ ${r.amount}</h4>
-                        <button onclick="approveReq('${doc.id}', '${r.user}', ${r.amount}, '${r.type}')" class="w-full bg-blue-600 p-2 rounded-xl text-[9px] font-black uppercase mt-3">Verify</button>
+                    list.innerHTML += `<div class="glass p-5 rounded-[2rem] border-l-4 border-yellow-500 mb-2">
+                        <p class="text-[10px] font-black text-blue-400 uppercase">${r.user} | ${r.type}</p>
+                        <h4 class="text-2xl font-black my-1">₨ ${r.amount}</h4>
+                        <p class="text-[8px] opacity-50 mb-3 uppercase">TID: ${r.tid}</p>
+                        ${r.proof ? `<img src="${r.proof}" class="w-full rounded-xl mb-3 border border-white/10">` : '<p class="text-red-500 text-[8px] font-black">NO IMAGE PROOF</p>'}
+                        <button onclick="approveReq('${doc.id}', '${r.user}', ${r.amount}, '${r.type}')" class="w-full bg-green-600 p-3 rounded-xl text-[10px] font-black uppercase">Approve Request</button>
                     </div>`;
                 });
             });
         }
+
         async function approveReq(id, u, a, t) {
             if(t==='Deposit') await db.collection("users").doc(u).update({ balance: firebase.firestore.FieldValue.increment(a) });
             await db.collection("requests").doc(id).update({ status: 'approved' });
-            await db.collection("logs").doc(id).update({ status: 'approved' });
-            alert("Done! 😘");
+            alert("Success! 😘");
         }
 
-        // --- USER ---
-        async function buyPlan(id, price, name) {
-            if(user.balance < price) return alert("Insufficient Balance! Deposit first. 😘");
-            if(confirm(`Buy ${name}?`)) {
-                await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-price) });
-                await db.collection("logs").add({ user: user.name, msg: `Active: ${name}`, status: 'approved', time: Date.now() });
-                alert("Successful! 😘");
-            }
-        }
+        // --- USER SYSTEM ---
         async function sendDeposit() {
             const a = parseInt(document.getElementById('d-amt').value); const t = document.getElementById('d-tid').value;
+            const file = document.getElementById('d-proof').files[0];
             if(!a || a < 200 || !t) return alert("Fill all details! 😘");
-            const id = Date.now().toString();
-            await db.collection("requests").doc(id).set({ user: user.name, amount: a, tid: t, status: 'pending', type: 'Deposit', time: Date.now() });
-            await db.collection("logs").doc(id).set({ user: user.name, msg: `Deposit: ₨ ${a}`, status: 'pending', time: Date.now() });
-            alert("Sent for verification! 😘");
+            
+            let proofUrl = "";
+            if(file) {
+                // Convert to Base64 for simplicity in v27 (In real pro apps we use Storage)
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = async () => {
+                    proofUrl = reader.result;
+                    const id = Date.now().toString();
+                    await db.collection("requests").doc(id).set({ user: user.name, amount: a, tid: t, proof: proofUrl, status: 'pending', type: 'Deposit', time: Date.now() });
+                    alert("Proof Sent! Admin will verify soon. 😘");
+                };
+            } else {
+                alert("Please upload screenshot proof! 😘");
+            }
         }
-        function showQR(t) { document.getElementById('qr-area').classList.remove('hidden'); document.getElementById('qr-img').src = (t==='Jazz'?settings.jazzQR:settings.easyQR); document.getElementById('pay-num').innerText = (t==='Jazz'?settings.jazzNum:settings.easyNum); }
+
+        async function buyPlan(id, price, name) {
+            if(user.balance < price) return alert("Insufficient Balance! 😘");
+            if(confirm(`Buy ${name}?`)) {
+                await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-price) });
+                alert("Purchased! 🚀");
+            }
+        }
+
         function syncPlans() {
             db.collection("plans").orderBy("price", "asc").onSnapshot(s => {
                 const g = document.getElementById('plans-grid'); g.innerHTML = '';
-                s.forEach(doc => { const p = doc.data(); g.innerHTML += `<div class="glass p-6 rounded-[2.8rem] flex justify-between items-center border-l-4 border-blue-500 shadow-xl"><div><p class="text-[9px] font-black opacity-40 uppercase">${p.name}</p><h4 class="text-2xl font-black italic">₨ ${p.price}</h4><p class="text-[8px] font-bold text-blue-400">${p.profit}% Daily Profit</p></div><button onclick="buyPlan('${doc.id}', ${p.price}, '${p.name}')" class="btn-prime px-7 py-4 text-[11px] font-black uppercase tracking-widest">Buy</button></div>`; });
-            });
-        }
-        function syncLogs() {
-            db.collection("logs").where("user", "==", user.name).orderBy("time", "desc").limit(10).onSnapshot(s => {
-                const l = document.getElementById('user-logs-list'); l.innerHTML = '';
-                s.forEach(doc => { const d = doc.data(); l.innerHTML += `<div class="glass p-4 rounded-2xl flex justify-between items-center border-l-2 ${d.status==='approved'?'border-green-500':'border-yellow-500'}"><p class="text-[10px] font-black uppercase">${d.msg}</p><span class="text-[8px] font-black uppercase ${d.status==='approved'?'text-green-500':'text-yellow-500'}">${d.status}</span></div>`; });
+                s.forEach(doc => { const p = doc.data(); g.innerHTML += `<div class="glass p-7 rounded-[2.8rem] flex justify-between items-center border-l-4 border-blue-500"><div><p class="text-[9px] font-black opacity-40 uppercase">${p.name}</p><h4 class="text-2xl font-black italic">₨ ${p.price}</h4><p class="text-[8px] font-bold text-blue-400">${p.profit}% Daily Profit</p></div><button onclick="buyPlan('${doc.id}', ${p.price}, '${p.name}')" class="btn-prime px-8 py-4 text-[11px] font-black uppercase">Buy</button></div>`; });
             });
         }
         function changePage(p) { document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page')); document.getElementById('p-'+p).classList.add('active-page'); window.scrollTo(0,0); }
