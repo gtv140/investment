@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en" id="main-html" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -6,157 +7,172 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>MintCrest Gold | Monarch Ultimate</title>
+    <title>MintCrest Gold | Final Integrated Node</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         :root { --bg: #010409; --card: #0d1117; --text: #f0f6fc; --border: #30363d; --blue: #2f81f7; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-        .glass { background: var(--card); border: 1px solid var(--border); border-radius: 20px; }
-        .page { display: none; animation: slideUp 0.4s ease-out; }
+        .glass { background: var(--card); border: 1px solid var(--border); border-radius: 24px; transition: 0.3s; }
+        .page { display: none; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .active-page { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        input { background: #161b22; border: 1px solid var(--border); color: white; padding: 15px; border-radius: 12px; width: 100%; outline: none; margin-bottom: 12px; font-size: 14px; transition: 0.3s; }
-        input:focus { border-color: var(--blue); }
-        .btn-prime { background: linear-gradient(135deg, #2f81f7, #1e40af); color: white; font-weight: 800; border-radius: 14px; cursor: pointer; border: none; padding: 18px; width: 100%; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        #toast { visibility: hidden; min-width: 250px; background: #2f81f7; color: #fff; text-align: center; border-radius: 10px; padding: 18px; position: fixed; z-index: 20000; left: 50%; transform: translateX(-50%); bottom: 100px; font-size: 12px; font-weight: 800; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        input, select { background: #161b22; border: 1px solid var(--border); color: white; padding: 16px; border-radius: 14px; width: 100%; outline: none; margin-bottom: 12px; font-size: 14px; }
+        input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(47, 129, 247, 0.2); }
+        .btn-prime { background: linear-gradient(135deg, #2f81f7, #1e40af); color: white; font-weight: 800; border-radius: 16px; cursor: pointer; border: none; padding: 18px; width: 100%; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 10px 20px rgba(30, 64, 175, 0.3); }
+        #toast { visibility: hidden; min-width: 280px; background: #2f81f7; color: #fff; text-align: center; border-radius: 12px; padding: 18px; position: fixed; z-index: 20000; left: 50%; transform: translateX(-50%); bottom: 110px; font-size: 12px; font-weight: 800; }
         #toast.show { visibility: visible; animation: fadeInOut 3s; }
-        @keyframes fadeInOut { 0%, 100% { opacity: 0; bottom: 80px; } 15%, 85% { opacity: 1; bottom: 100px; } }
-        .nav-btn { opacity: 0.4; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-btn.active { opacity: 1; color: #2f81f7; transform: translateY(-5px); }
+        @keyframes fadeInOut { 0%, 100% { opacity: 0; bottom: 80px; } 15%, 85% { opacity: 1; bottom: 110px; } }
+        .nav-icon { opacity: 0.3; transition: 0.4s; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .nav-icon.active { opacity: 1; color: #2f81f7; transform: translateY(-8px); }
+        .status-badge { padding: 4px 10px; border-radius: 8px; font-size: 9px; font-weight: 900; text-transform: uppercase; }
     </style>
 </head>
-<body onclick="handleGlobalTaps()">
+<body onclick="secretBypass()">
 
-    <div id="toast">NODE SECURED</div>
+    <div id="toast">SYSTEM INITIALIZED</div>
 
     <div id="lock-screen" class="fixed inset-0 z-[1000000] bg-[#010409] hidden flex flex-col items-center justify-center p-10 text-center">
-        <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-8"></div>
-        <h1 class="text-2xl font-black text-blue-500 mb-3 uppercase tracking-widest">System Syncing</h1>
-        <p class="text-[10px] font-bold opacity-40 uppercase tracking-widest leading-loose">Improving financial nodes for your profit sweetie! 😘</p>
+        <div class="w-20 h-20 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-10"></div>
+        <h1 class="text-3xl font-black text-blue-500 mb-4 uppercase tracking-[5px]">Core Sync</h1>
+        <p class="text-[11px] font-bold opacity-50 uppercase tracking-[2px] max-w-xs">Optimizing server nodes for better returns sweetie! 😘</p>
     </div>
 
-    <header class="p-5 flex justify-between items-center bg-[#010409]/95 backdrop-blur-lg border-b border-white/5 sticky top-0 z-[5000]">
+    <header class="p-6 flex justify-between items-center bg-[#010409]/95 backdrop-blur-xl border-b border-white/5 sticky top-0 z-[5000]">
         <div class="flex items-center gap-4">
-            <div onclick="adminTrigger()" class="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg cursor-pointer">M</div>
+            <div onclick="adminOpen()" class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-2xl cursor-pointer active:scale-90 transition">M</div>
             <div>
-                <h1 class="text-[14px] font-black uppercase tracking-tighter">MINTCREST <span class="text-blue-500">GOLD</span></h1>
-                <p id="node-status" class="text-[8px] font-bold opacity-50 uppercase text-blue-400">Verifying Node...</p>
+                <h1 class="text-[15px] font-black uppercase tracking-tighter">MINTCREST <span class="text-blue-500">GOLD</span></h1>
+                <p id="node-id" class="text-[9px] font-bold opacity-40 uppercase text-blue-400">Verifying Security...</p>
             </div>
         </div>
-        <div id="top-balance" class="bg-blue-600/10 px-5 py-2.5 rounded-2xl border border-blue-500/20 text-blue-500 text-[12px] font-black italic">PKR 0.00</div>
+        <div id="header-bal" class="bg-blue-600/10 px-5 py-2.5 rounded-2xl border border-blue-500/20 text-blue-500 text-[13px] font-black italic">PKR 0.00</div>
     </header>
 
-    <main id="app-main" class="hidden p-6 space-y-8 pb-32">
+    <main id="main-content" class="hidden p-6 space-y-8 pb-36">
         
         <div id="p-home" class="page active-page space-y-8">
-            <div class="glass p-8 bg-gradient-to-br from-blue-900 via-[#0d1117] to-[#010409] border-blue-500/10 relative overflow-hidden">
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
-                <p class="text-[10px] font-bold opacity-40 uppercase tracking-[2px]">Portfolio Value</p>
-                <h2 class="text-5xl font-black tracking-tighter mt-2" id="v-balance">PKR 0</h2>
-                <div class="mt-10 flex gap-4">
-                    <button onclick="changePage('deposit')" class="flex-1 py-4 bg-blue-500 text-white rounded-2xl font-black text-[11px] uppercase shadow-lg shadow-blue-500/20 active:scale-95 transition">Add Asset</button>
-                    <button onclick="changePage('withdraw')" class="flex-1 py-4 bg-white/5 border border-white/10 rounded-2xl font-black text-[11px] uppercase active:scale-95 transition">Payout</button>
+            <div class="glass p-10 bg-gradient-to-br from-blue-900 via-[#0d1117] to-[#010409] border-blue-500/20 relative overflow-hidden">
+                <div class="absolute -right-20 -top-20 w-48 h-48 bg-blue-500/10 rounded-full blur-[80px]"></div>
+                <p class="text-[11px] font-bold opacity-50 uppercase tracking-[3px]">Net Equity</p>
+                <h2 class="text-6xl font-black tracking-tighter mt-3" id="main-bal">PKR 0</h2>
+                <div class="mt-12 flex gap-4">
+                    <button onclick="changePage('deposit')" class="flex-1 py-5 bg-blue-500 text-white rounded-2xl font-black text-[12px] uppercase shadow-2xl active:scale-95 transition">Add Asset</button>
+                    <button onclick="changePage('withdraw')" class="flex-1 py-5 bg-white/5 border border-white/10 rounded-2xl font-black text-[12px] uppercase active:scale-95 transition">Withdraw</button>
                 </div>
             </div>
             
-            <div id="plans-list" class="space-y-4"></div>
+            <h3 class="text-xs font-black opacity-30 uppercase tracking-[4px] pl-2">Investment Nodes</h3>
+            <div id="plans-render" class="space-y-4"></div>
         </div>
 
-        <div id="p-team" class="page space-y-7">
-            <div class="glass p-7 text-center border-l-4 border-blue-500">
-                <p class="text-[10px] font-bold opacity-40 uppercase mb-3">Your Referral Asset Link</p>
-                <div class="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/5">
-                    <p id="ref-url" class="text-[11px] font-bold text-blue-500 break-all flex-1 text-left">Generating...</p>
-                    <button onclick="copyRef()" class="text-blue-500 text-xl"><i class="fa-solid fa-copy"></i></button>
+        <div id="p-team" class="page space-y-8">
+            <div class="glass p-8 text-center border-l-4 border-blue-500">
+                <p class="text-[10px] font-bold opacity-40 uppercase mb-4 tracking-[2px]">Your Asset Link (10% Commission)</p>
+                <div class="flex items-center gap-4 bg-white/5 p-5 rounded-2xl border border-white/10">
+                    <p id="ref-copy" class="text-[12px] font-bold text-blue-500 break-all flex-1 text-left">---</p>
+                    <button onclick="copyRefLink()" class="text-blue-500 text-2xl active:scale-90 transition"><i class="fa-solid fa-copy"></i></button>
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-5">
-                <div class="glass p-6 text-center"><h4 id="team-nodes" class="text-3xl font-black">0</h4><p class="text-[9px] opacity-40 uppercase font-bold mt-1">Total Nodes</p></div>
-                <div class="glass p-6 text-center"><h4 id="team-earning" class="text-3xl font-black text-green-500">PKR 0</h4><p class="text-[9px] opacity-40 uppercase font-bold mt-1">Net Bonus</p></div>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="glass p-7 text-center shadow-xl"><h4 id="team-size" class="text-4xl font-black">0</h4><p class="text-[10px] opacity-40 uppercase font-bold mt-2">Team Nodes</p></div>
+                <div class="glass p-7 text-center shadow-xl"><h4 id="team-earning" class="text-4xl font-black text-green-500">PKR 0</h4><p class="text-[10px] opacity-40 uppercase font-bold mt-2">Net Bonus</p></div>
             </div>
         </div>
 
-        <div id="p-deposit" class="page space-y-7">
-            <div id="bank-details" class="space-y-3"></div>
-            <div class="glass p-7 space-y-5">
-                <input type="number" id="d-amt" placeholder="Enter Amount">
-                <input type="text" id="d-tid" placeholder="Transaction ID (TID)">
-                <input type="file" id="d-img" class="text-[11px] border-2 border-dashed border-white/10 py-6 text-center">
-                <button onclick="sendDeposit()" class="btn-prime">Verify Asset Transfer</button>
+        <div id="p-deposit" class="page space-y-8">
+            <div id="bank-list" class="space-y-4"></div>
+            <div class="glass p-8 space-y-6">
+                <input type="number" id="dep-val" placeholder="Amount (e.g. 1000)">
+                <input type="text" id="dep-trx" placeholder="Transaction ID (TID)">
+                <div class="text-center">
+                    <p class="text-[10px] font-black opacity-30 uppercase mb-3">Upload Transfer Receipt</p>
+                    <input type="file" id="dep-proof" class="text-[11px] border-2 border-dashed border-white/10 py-8 text-center cursor-pointer">
+                </div>
+                <button onclick="processDeposit()" class="btn-prime">Authenticate Transfer</button>
             </div>
         </div>
 
-        <div id="p-withdraw" class="page space-y-7">
-            <div class="glass p-7 space-y-5">
-                <input type="number" id="w-amt" placeholder="Min Withdrawal: 500">
-                <input type="text" id="w-acc" placeholder="Wallet Number">
-                <input type="text" id="w-name" placeholder="Account Name">
-                <button onclick="sendWithdraw()" class="w-full py-4 bg-red-600/10 text-red-500 border border-red-500/20 rounded-2xl font-black text-[11px] uppercase">Request Payout</button>
+        <div id="p-withdraw" class="page space-y-8">
+            <div class="glass p-8 space-y-6">
+                <input type="number" id="wd-val" placeholder="Min Withdrawal: 500">
+                <input type="text" id="wd-acc" placeholder="Wallet/Account Number">
+                <input type="text" id="wd-name" placeholder="Account Holder Name">
+                <select id="wd-method">
+                    <option value="EasyPaisa">EasyPaisa</option>
+                    <option value="JazzCash">JazzCash</option>
+                </select>
+                <button onclick="processWithdraw()" class="w-full py-5 bg-red-600/10 text-red-500 border border-red-500/20 rounded-2xl font-black text-[12px] uppercase active:scale-95 transition">Request Payout</button>
             </div>
         </div>
     </main>
 
-    <div id="admin-panel" class="fixed inset-0 bg-[#010409] z-[100000] hidden overflow-y-auto p-7 pb-40">
-        <div class="flex justify-between items-center mb-10 border-b border-white/5 pb-5">
-            <h2 class="text-xl font-black text-blue-500 uppercase italic">Master Console</h2>
-            <button onclick="closeAdmin()" class="bg-white/5 px-6 py-2 rounded-xl text-[10px] font-bold">EXIT</button>
+    <div id="admin-ui" class="fixed inset-0 bg-[#010409] z-[100000] hidden overflow-y-auto p-8 pb-40">
+        <div class="flex justify-between items-center mb-12 border-b border-white/5 pb-6">
+            <h2 class="text-2xl font-black text-blue-500 uppercase italic tracking-tighter">Master Console</h2>
+            <button onclick="closeAdmin()" class="bg-white/10 px-8 py-3 rounded-2xl text-[11px] font-black">EXIT</button>
         </div>
 
-        <button onclick="toggleLock()" id="m-btn" class="w-full py-4 mb-8 rounded-2xl font-black text-[11px] uppercase">Maintenance Mode: --</button>
+        <button onclick="systemLock()" id="lock-btn" class="w-full py-5 mb-8 rounded-2xl font-black text-[12px] uppercase">Lock System: --</button>
         
-        <div id="admin-queue" class="space-y-5"></div>
+        <div id="request-list" class="space-y-6"></div>
 
-        <div class="glass p-7 mt-10 border-l-4 border-purple-500">
-            <h4 class="text-[11px] font-black uppercase text-purple-500 mb-5">Force Balance Override</h4>
-            <input id="adm-target" placeholder="User Name">
-            <input id="adm-bal" type="number" placeholder="New Balance">
-            <button onclick="forceEdit()" class="w-full py-4 bg-purple-600 rounded-2xl font-black text-[11px] uppercase">Overwrite Database</button>
+        <div class="glass p-8 mt-12 border-l-4 border-purple-600">
+            <h4 class="text-[12px] font-black uppercase text-purple-500 mb-6">Database Balance Force</h4>
+            <input id="adm-u-name" placeholder="User Name (Exact)">
+            <input id="adm-u-bal" type="number" placeholder="Set Absolute Balance">
+            <button onclick="adminForceBalance()" class="w-full py-5 bg-purple-600 rounded-2xl font-black text-[12px] uppercase shadow-lg">Overwrite Data</button>
         </div>
     </div>
 
-    <nav id="nav-bar" class="hidden fixed bottom-0 w-full glass bg-[#0d1117]/98 border-t border-white/5 p-7 flex justify-around items-center z-[5000] rounded-t-[40px] shadow-2xl">
-        <div onclick="changePage('home')" class="nav-btn active" id="nav-home"><i class="fa-solid fa-bolt text-2xl"></i><span class="text-[8px] font-bold uppercase">Node</span></div>
-        <div onclick="changePage('team')" class="nav-btn" id="nav-team"><i class="fa-solid fa-users text-2xl"></i><span class="text-[8px] font-bold uppercase">Team</span></div>
-        <div onclick="changePage('deposit')" class="nav-btn" id="nav-deposit"><i class="fa-solid fa-circle-plus text-2xl"></i><span class="text-[8px] font-bold uppercase">Add</span></div>
-        <div onclick="changePage('withdraw')" class="nav-btn" id="nav-withdraw"><i class="fa-solid fa-hand-holding-dollar text-2xl"></i><span class="text-[8px] font-bold uppercase">Get</span></div>
+    <a href="https://wa.me/923705519562" class="fixed bottom-32 right-6 bg-[#25d366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-2xl z-[4500] active:scale-90 transition"><i class="fa-brands fa-whatsapp"></i></a>
+
+    <nav id="bottom-nav" class="hidden fixed bottom-0 w-full glass bg-[#0d1117]/98 border-t border-white/5 p-8 flex justify-around items-center z-[5000] rounded-t-[45px] shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+        <div onclick="changePage('home')" class="nav-icon active" id="nav-home"><i class="fa-solid fa-layer-group text-2xl"></i><span class="text-[9px] font-black uppercase">Nodes</span></div>
+        <div onclick="changePage('team')" class="nav-icon" id="nav-team"><i class="fa-solid fa-users-viewfinder text-2xl"></i><span class="text-[9px] font-black uppercase">Team</span></div>
+        <div onclick="changePage('deposit')" class="nav-icon" id="nav-deposit"><i class="fa-solid fa-circle-plus text-2xl"></i><span class="text-[9px] font-black uppercase">Add</span></div>
+        <div onclick="changePage('withdraw')" class="nav-icon" id="nav-withdraw"><i class="fa-solid fa-money-bill-transfer text-2xl"></i><span class="text-[9px] font-black uppercase">Get</span></div>
     </nav>
 
     <script>
         const firebaseConfig = { apiKey: "AIzaSyDt3ChZHyDdtM4Ir1oXRZJUywcOiV30Wtg", authDomain: "investment-84f4e.firebaseapp.com", projectId: "investment-84f4e", storageBucket: "investment-84f4e.firebasestorage.app", messagingSenderId: "975293889308", appId: "1:975293889308:web:6d034a99cc966c75ff58d9" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        let user = null; let tA = 0; let tB = 0; let mStatus = false;
+        let user = null; let clickCountA = 0; let clickCountB = 0; let mStatus = false;
 
-        // --- ADMIN GOD-MODE ENGINE ---
-        function adminTrigger() { tA++; if(tA >= 5) { if(prompt("Security Key:")==="mint786") { document.getElementById('admin-panel').classList.remove('hidden'); syncAdmin(); } tA=0; } }
-        function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
-        function handleGlobalTaps() {
+        // --- ADMIN / SECRET LOGIC ---
+        function adminOpen() { clickCountA++; if(clickCountA >= 5) { if(prompt("God Key:")==="mint786") { document.getElementById('admin-ui').classList.remove('hidden'); syncAdmin(); } clickCountA=0; } }
+        function closeAdmin() { document.getElementById('admin-ui').classList.add('hidden'); }
+        function secretBypass() {
             if(!document.getElementById('lock-screen').classList.contains('hidden')) {
-                tB++; if(tB >= 5) { if(prompt("Master Override:")==="mint786") { document.getElementById('lock-screen').classList.add('hidden'); document.getElementById('admin-panel').classList.remove('hidden'); syncAdmin(); } tB=0; }
+                clickCountB++; if(clickCountB >= 5) { if(prompt("Master Key:")==="mint786") { document.getElementById('lock-screen').classList.add('hidden'); document.getElementById('admin-ui').classList.remove('hidden'); syncAdmin(); } clickCountB=0; }
             }
         }
 
         async function syncAdmin() {
             db.collection("requests").where("status","==","pending").onSnapshot(s => {
-                const q = document.getElementById('admin-queue'); q.innerHTML = '';
+                const list = document.getElementById('request-list'); list.innerHTML = '';
                 s.forEach(doc => {
                     const r = doc.data();
-                    q.innerHTML += `<div class="glass p-6 border-l-4 border-blue-500 text-[11px] font-bold uppercase">
-                        <p class="mb-2">${r.type} | ${r.user}</p>
-                        <p class="mb-4 text-blue-500 font-black">PKR ${r.amount.toLocaleString()}</p>
-                        ${r.proof ? `<img src="${r.proof}" class="w-full rounded-2xl mb-4">` : ''}
-                        <button onclick="approveReq('${doc.id}','${r.user}',${r.amount},'${r.type}')" class="w-full py-4 bg-green-600 rounded-xl">APPROVE TRANSACTION</button>
+                    list.innerHTML += `<div class="glass p-7 border-l-4 border-blue-500 text-[11px] font-bold uppercase">
+                        <p class="mb-3 text-blue-400 font-black">${r.type} Req | ${r.user}</p>
+                        <p class="mb-5">Amount: PKR ${r.amount.toLocaleString()}</p>
+                        ${r.proof ? `<img src="${r.proof}" class="w-full rounded-2xl mb-6 shadow-2xl">` : ''}
+                        <div class="flex gap-4">
+                            <button onclick="approveTransaction('${doc.id}','${r.user}',${r.amount},'${r.type}')" class="flex-1 py-4 bg-green-600 rounded-xl shadow-lg">Approve</button>
+                            <button onclick="db.collection('requests').doc('${doc.id}').update({status:'rejected'})" class="flex-1 py-4 bg-red-600/20 text-red-500 rounded-xl">Reject</button>
+                        </div>
                     </div>`;
                 });
             });
             db.collection("settings").doc("system").onSnapshot(d => {
                 mStatus = d.data()?.maintenance;
-                document.getElementById('m-btn').innerText = "Maintenance Mode: " + (mStatus?"ON":"OFF");
-                document.getElementById('m-btn').className = mStatus ? "w-full py-4 mb-8 bg-red-600/10 text-red-500 border border-red-500/20 rounded-2xl font-black text-[11px] uppercase" : "w-full py-4 mb-8 bg-green-600/10 text-green-500 border border-green-500/20 rounded-2xl font-black text-[11px] uppercase";
+                const b = document.getElementById('lock-btn');
+                b.innerText = "System Lock: " + (mStatus?"ACTIVE":"OFF");
+                b.className = mStatus ? "w-full py-5 mb-8 bg-red-600/10 text-red-500 border border-red-500/20 rounded-2xl font-black text-[12px] uppercase" : "w-full py-5 mb-8 bg-green-600/10 text-green-500 border border-green-500/20 rounded-2xl font-black text-[12px] uppercase";
             });
         }
 
-        async function approveReq(id, u, a, type) {
+        async function approveTransaction(id, u, a, type) {
             if(type === 'Deposit') {
                 await db.collection("users").doc(u).update({ balance: firebase.firestore.FieldValue.increment(a), active: true });
                 const snap = await db.collection("users").doc(u).get();
@@ -167,28 +183,28 @@
                 await db.collection("users").doc(u).update({ balance: firebase.firestore.FieldValue.increment(-a) });
             }
             await db.collection("requests").doc(id).update({ status: 'approved' });
-            showToast("VERIFIED");
+            toast("TRANSACTION COMPLETED");
         }
 
-        async function forceEdit() {
-            const u = document.getElementById('adm-target').value;
-            const b = Number(document.getElementById('adm-bal').value);
+        async function adminForceBalance() {
+            const u = document.getElementById('adm-u-name').value;
+            const b = Number(document.getElementById('adm-u-bal').value);
             await db.collection("users").doc(u).update({ balance: b });
-            showToast("OVERWRITTEN");
+            toast("DB SYNCED");
         }
 
-        async function toggleLock() { await db.collection("settings").doc("system").set({ maintenance: !mStatus }); }
+        async function systemLock() { await db.collection("settings").doc("system").set({ maintenance: !mStatus }); }
 
-        // --- AUTOMATED DAILY PROFIT ENGINE ---
-        async function runAutoProfit(id, data) {
+        // --- AUTO-PROFIT ENGINE (5% DAILY) ---
+        async function runAutoYield(id, data) {
             const now = Date.now();
             const last = data.lastYield || 0;
-            const day = 24 * 60 * 60 * 1000;
-            if (data.active && (now - last) >= day) {
-                const gain = Math.floor(data.balance * 0.05);
-                if (gain > 0) {
-                    await db.collection("users").doc(id).update({ balance: firebase.firestore.FieldValue.increment(gain), lastYield: now });
-                    showToast(`+PKR ${gain} DAILY PROFIT ADDED! 😘`);
+            const dayInMs = 86400000;
+            if (data.active && (now - last) >= dayInMs) {
+                const profit = Math.floor(data.balance * 0.05);
+                if (profit > 0) {
+                    await db.collection("users").doc(id).update({ balance: firebase.firestore.FieldValue.increment(profit), lastYield: now });
+                    toast(`+PKR ${profit} PROFIT CREDITED! 😘`);
                 }
             }
         }
@@ -197,15 +213,15 @@
         function syncUser(id) {
             db.collection("users").doc(id).onSnapshot(async d => {
                 user = d.data(); if(!user) return;
-                await runAutoProfit(id, user);
+                await runAutoYield(id, user);
                 const b = (user.balance || 0).toLocaleString();
-                document.getElementById('v-balance').innerText = "PKR " + b;
-                document.getElementById('top-balance').innerText = "PKR " + b;
-                document.getElementById('ref-url').innerText = window.location.origin + "/?ref=" + id;
+                document.getElementById('main-bal').innerText = "PKR " + b;
+                document.getElementById('header-bal').innerText = "PKR " + b;
+                document.getElementById('ref-copy').innerText = window.location.origin + "/?ref=" + id;
                 db.collection("users").where("refBy","==",id).onSnapshot(s => {
-                    document.getElementById('team-nodes').innerText = s.size;
-                    let e = 0; s.forEach(doc => e += (doc.data().balance * 0.1));
-                    document.getElementById('team-earning').innerText = "PKR " + Math.floor(e).toLocaleString();
+                    document.getElementById('team-size').innerText = s.size;
+                    let earn = 0; s.forEach(doc => earn += (doc.data().balance * 0.1));
+                    document.getElementById('team-earning').innerText = "PKR " + Math.floor(earn).toLocaleString();
                 });
             });
             db.collection("settings").doc("system").onSnapshot(d => {
@@ -213,54 +229,54 @@
                 else document.getElementById('lock-screen').classList.add('hidden');
             });
             db.collection("plans").orderBy("price","asc").onSnapshot(s => {
-                const l = document.getElementById('plans-list'); l.innerHTML = '';
+                const r = document.getElementById('plans-render'); r.innerHTML = '';
                 s.forEach(doc => {
                     const p = doc.data();
-                    l.innerHTML += `<div class="glass p-7 border-l-4 border-blue-500 flex justify-between items-center transition active:scale-95">
-                        <div><p class="text-[9px] opacity-30 uppercase font-black">${p.name}</p><h4 class="text-2xl font-black">PKR ${p.price.toLocaleString()}</h4><p class="text-[10px] text-green-500 font-bold mt-1">ROI: PKR ${p.dailyProfit}/Day</p></div>
-                        <button onclick="changePage('deposit')" class="bg-blue-600 px-7 py-4 rounded-2xl font-black text-[10px] shadow-lg">UPGRADE</button>
+                    r.innerHTML += `<div class="glass p-8 border-l-4 border-blue-500 flex justify-between items-center transition active:scale-95">
+                        <div><p class="text-[10px] opacity-30 uppercase font-black tracking-widest">${p.name}</p><h4 class="text-3xl font-black">PKR ${p.price.toLocaleString()}</h4><p class="text-[11px] text-green-500 font-bold mt-2">Daily Return: PKR ${p.dailyProfit}</p></div>
+                        <button onclick="changePage('deposit')" class="bg-blue-600 px-8 py-4 rounded-2xl font-black text-[11px] shadow-lg shadow-blue-500/20">ACTIVATE</button>
                     </div>`;
                 });
             });
             db.collection("settings").doc("gateways").onSnapshot(d => {
                 const g = d.data();
-                document.getElementById('bank-details').innerHTML = `
-                    <div class="p-5 glass flex justify-between text-[12px] font-black border-l-4 border-yellow-500"><span>JazzCash Node</span><span>${g.jazz}</span></div>
-                    <div class="p-5 glass flex justify-between text-[12px] font-black border-l-4 border-green-500"><span>EasyPaisa Node</span><span>${g.easy}</span></div>`;
+                document.getElementById('bank-list').innerHTML = `
+                    <div class="p-6 glass flex justify-between text-[13px] font-black border-l-4 border-yellow-500"><span>JazzCash Node</span><span>${g.jazz}</span></div>
+                    <div class="p-6 glass flex justify-between text-[13px] font-black border-l-4 border-green-500"><span>EasyPaisa Node</span><span>${g.easy}</span></div>`;
             });
         }
 
-        async function sendDeposit() {
-            const a = Number(document.getElementById('d-amt').value); const t = document.getElementById('d-tid').value; const f = document.getElementById('d-img').files[0];
-            if(!a || !t || !f) return alert("All details required sweetie!");
-            const r = new FileReader(); r.readAsDataURL(f);
-            r.onload = async () => {
-                await db.collection("requests").add({ user: user.name, amount: a, tid: t, proof: r.result, type: 'Deposit', status: 'pending', time: Date.now() });
-                showToast("NODE VERIFICATION PENDING"); changePage('home');
+        async function processDeposit() {
+            const a = Number(document.getElementById('dep-val').value); const t = document.getElementById('dep-trx').value; const f = document.getElementById('dep-proof').files[0];
+            if(!a || !t || !f) return alert("Fill all proof details sweetie!");
+            const reader = new FileReader(); reader.readAsDataURL(f);
+            reader.onload = async () => {
+                await db.collection("requests").add({ user: user.name, amount: a, tid: t, proof: reader.result, type: 'Deposit', status: 'pending', time: Date.now() });
+                toast("VERIFICATION IN PROGRESS"); changePage('home');
             };
         }
 
-        async function sendWithdraw() {
-            const a = Number(document.getElementById('w-amt').value); const acc = document.getElementById('w-acc').value; const n = document.getElementById('w-name').value;
-            if(a < 500 || !acc || !n) return alert("Minimum 500 and full data required.");
+        async function processWithdraw() {
+            const a = Number(document.getElementById('wd-val').value); const acc = document.getElementById('wd-acc').value; const n = document.getElementById('wd-name').value;
+            if(a < 500 || !acc || !n) return alert("Min 500 & full data required.");
             if(a > user.balance) return alert("Insufficient Balance.");
-            await db.collection("requests").add({ user: user.name, amount: a, account: acc, title: n, type: 'Withdraw', status: 'pending', time: Date.now() });
-            showToast("PAYOUT REQUESTED"); changePage('home');
+            await db.collection("requests").add({ user: user.name, amount: a, account: acc, title: n, method: document.getElementById('wd-method').value, type: 'Withdraw', status: 'pending', time: Date.now() });
+            toast("PAYOUT REQUEST SENT"); changePage('home');
         }
 
-        function showToast(m) { const t = document.getElementById("toast"); t.innerText = m; t.className = "show"; setTimeout(()=>t.className="", 3000); }
+        function toast(m) { const t = document.getElementById("toast"); t.innerText = m; t.className = "show"; setTimeout(()=>t.className="", 3000); }
         function changePage(p) { 
             document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.getElementById('p-'+p).classList.add('active-page');
-            document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('nav-'+p).classList.add('active');
+            document.querySelectorAll('.nav-icon').forEach(i=>i.classList.remove('active')); document.getElementById('nav-'+p).classList.add('active');
         }
-        function copyRef() { navigator.clipboard.writeText(document.getElementById('ref-url').innerText); showToast("LINK COPIED!"); }
+        function copyRefLink() { navigator.clipboard.writeText(document.getElementById('ref-copy').innerText); toast("LINK COPIED!"); }
         
         window.onload = () => { 
             const session = localStorage.getItem('mc_session');
             if(session) {
-                document.getElementById('node-status').innerText = "NODE-ID: " + session.toUpperCase();
-                document.getElementById('app-main').classList.remove('hidden');
-                document.getElementById('nav-bar').classList.remove('hidden');
+                document.getElementById('node-id').innerText = "NODE: " + session.toUpperCase();
+                document.getElementById('main-content').classList.remove('hidden');
+                document.getElementById('bottom-nav').classList.remove('hidden');
                 syncUser(session);
             }
         }
