@@ -6,138 +6,176 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>MintCrest Gold | v130.0 Guardian</title>
+    <title>MintCrest Gold | Overlord v150.0</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        :root { --bg: #010409; --card: #0d1117; --text: #f0f6fc; --border: #30363d; --blue: #3b82f6; --gold: #f59e0b; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        :root { --bg: #010409; --card: #0d1117; --text: #f0f6fc; --border: #30363d; --accent: #2f81f7; --danger: #f85149; --success: #238636; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; user-select: none; overflow-x: hidden; }
         
-        /* Anti-Copy Protection */
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; 
-            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
-        }
+        .glass { background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+        .page { display: none; }
+        .active-page { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .glass { background: var(--card); border: 1px solid var(--border); backdrop-filter: blur(25px); border-radius: 30px; }
-        .page { display: none; animation: slideIn 0.5s ease-out; }
-        .active-page { display: block; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-core { background: var(--accent); color: white; border-radius: 8px; font-weight: 700; transition: 0.2s; border: none; cursor: pointer; }
+        .btn-core:active { opacity: 0.8; transform: scale(0.98); }
+        .btn-danger { background: var(--danger); }
         
-        .btn-prime { background: linear-gradient(135deg, #1d4ed8, #3b82f6); color: white; border-radius: 20px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 10px 20px -10px rgba(59,130,246,0.5); }
-        input { background: #161b22; border: 1px solid var(--border); color: var(--text); padding: 18px; border-radius: 18px; width: 100%; outline: none; margin-bottom: 12px; }
+        input, select { background: #161b22; border: 1px solid var(--border); color: var(--text); padding: 14px; border-radius: 8px; width: 100%; outline: none; margin-bottom: 12px; font-size: 13px; }
+        .nav-item { color: #8b949e; cursor: pointer; transition: 0.2s; font-size: 18px; }
+        .nav-item.active { color: var(--accent); }
         
-        .timer-box { background: rgba(59,130,246,0.1); border: 1px dashed var(--blue); padding: 10px; border-radius: 15px; font-size: 10px; font-weight: 800; color: var(--blue); text-align: center; }
-        .float-wa { position: fixed; bottom: 120px; right: 20px; width: 60px; height: 60px; background: #25d366; border-radius: 50%; display: flex; items: center; justify-content: center; color: white; font-size: 30px; z-index: 9999; }
+        /* Admin Scrollbar */
+        #admin-ui::-webkit-scrollbar { width: 4px; }
+        #admin-ui::-webkit-scrollbar-thumb { background: var(--border); }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <a href="https://wa.me/923705519562" class="float-wa hidden" id="wa-btn"><i class="fa-brands fa-whatsapp"></i></a>
-
-    <header id="main-header" class="hidden sticky top-0 z-[5000] bg-[var(--bg)]/90 backdrop-blur-3xl border-b border-[var(--border)] p-6 flex justify-between items-center">
-        <div class="flex items-center gap-4">
-            <div onclick="adminTap()" class="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center font-black text-white italic shadow-lg cursor-pointer">M</div>
-            <h1 class="text-[14px] font-black uppercase italic tracking-tighter">MintCrest <span class="text-blue-500">Gold</span></h1>
+    <header id="main-header" class="hidden sticky top-0 z-[5000] bg-[var(--bg)]/95 backdrop-blur-md border-b border-[var(--border)] p-5 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div onclick="adminTap()" class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-black text-white cursor-pointer">M</div>
+            <h1 class="text-[12px] font-black uppercase tracking-tighter">MintCrest <span class="text-blue-500">Gold</span></h1>
         </div>
-        <div id="top-bal" class="text-[12px] font-black bg-blue-600/10 text-blue-500 px-5 py-2 rounded-full border border-blue-500/20 italic">₨ 0</div>
+        <div id="top-bal" class="text-[11px] font-bold bg-white/5 px-4 py-1.5 rounded-full border border-white/10">PKR 0</div>
     </header>
 
-    <main id="app-ui" class="hidden p-5 space-y-7">
+    <main id="app-ui" class="hidden p-4 space-y-6">
         
-        <div id="p-home" class="page active-page space-y-7">
-            <div class="p-10 rounded-[4rem] bg-gradient-to-br from-blue-700 to-black text-white shadow-2xl text-center border border-white/5 relative overflow-hidden">
-                <p class="text-[10px] font-black uppercase opacity-50 tracking-[0.4em] mb-2">Total Balance</p>
-                <h2 class="text-5xl font-black tracking-tighter" id="v-bal">₨ 0.00</h2>
-                <div class="mt-10 flex gap-3">
-                   <button onclick="changePage('wallet')" class="flex-1 bg-white p-4 rounded-2xl text-[10px] font-black uppercase text-blue-950">Deposit</button>
-                   <button onclick="changePage('withdraw')" class="flex-1 bg-blue-500/20 p-4 rounded-2xl text-[10px] font-black uppercase border border-white/10">Cashout</button>
+        <div id="p-home" class="page active-page space-y-6">
+            <div class="p-8 rounded-2xl bg-gradient-to-br from-blue-700 to-blue-900 shadow-xl border border-white/10">
+                <p class="text-[9px] font-bold uppercase opacity-60 tracking-widest mb-1">Current Liquidity</p>
+                <h2 class="text-4xl font-black tracking-tighter mb-8" id="v-bal">PKR 0.00</h2>
+                <div class="flex gap-3">
+                   <button onclick="changePage('wallet')" class="flex-1 bg-white text-blue-900 py-3 rounded-lg font-black text-[10px] uppercase">Deposit</button>
+                   <button onclick="changePage('withdraw')" class="flex-1 bg-black/30 py-3 rounded-lg font-black text-[10px] uppercase border border-white/10">Withdraw</button>
                 </div>
             </div>
 
-            <div id="profit-section" class="hidden glass p-8 border-l-8 border-green-500 space-y-4">
-                <div class="flex justify-between items-center">
-                    <h4 class="text-xs font-black uppercase italic">Mining Engine Active</h4>
-                    <span id="p-timer" class="text-[10px] font-bold text-green-500">Calculating...</span>
+            <div id="profit-section" class="hidden glass p-6 border-l-4 border-blue-500 bg-blue-500/5">
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-[10px] font-bold uppercase opacity-60">Mining Active</p>
+                    <p id="p-timer" class="text-[10px] font-black text-blue-500">Syncing</p>
                 </div>
-                <button id="claim-profit-btn" disabled onclick="requestProfit()" class="w-full py-4 bg-green-600/20 text-green-500 rounded-2xl text-[10px] font-black uppercase border border-green-500/30">Next Profit in 24h</button>
+                <button id="claim-profit-btn" disabled onclick="requestProfit()" class="w-full py-3 bg-white/5 border border-white/10 text-[10px] font-black uppercase rounded-lg">Calculating Rewards</button>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="claimDaily()" id="claim-btn" class="glass p-6 text-center border-b-4 border-yellow-500">
-                    <i class="fa-solid fa-coins text-yellow-500 mb-2"></i><p class="text-[10px] font-black uppercase">Daily Reward</p>
-                </button>
-                <button onclick="changePage('nodes')" class="glass p-6 text-center border-b-4 border-blue-500">
-                    <i class="fa-solid fa-gem text-blue-500 mb-2"></i><p class="text-[10px] font-black uppercase">Buy Plans</p>
-                </button>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="changePage('nodes')" class="glass p-5 text-center"><i class="fa-solid fa-microchip mb-2 opacity-40"></i><p class="text-[9px] font-bold uppercase">Nodes</p></button>
+                <button onclick="changePage('promo')" class="glass p-5 text-center"><i class="fa-solid fa-ticket mb-2 opacity-40"></i><p class="text-[9px] font-bold uppercase">Promos</p></button>
+            </div>
+
+            <div class="glass p-6 space-y-4">
+                <h4 class="text-[11px] font-black uppercase opacity-40">Institutional Information</h4>
+                <div class="grid grid-cols-1 gap-2">
+                    <button onclick="changePage('about')" class="text-left text-[11px] font-bold py-2 border-b border-white/5 flex justify-between">About MintCrest <i class="fa-solid fa-chevron-right opacity-30"></i></button>
+                    <button onclick="changePage('privacy')" class="text-left text-[11px] font-bold py-2 flex justify-between">Legal Agreement <i class="fa-solid fa-chevron-right opacity-30"></i></button>
+                </div>
+                <button onclick="logout()" class="w-full py-3 text-red-500 font-black text-[10px] uppercase mt-4">Terminate Session</button>
             </div>
         </div>
 
-        <div id="p-nodes" class="page space-y-6 pb-24">
-            <h3 class="text-xl font-black italic text-center">INVESTMENT NODES</h3>
-            <div id="plans-grid" class="grid grid-cols-1 gap-5"></div>
+        <div id="p-about" class="page space-y-4">
+            <h3 class="text-xl font-black">Corporate Profile</h3>
+            <div class="glass p-6 text-[12px] leading-relaxed opacity-70 font-medium">
+                MintCrest Gold is a regulated digital asset management firm. We specialize in high-frequency cloud mining operations providing institutional-grade returns to retail investors. All transactions are manually audited.
+            </div>
+            <button onclick="changePage('home')" class="btn-core w-full py-3 text-[10px]">Return</button>
         </div>
 
-        <div id="p-history" class="page space-y-4 pb-24"><div id="history-list" class="space-y-4"></div></div>
-        
-        <div id="p-wallet" class="page"><div class="glass p-10 text-center space-y-6">
-            <h3 class="text-xl font-black text-blue-500">DEPOSIT FUNDS</h3>
-            <div id="gate-nums" class="space-y-2 text-left"></div>
+        <div id="p-privacy" class="page space-y-4">
+            <h3 class="text-xl font-black">Legal Terms</h3>
+            <div class="glass p-6 text-[12px] leading-relaxed opacity-70 font-medium">
+                Assets are indexed to gold-backed liquidity pools. Withdrawals are subject to 24-hour verification. Fraudulent activity results in immediate permanent account termination without refund.
+            </div>
+            <button onclick="changePage('home')" class="btn-core w-full py-3 text-[10px]">Return</button>
+        </div>
+
+        <div id="p-nodes" class="page space-y-4 pb-20"><div id="plans-grid" class="space-y-4"></div></div>
+
+        <div id="p-history" class="page space-y-4 pb-20"><div id="history-list" class="space-y-3"></div></div>
+
+        <div id="p-promo" class="page space-y-4">
+            <h3 class="text-xl font-black">Redeem Voucher</h3>
+            <input id="u-promo-code" placeholder="Enter Promo Code">
+            <button onclick="redeemPromo()" class="btn-core w-full py-4 text-[11px] uppercase">Apply Code</button>
+        </div>
+
+        <div id="p-wallet" class="page"><div class="glass p-8 space-y-5">
+            <h3 class="text-lg font-black uppercase">Capital Deposit</h3>
+            <div id="gate-nums" class="space-y-2"></div>
             <input id="d-amt" type="number" placeholder="Amount (PKR)">
             <input id="d-tid" placeholder="Transaction ID">
-            <input id="d-proof-file" type="file" accept="image/*" class="text-[10px]">
-            <button onclick="sendDeposit()" class="w-full p-6 btn-prime uppercase text-[10px]">Submit for Review</button>
+            <input id="d-proof-file" type="file" class="text-[10px]">
+            <button onclick="sendDeposit()" class="btn-core w-full py-4 uppercase text-[10px]">Submit Evidence</button>
         </div></div>
 
-        <div id="p-withdraw" class="page"><div class="glass p-10 text-center space-y-6">
-            <h3 class="text-xl font-black text-red-500">CASHOUT</h3>
-            <input id="w-amt" type="number" placeholder="Withdraw Amount">
-            <input id="w-acc" placeholder="Account Title & Number">
-            <button onclick="sendWithdraw()" class="w-full p-6 btn-prime bg-red-600 text-[10px]">Request Payout</button>
+        <div id="p-withdraw" class="page"><div class="glass p-8 space-y-5">
+            <h3 class="text-lg font-black uppercase text-red-500">Liquidation Request</h3>
+            <input id="w-amt" type="number" placeholder="PKR Amount">
+            <input id="w-acc" placeholder="Payment Details (Acc/Title)">
+            <button onclick="sendWithdraw()" class="btn-core bg-red-600 w-full py-4 uppercase text-[10px]">Request Payout</button>
         </div></div>
 
     </main>
 
-    <div id="admin-ui" class="fixed inset-0 bg-black z-[100000] hidden overflow-y-auto p-7 pb-40">
+    <div id="admin-ui" class="fixed inset-0 bg-[#0d1117] z-[100000] hidden overflow-y-auto p-6 pb-40">
         <div class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl font-black text-blue-500 italic">GUARDIAN ADMIN</h2>
-            <button onclick="closeAdmin()" class="w-12 h-12 rounded-xl bg-red-600/20 text-red-500">X</button>
+            <h2 class="text-2xl font-black text-blue-500 uppercase tracking-tighter italic">Overlord Dashboard</h2>
+            <button onclick="closeAdmin()" class="px-4 py-2 bg-white/5 rounded-lg border border-white/10 font-black">Exit</button>
         </div>
 
-        <div class="glass p-6 border-l-8 border-green-500 mb-8">
-            <h4 class="text-[10px] font-black text-green-500 uppercase mb-4">Profit Requests Desk</h4>
-            <div id="adm-profit-list" class="space-y-4"></div>
+        <div class="grid grid-cols-2 gap-3 mb-8">
+            <div class="glass p-4"><p id="adm-total-users" class="text-xl font-black">0</p><p class="text-[8px] uppercase opacity-40">Total Accounts</p></div>
+            <div class="glass p-4"><p id="adm-total-bal" class="text-xl font-black text-green-500">0</p><p class="text-[8px] uppercase opacity-40">Platform Liability</p></div>
         </div>
 
-        <div class="glass p-6 mb-8">
-            <h4 class="text-[10px] font-black uppercase text-blue-400 mb-4">Plan Architect</h4>
-            <input id="adm-p-name" placeholder="Plan Name">
-            <div class="flex gap-2">
-                <input id="adm-p-price" type="number" placeholder="Price">
-                <input id="adm-p-profit" type="number" placeholder="Daily PKR">
+        <div class="glass p-5 mb-8">
+            <h4 class="text-[10px] font-black uppercase text-purple-400 mb-4">Account Archive (Ban/Delete/Credit)</h4>
+            <div id="adm-user-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2"></div>
+            <div class="mt-6 p-4 bg-white/5 rounded-lg border border-white/5">
+                <h5 class="text-[9px] font-black uppercase mb-3">Direct Credit Injunction</h5>
+                <input id="adm-inj-user" placeholder="Username">
+                <input id="adm-inj-amt" type="number" placeholder="Amount">
+                <button onclick="manualInjunction()" class="btn-core w-full py-3 text-[9px] bg-purple-600 uppercase">Inject Balance</button>
             </div>
-            <button onclick="createPlan()" class="w-full p-4 btn-prime text-[10px]">Deploy Plan</button>
         </div>
 
-        <div class="glass p-6 mb-8">
-            <h4 class="text-[10px] font-black uppercase text-yellow-500 mb-4">System Gateways</h4>
-            <input id="adm-j" placeholder="JazzCash Number">
-            <input id="adm-e" placeholder="EasyPaisa Number">
-            <button onclick="saveGateways()" class="w-full p-4 bg-yellow-600 text-black font-black rounded-xl text-[10px]">Update Numbers</button>
+        <div class="glass p-5 mb-8">
+            <h4 class="text-[10px] font-black uppercase text-blue-400 mb-4">Resource Management</h4>
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <input id="adm-p-name" placeholder="Node Name">
+                <input id="adm-p-price" type="number" placeholder="Price">
+            </div>
+            <input id="adm-p-profit" type="number" placeholder="Daily Profit">
+            <button onclick="createNode()" class="btn-core w-full py-3 mb-6 text-[9px] uppercase">Deploy Node</button>
+            
+            <h5 class="text-[9px] font-black uppercase mb-3 text-yellow-500">Active Node Inventory (Delete Only)</h5>
+            <div id="adm-node-list" class="space-y-2 mb-8"></div>
+
+            <h5 class="text-[9px] font-black uppercase mb-3 text-yellow-500">Promo Code Generator</h5>
+            <input id="adm-promo-code" placeholder="CODE (e.g. MEGA100)">
+            <input id="adm-promo-amt" type="number" placeholder="Bonus Value">
+            <button onclick="createPromo()" class="btn-core w-full py-3 bg-yellow-600 text-black text-[9px] uppercase">Create Voucher</button>
         </div>
 
-        <h4 class="text-xl font-black italic mb-6">Pending Deposits/Withdraws</h4>
-        <div id="adm-req-list" class="space-y-6"></div>
+        <h4 class="text-xl font-black uppercase mb-6 italic">Pending Authorization</h4>
+        <div id="adm-profit-list" class="space-y-4 mb-10"></div>
+        <div id="adm-req-list" class="space-y-8"></div>
     </div>
 
-    <nav id="bottom-nav" class="hidden fixed bottom-0 w-full glass border-t border-[var(--border)] p-6 flex justify-around items-center rounded-t-[3rem] z-[4000]">
-        <button onclick="changePage('home')" class="p-3"><i class="fa-solid fa-home text-lg"></i></button>
-        <button onclick="changePage('nodes')" class="p-3"><i class="fa-solid fa-gem text-blue-500 text-2xl"></i></button>
-        <button onclick="changePage('history')" class="p-3"><i class="fa-solid fa-list text-lg"></i></button>
+    <nav id="bottom-nav" class="hidden fixed bottom-0 w-full bg-[#0d1117] border-t border-[var(--border)] p-6 flex justify-around items-center z-[4000]">
+        <i onclick="changePage('home')" class="nav-item fa-solid fa-house active"></i>
+        <i onclick="changePage('nodes')" class="nav-item fa-solid fa-gem"></i>
+        <i onclick="changePage('history')" class="nav-item fa-solid fa-chart-bar"></i>
+        <i onclick="adminTap()" class="nav-item fa-solid fa-shield-halved"></i>
     </nav>
 
-    <section id="auth-ui" class="fixed inset-0 z-[20000] bg-black flex flex-col items-center justify-center p-12 text-center">
-        <h2 class="text-3xl font-black uppercase tracking-[0.3em] mb-10">MintCrest <span class="text-blue-500 italic">Gold</span></h2>
-        <input id="l-name" placeholder="YOUR NAME" class="text-center font-bold uppercase py-5">
-        <button onclick="login()" class="w-full btn-prime p-6 uppercase text-[10px] font-black">Enter System</button>
+    <section id="auth-ui" class="fixed inset-0 z-[20000] bg-black flex flex-col items-center justify-center p-10 text-center">
+        <div class="w-16 h-16 bg-blue-600 rounded-xl mb-8 flex items-center justify-center text-3xl font-black italic text-white shadow-2xl">M</div>
+        <h2 class="text-2xl font-black uppercase tracking-tighter mb-8">System Access</h2>
+        <input id="l-name" placeholder="IDENTIFICATION NAME" class="text-center font-bold uppercase max-w-[300px]">
+        <button onclick="login()" class="w-full max-w-[300px] btn-core py-4 uppercase text-[11px] tracking-widest">Verify ID</button>
     </section>
 
     <script>
@@ -155,9 +193,12 @@
 
         function login() {
             const n = document.getElementById('l-name').value.trim().toLowerCase();
-            if(n.length < 3) return alert("Enter name, sweetie! 😘");
+            if(n.length < 3) return alert("Valid ID required.");
             db.collection("users").doc(n).get().then(doc => {
-                if(!doc.exists) db.collection("users").doc(n).set({ name: n, balance: 0, lastClaim: 0, status: 'active', activePlan: null, lastProfitRequest: 0 });
+                if(doc.exists && doc.data().status === 'banned') return alert("This account is permanently terminated.");
+                if(!doc.exists) {
+                    db.collection("users").doc(n).set({ name: n, balance: 0, status: 'active', joinDate: Date.now() });
+                }
                 localStorage.setItem('mc_session', n); enterApp(n);
             });
         }
@@ -167,126 +208,147 @@
             document.getElementById('app-ui').classList.remove('hidden');
             document.getElementById('main-header').classList.remove('hidden');
             document.getElementById('bottom-nav').classList.remove('hidden');
-            document.getElementById('wa-btn').classList.remove('hidden');
-
-            db.collection("settings").doc("global").onSnapshot(d => {
-                settings = d.data() || { jazzNum: '...', easyNum: '...' };
-                document.getElementById('gate-nums').innerHTML = `
-                    <div class="p-4 bg-white/5 rounded-xl border border-white/5"><p class="text-[8px] opacity-40">JAZZCASH</p><h4 class="font-black">${settings.jazzNum}</h4></div>
-                    <div class="p-4 bg-white/5 rounded-xl border border-white/5"><p class="text-[8px] opacity-40">EASYPAISA</p><h4 class="font-black">${settings.easyNum}</h4></div>
-                `;
-            });
-
+            
             db.collection("users").doc(n).onSnapshot(doc => {
                 user = doc.data();
-                document.getElementById('v-bal').innerText = "₨ " + (user.balance || 0).toLocaleString();
-                document.getElementById('top-bal').innerText = "₨ " + (user.balance || 0).toLocaleString();
+                if(user.status === 'banned') logout();
+                document.getElementById('v-bal').innerText = "PKR " + (user.balance || 0).toLocaleString();
+                document.getElementById('top-bal').innerText = "PKR " + (user.balance || 0).toLocaleString();
                 updateProfitTimer();
+            });
+            
+            db.collection("settings").doc("global").onSnapshot(d => {
+                settings = d.data() || {};
+                document.getElementById('gate-nums').innerHTML = `
+                    <div class="p-4 bg-white/5 rounded border border-white/5"><p class="text-[8px] opacity-30 font-black">JAZZCASH</p><h4 class="font-bold text-sm">${settings.jazzNum || '---'}</h4></div>
+                    <div class="p-4 bg-white/5 rounded border border-white/5"><p class="text-[8px] opacity-30 font-black">EASYPAISA</p><h4 class="font-bold text-sm">${settings.easyNum || '---'}</h4></div>
+                `;
             });
             syncPlans(); syncHistory(n);
         }
 
-        // --- PROFIT LOGIC ---
+        // --- PROFIT CORE ---
         function updateProfitTimer() {
             if(!user.activePlan) return document.getElementById('profit-section').classList.add('hidden');
             document.getElementById('profit-section').classList.remove('hidden');
-            
-            const lastTime = user.lastProfitRequest || user.planStartTime;
-            const now = Date.now();
-            const diff = now - lastTime;
-            const waitTime = 24 * 60 * 60 * 1000; // 24 Hours
+            const diff = Date.now() - (user.lastProfitRequest || user.planStartTime);
+            const waitTime = 24 * 60 * 60 * 1000;
 
             if(diff >= waitTime) {
-                document.getElementById('claim-profit-btn').disabled = false;
-                document.getElementById('claim-profit-btn').innerText = "CLAIM PROFIT REQUEST";
-                document.getElementById('claim-profit-btn').style.background = "#16a34a";
-                document.getElementById('claim-profit-btn').style.color = "white";
-                document.getElementById('p-timer').innerText = "READY!";
+                const btn = document.getElementById('claim-profit-btn');
+                btn.disabled = false; btn.innerText = "COLLECT PROFIT DATA";
+                btn.className = "w-full py-3 bg-blue-600 text-white text-[10px] font-black uppercase rounded-lg";
+                document.getElementById('p-timer').innerText = "READY";
             } else {
-                const remaining = waitTime - diff;
-                const hours = Math.floor(remaining / (1000 * 60 * 60));
-                const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-                document.getElementById('p-timer').innerText = `${hours}h ${mins}m left`;
+                const rem = waitTime - diff;
+                const h = Math.floor(rem / 3600000);
+                document.getElementById('p-timer').innerText = h + "H REMAINING";
                 document.getElementById('claim-profit-btn').disabled = true;
             }
         }
 
         async function requestProfit() {
-            await db.collection("requests").add({ 
-                user: user.name, amount: user.planDailyProfit, 
-                type: 'Profit Request', status: 'pending', time: Date.now() 
-            });
+            await db.collection("requests").add({ user: user.name, amount: user.planDailyProfit, type: 'Profit Request', status: 'pending', time: Date.now() });
             await db.collection("users").doc(user.name).update({ lastProfitRequest: Date.now() });
-            alert("Profit request sent to admin, sweetie! 😘");
+            alert("Data logged for verification.");
         }
 
-        // --- USER ACTIONS ---
-        async function buyPlan(id, price, profit, name) {
-            if(user.balance < price) return alert("Incomplete funds! Deposit first, sweetie. 😘");
-            if(confirm(`Confirm Investment in ${name}?`)) {
-                await db.collection("users").doc(user.name).update({ 
-                    balance: firebase.firestore.FieldValue.increment(-price),
-                    activePlan: name,
-                    planDailyProfit: profit,
-                    planStartTime: Date.now(),
-                    lastProfitRequest: Date.now()
-                });
-                alert("Plan Engine Initialized! 🚀");
-            }
+        // --- PROMO SYSTEM ---
+        async function redeemPromo() {
+            const code = document.getElementById('u-promo-code').value.trim().toUpperCase();
+            const snap = await db.collection("promos").doc(code).get();
+            if(!snap.exists) return alert("Invalid Voucher.");
+            const p = snap.data();
+            await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(p.amount) });
+            await db.collection("requests").add({ user: user.name, amount: p.amount, type: 'Promo Code: '+code, status: 'approved', time: Date.now() });
+            alert("Voucher Applied! PKR " + p.amount);
+            document.getElementById('u-promo-code').value = '';
         }
 
-        // --- ADMIN GOD MODE ---
-        function adminTap() { tapCount++; if(tapCount >= 5) { if(prompt("Guardian Access:")==="mint786") { document.getElementById('admin-ui').classList.remove('hidden'); syncAdm(); } tapCount=0; } }
+        // --- OVERLORD ADMIN LOGIC ---
+        function adminTap() { tapCount++; if(tapCount >= 5) { if(prompt("Auth:")==="mint786") { document.getElementById('admin-ui').classList.remove('hidden'); syncAdm(); } tapCount=0; } }
         function closeAdmin() { document.getElementById('admin-ui').classList.add('hidden'); }
 
-        async function createPlan() {
-            const n = document.getElementById('adm-p-name').value;
-            const p = parseInt(document.getElementById('adm-p-price').value);
-            const pr = parseInt(document.getElementById('adm-p-profit').value);
-            await db.collection("plans").add({ name: n, price: p, dailyProfit: pr });
-            alert("Plan Deployed! 😘");
+        async function createNode() {
+            await db.collection("plans").add({ 
+                name: document.getElementById('adm-p-name').value, 
+                price: parseInt(document.getElementById('adm-p-price').value), 
+                dailyProfit: parseInt(document.getElementById('adm-p-profit').value) 
+            });
+            alert("Node Deployed.");
         }
 
-        async function saveGateways() {
-            await db.collection("settings").doc("global").set({ 
-                jazzNum: document.getElementById('adm-j').value, 
-                easyNum: document.getElementById('adm-e').value 
-            }, { merge: true });
-            alert("Numbers Updated! 😘");
+        async function createPromo() {
+            const code = document.getElementById('adm-promo-code').value.toUpperCase();
+            const amt = parseInt(document.getElementById('adm-promo-amt').value);
+            await db.collection("promos").doc(code).set({ amount: amt });
+            alert("Voucher Created.");
         }
 
         function syncAdm() {
-            // General Requests (Deposit/Withdraw)
+            // User List with Controls
+            db.collection("users").onSnapshot(s => {
+                const ul = document.getElementById('adm-user-list'); ul.innerHTML = '';
+                let totalB = 0;
+                s.forEach(doc => { 
+                    const u = doc.data(); totalB += u.balance;
+                    ul.innerHTML += `<div class="bg-white/5 p-3 rounded flex justify-between items-center text-[10px]">
+                        <div><p class="${u.status==='banned'?'text-red-500':'text-gray-300'} font-bold">${u.name.toUpperCase()}</p><p class="opacity-40">PKR ${u.balance}</p></div>
+                        <div class="flex gap-2">
+                            <button onclick="toggleBan('${u.name}', '${u.status}')" class="px-3 py-1 bg-red-600/20 text-red-500 rounded">${u.status==='banned'?'Unban':'Ban'}</button>
+                            <button onclick="deleteAccount('${u.name}')" class="px-3 py-1 bg-red-900 rounded">Del</button>
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('adm-total-users').innerText = s.size;
+                document.getElementById('adm-total-bal').innerText = "PKR " + totalB.toLocaleString();
+            });
+
+            // Pending Actions
             db.collection("requests").where("status", "==", "pending").onSnapshot(s => {
                 const list = document.getElementById('adm-req-list');
                 const pList = document.getElementById('adm-profit-list');
                 list.innerHTML = ''; pList.innerHTML = '';
                 s.forEach(doc => {
                     const r = doc.data();
-                    const html = `<div class="glass p-5 mb-4 border-l-4 ${r.type==='Deposit'?'border-blue-500':'border-red-500'}">
-                        <p class="text-[9px] font-black uppercase opacity-50">${r.user} | ${r.type}</p>
-                        <h4 class="text-xl font-black italic">₨ ${r.amount}</h4>
-                        <div class="flex gap-2 mt-4">
-                            <button onclick="approveReq('${doc.id}', '${r.user}', ${r.amount}, '${r.type}')" class="flex-1 bg-green-600 p-3 rounded-xl text-[9px] font-black">Approve</button>
-                            <button onclick="rejectReq('${doc.id}', '${r.user}', ${r.amount}, '${r.type}')" class="flex-1 bg-red-600 p-3 rounded-xl text-[9px] font-black">Reject</button>
+                    const html = `<div class="glass p-5 border-l-4 ${r.type==='Deposit'?'border-blue-500':'border-red-500'}">
+                        <p class="text-[9px] font-bold opacity-40">${r.user.toUpperCase()} | ${r.type}</p>
+                        <h4 class="text-2xl font-black italic">PKR ${r.amount}</h4>
+                        <p class="text-[9px] opacity-40 mb-4">${r.tid || ''}</p>
+                        ${r.proof ? `<img src="${r.proof}" class="w-full rounded mb-4 border border-white/5">` : ''}
+                        <div class="flex gap-2">
+                            <button onclick="approveReq('${doc.id}', '${r.user}', ${r.amount}, '${r.type}')" class="flex-1 bg-green-700 py-3 rounded text-[9px] font-bold uppercase">Approve</button>
+                            <button onclick="rejectReq('${doc.id}', '${r.user}', ${r.amount}, '${r.type}')" class="flex-1 bg-red-700 py-3 rounded text-[9px] font-bold uppercase">Reject</button>
                         </div>
                     </div>`;
                     if(r.type === 'Profit Request') pList.innerHTML += html;
                     else list.innerHTML += html;
                 });
             });
+
+            // Node List (Delete Only)
+            db.collection("plans").onSnapshot(s => {
+                const nl = document.getElementById('adm-node-list'); nl.innerHTML = '';
+                s.forEach(doc => {
+                    nl.innerHTML += `<div class="flex justify-between items-center bg-white/5 p-2 rounded text-[9px]">
+                        <span>${doc.data().name} (PKR ${doc.data().price})</span>
+                        <button onclick="deleteNode('${doc.id}')" class="text-red-500 font-bold">DELETE</button>
+                    </div>`;
+                });
+            });
         }
 
+        async function deleteNode(id) { if(confirm("Terminate this node?")) await db.collection("plans").doc(id).delete(); }
+        async function toggleBan(u, s) { await db.collection("users").doc(u).update({ status: s === 'banned' ? 'active' : 'banned' }); }
+        async function deleteAccount(u) { if(confirm("Delete data for "+u+"?")) await db.collection("users").doc(u).delete(); }
+        
         async function approveReq(id, u, a, type) {
             if(type === 'Deposit' || type === 'Profit Request') await db.collection("users").doc(u).update({ balance: firebase.firestore.FieldValue.increment(a) });
             await db.collection("requests").doc(id).update({ status: 'approved' });
-            alert("Task Approved! 😘");
         }
-
         async function rejectReq(id, u, a, type) {
             if(type === 'Withdraw') await db.collection("users").doc(u).update({ balance: firebase.firestore.FieldValue.increment(a) });
             await db.collection("requests").doc(id).update({ status: 'rejected' });
-            alert("Task Rejected! 😘");
         }
 
         // --- UTILS ---
@@ -295,28 +357,59 @@
                 const g = document.getElementById('plans-grid'); g.innerHTML = '';
                 s.forEach(doc => {
                     const p = doc.data();
-                    g.innerHTML += `<div class="glass p-8 border-l-[15px] border-blue-600 flex justify-between items-center shadow-xl">
-                        <div><p class="text-[10px] font-black opacity-30 uppercase">${p.name}</p><h4 class="text-2xl font-black italic">₨ ${p.price}</h4><p class="text-[9px] font-bold text-blue-500 uppercase mt-2">₨ ${p.dailyProfit} Profit/24h</p></div>
-                        <button onclick="buyPlan('${doc.id}', ${p.price}, ${p.dailyProfit}, '${p.name}')" class="btn-prime px-8 py-4 text-[10px] font-black uppercase">Buy Now</button>
+                    g.innerHTML += `<div class="glass p-6 flex justify-between items-center">
+                        <div class="text-left"><p class="text-[9px] font-bold opacity-40 uppercase">${p.name}</p><h4 class="text-xl font-black">PKR ${p.price}</h4><p class="text-[9px] text-blue-500 font-bold mt-1">PKR ${p.dailyProfit} Return/24H</p></div>
+                        <button onclick="buyPlan('${doc.id}', ${p.price}, ${p.dailyProfit}, '${p.name}')" class="btn-core px-6 py-3 text-[10px] uppercase">Initialize</button>
                     </div>`;
                 });
             });
+        }
+
+        async function buyPlan(id, price, profit, name) {
+            if(user.balance < price) return alert("Insufficient Liquidity.");
+            if(confirm("Confirm Node Deployment?")) {
+                await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-price), activePlan: name, planDailyProfit: profit, planStartTime: Date.now(), lastProfitRequest: Date.now() });
+                await db.collection("requests").add({ user: user.name, amount: price, type: 'Activated: '+name, status: 'approved', time: Date.now() });
+                alert("Node Online.");
+            }
         }
 
         function syncHistory(n) {
             db.collection("requests").where("user", "==", n).orderBy("time", "desc").onSnapshot(s => {
                 const h = document.getElementById('history-list'); h.innerHTML = '';
                 s.forEach(doc => {
-                    const r = doc.data(); const clr = r.status==='pending'?'bg-yellow-500':(r.status==='approved'?'bg-green-500':'bg-red-600');
-                    h.innerHTML += `<div class="glass p-6 flex justify-between items-center"><div><p class="text-[8px] opacity-30 font-black uppercase">${r.type}</p><h4 class="text-lg font-black italic">₨ ${r.amount}</h4></div><div class="px-4 py-1.5 rounded-full text-[8px] font-black uppercase ${clr} text-black">${r.status}</div></div>`;
+                    const r = doc.data(); const st = r.status==='approved'?'text-green-500':'text-yellow-500';
+                    h.innerHTML += `<div class="glass p-5 flex justify-between items-center"><div class="text-left"><p class="text-[8px] font-bold opacity-40 uppercase">${r.type}</p><h4 class="text-sm font-black">PKR ${r.amount}</h4></div><div class="text-[8px] font-black uppercase ${st}">${r.status}</div></div>`;
                 });
             });
         }
 
-        function changePage(p) { document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page')); document.getElementById('p-'+p).classList.add('active-page'); window.scrollTo(0,0); }
-        function copyRef() { navigator.clipboard.writeText(user.name.toUpperCase()); alert("Code Copied! 😘"); }
+        async function sendDeposit() {
+            const a = parseInt(document.getElementById('d-amt').value); const t = document.getElementById('d-tid').value; const file = document.getElementById('d-proof-file').files[0];
+            if(!a || !t || !file) return alert("Incomplete Documentation.");
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = async () => { await db.collection("requests").add({ user: user.name, amount: a, tid: t, proof: reader.result, status: 'pending', type: 'Deposit', time: Date.now() }); alert("Received."); changePage('home'); };
+        }
+
+        async function sendWithdraw() {
+            const a = parseInt(document.getElementById('w-amt').value);
+            if(user.balance < a) return alert("Liquidity Error.");
+            await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-a) });
+            await db.collection("requests").add({ user: user.name, amount: a, tid: document.getElementById('w-acc').value, status: 'pending', type: 'Withdraw', time: Date.now() });
+            alert("Verification Started."); changePage('home');
+        }
+
+        function changePage(p) { 
+            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page')); 
+            document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('active'));
+            document.getElementById('p-'+p).classList.add('active-page');
+            window.scrollTo(0,0); 
+        }
+
+        function logout() { localStorage.removeItem('mc_session'); location.reload(); }
         window.onload = () => { if(localStorage.getItem('mc_session')) enterApp(localStorage.getItem('mc_session')); }
-        setInterval(() => { if(user) updateProfitTimer(); }, 60000);
+        setInterval(() => { if(user) updateProfitTimer(); }, 30000);
     </script>
 </body>
 </html>
+        
