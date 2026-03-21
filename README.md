@@ -1,405 +1,327 @@
-<html lang="en" id="main-html" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <title>MintCrest Gold | Global Node</title>
+    <title>MintCrest Gold | Global Asset Vault</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        :root { --bg: #010409; --card: #0d1117; --text: #f0f6fc; --border: #30363d; --accent: #3b82f6; }
-        .light { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --border: #e2e8f0; --accent: #2563eb; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 100px; overflow-x: hidden; }
-        .glass { background: var(--card); border: 1px solid var(--border); }
-        .page { display: none; animation: slideUp 0.4s ease forwards; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #010409; color: white; overflow-x: hidden; }
+        
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+        .neon-border { border: 1px solid rgba(59, 130, 246, 0.5); box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+        .grad-blue { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .grad-gold { background: linear-gradient(135deg, #78350f 0%, #d97706 100%); }
+        .grad-purple { background: linear-gradient(135deg, #4c1d95 0%, #8b5cf6 100%); }
+        
+        .active-tab { color: #60a5fa; border-top: 3px solid #60a5fa; background: linear-gradient(to top, rgba(96,165,250,0.1), transparent); }
+        .page { display: none; animation: fadeIn 0.4s ease; }
         .active-page { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .btn-prime { background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; border-radius: 16px; font-weight: 800; transition: 0.2s; }
-        .btn-prime:active { transform: scale(0.95); }
-        input, textarea { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 14px; border-radius: 14px; width: 100%; outline: none; font-size: 13px; }
-        .nav-active { color: var(--accent); transform: scale(1.1); opacity: 1 !important; }
-        .animate-marquee { display: inline-block; animation: marquee 15s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .status-badge { font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .badge-pending { background: #fef3c7; color: #92400e; }
+        .badge-approved { background: #dcfce7; color: #166534; }
+        
+        .marquee { display: inline-block; animation: scroll 20s linear infinite; white-space: nowrap; }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
+<body class="h-screen flex flex-col">
 
-    <div id="lock-screen" class="fixed inset-0 z-[1000000] bg-[var(--bg)] hidden flex flex-col items-center justify-center p-8 text-center">
-        <div class="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mb-6 animate-pulse text-4xl">⚠️</div>
-        <h1 id="lock-title" class="text-2xl font-black uppercase italic text-red-500 mb-2">Access Restricted</h1>
-        <p id="lock-msg" class="text-[10px] font-bold opacity-60 uppercase tracking-widest leading-relaxed">System is currently undergoing optimization, sweetie! 😘</p>
+    <div id="ticker-wrap" class="hidden bg-blue-900/40 py-2 border-b border-white/10 z-[500] backdrop-blur-md">
+        <div class="marquee text-[9px] font-black uppercase tracking-widest text-blue-300">
+            🚀 <span id="ticker-text">MintCrest News: Withdrawals 10% Tax - New Flash Plans Live - Join WhatsApp Support</span> 🚀
+        </div>
     </div>
 
-    <header class="p-4 flex justify-between items-center sticky top-0 bg-[var(--bg)]/80 backdrop-blur-md border-b border-[var(--border)] z-[5000]">
-        <div class="flex items-center gap-2">
-            <div onclick="adminTap()" class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white italic shadow-lg shadow-blue-500/20">M</div>
-            <span class="font-black text-xs uppercase tracking-tighter">MintCrest <span class="text-blue-500">Gold</span></span>
-        </div>
-        <div class="flex items-center gap-3">
-            <button onclick="toggleTheme()" class="w-8 h-8 glass rounded-full flex items-center justify-center text-sm">🌓</button>
-            <div id="top-bal" class="text-[10px] font-black bg-blue-600/10 text-blue-500 px-4 py-1.5 rounded-full border border-blue-500/20 italic">₨ 0</div>
-        </div>
-    </header>
-
-    <section id="auth-ui" class="fixed inset-0 z-[20000] bg-[var(--bg)] flex flex-col items-center justify-center p-8 text-center">
-        <div class="w-16 h-16 bg-blue-600 rounded-[1.5rem] mb-6 flex items-center justify-center text-4xl font-black text-white italic shadow-2xl">M</div>
-        <h1 class="text-2xl font-black italic tracking-tighter mb-8 uppercase">Initialize Node</h1>
-        <div class="w-full max-w-[300px] space-y-4">
-            <input type="text" id="user-name" placeholder="Username" class="text-center font-bold">
-            <input type="password" id="user-pass" placeholder="Password" class="text-center font-bold">
-            <button onclick="login()" class="w-full p-4 btn-prime uppercase text-[10px] tracking-widest shadow-xl">Authorize Access</button>
-            <p onclick="alert('Contact Admin at @MintCrestSupport for reset! 😘')" class="text-[9px] text-blue-400 font-bold uppercase cursor-pointer italic opacity-60">Forgot Identity Key?</p>
+    <section id="auth-ui" class="fixed inset-0 z-[1000] bg-[#010409] flex flex-col items-center justify-center p-8 text-center">
+        <h1 onclick="adminTap()" class="text-6xl font-black italic tracking-tighter mb-2 uppercase bg-gradient-to-r from-white via-blue-400 to-blue-600 bg-clip-text text-transparent">MINTCREST</h1>
+        <p class="text-gray-500 text-[8px] uppercase tracking-[0.5em] mb-12 font-bold italic">Official Global Vault</p>
+        <div class="glass p-10 rounded-[3.5rem] w-full max-w-sm neon-border">
+            <input type="text" id="user-name" placeholder="Enter Full Name" class="w-full bg-white/5 p-5 rounded-2xl border border-white/10 outline-none text-center font-bold mb-6 text-white focus:border-blue-500 transition-all">
+            <button onclick="login()" class="w-full grad-blue py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest text-white shadow-xl active:scale-95 transition-all">Unlock Vault</button>
         </div>
     </section>
 
-    <main id="app-ui" class="hidden p-4 space-y-6">
+    <main id="app-ui" class="hidden flex-1 overflow-y-auto pb-32">
         
-        <div id="p-home" class="page active-page space-y-6">
-            <div class="bg-blue-600/5 border border-blue-500/10 p-2 rounded-xl overflow-hidden whitespace-nowrap">
-                <p id="v-news" class="animate-marquee inline-block text-[8px] font-black uppercase text-blue-400 italic">
-                    Welcome to MintCrest Gold! Minimum Deposit ₨ 200 | Trusted Node Active... 😘
-                </p>
-            </div>
-
-            <div class="p-8 rounded-[2.5rem] bg-gradient-to-br from-blue-700 to-blue-900 text-white shadow-2xl relative overflow-hidden">
-                <p class="text-[10px] font-black uppercase opacity-60 tracking-widest">Active Liquidity</p>
-                <h2 class="text-4xl font-black tracking-tighter mt-1" id="v-bal">₨ 0.00</h2>
-                <div class="mt-6 flex justify-between items-center bg-black/20 p-4 rounded-2xl backdrop-blur-md">
-                    <span class="text-[8px] font-bold uppercase italic">Node Status: Online</span>
-                    <button onclick="copyRef()" class="bg-white text-blue-800 px-4 py-2 rounded-xl text-[8px] font-black uppercase">Copy Invite Link</button>
+        <div id="p-home" class="page active-page p-6">
+            <div class="grad-blue p-10 rounded-[3.5rem] mb-6 shadow-2xl relative overflow-hidden neon-border">
+                <p class="text-[9px] text-blue-100 font-black mb-1 uppercase tracking-widest">Total Capital Assets</p>
+                <h2 class="text-5xl font-black tracking-tighter text-white" id="v-bal">₨ 0</h2>
+                <div id="countdown-display" class="mt-4 text-[9px] font-black text-yellow-300 uppercase italic bg-black/20 px-4 py-1.5 rounded-full inline-block">System Secure</div>
+                <div class="mt-8 flex justify-between items-center">
+                    <span class="text-[9px] bg-white/20 text-white px-5 py-2 rounded-full font-black">PROFIT: <span id="v-profit">0</span></span>
+                    <span id="rank-badge" class="text-[8px] font-black text-blue-200 uppercase italic">RANK: STANDARD</span>
                 </div>
             </div>
 
-            <div class="glass p-5 rounded-[2rem] flex gap-2 items-center">
-                <input type="text" id="promo-input" placeholder="Promo Code" class="flex-1 !p-3 font-bold uppercase">
-                <button onclick="applyPromo()" class="btn-prime px-6 py-3 text-[9px] uppercase">Apply</button>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <button onclick="changePage('wallet')" class="glass p-8 rounded-[2.5rem] text-center border-b-4 border-green-500 active:scale-95">📥 <span class="text-[10px] font-black block mt-2 uppercase text-green-400">Add Capital</span></button>
+                <button onclick="changePage('withdraw')" class="glass p-8 rounded-[2.5rem] text-center border-b-4 border-red-500 active:scale-95">📤 <span class="text-[10px] font-black block mt-2 uppercase text-red-400">Withdraw</span></button>
             </div>
 
-            <div id="timer-box" class="hidden glass p-6 rounded-[2.5rem] border-l-4 border-green-500 bg-green-500/5">
-                <p class="text-[8px] font-black uppercase opacity-60">Yield countdown active</p>
-                <div class="flex justify-between items-end mt-2">
-                    <h3 id="countdown" class="text-3xl font-black italic text-green-500 tracking-tighter">00:00:00</h3>
-                    <p class="text-[7px] font-black opacity-30 uppercase tracking-widest">Auto-Mining Profit</p>
+            <button onclick="requestBonus()" class="w-full grad-gold p-6 rounded-[2.5rem] mb-6 flex justify-between items-center shadow-xl active:scale-95">
+                <div class="text-left">
+                    <h4 class="text-[11px] font-black uppercase text-white">Daily Bonus Claim</h4>
+                    <p class="text-[8px] font-bold text-amber-200 uppercase">Request Daily Reward From Admin</p>
                 </div>
-            </div>
-
-            <div class="flex gap-2 p-1 bg-white/5 rounded-2xl">
-                <button onclick="renderPlans('normal')" id="btn-normal" class="flex-1 p-3 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase">20 Standard Nodes</button>
-                <button onclick="renderPlans('special')" id="btn-special" class="flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40">5 VIP Offers</button>
-            </div>
-            <div id="plans-grid" class="grid grid-cols-1 gap-4"></div>
+                <span class="text-2xl">🎁</span>
+            </button>
         </div>
 
-        <div id="p-wallet" class="page space-y-6">
-            <h3 class="text-[10px] font-black uppercase opacity-40 text-center italic tracking-widest">Fund Your Node</h3>
-            <div class="space-y-3">
-                <div class="glass p-5 rounded-[2rem] border-l-4 border-red-600 flex justify-between items-center">
-                    <div><p class="text-[8px] font-black text-red-500 uppercase">JazzCash</p><p id="j-num" class="text-lg font-black tracking-widest">03705519562</p></div>
-                    <button onclick="copyText('03705519562')" class="text-[8px] bg-white/5 px-3 py-2 rounded-lg font-bold">COPY</button>
-                </div>
-                <div class="glass p-5 rounded-[2rem] border-l-4 border-green-500 flex justify-between items-center">
-                    <div><p class="text-[8px] font-black text-green-500 uppercase">EasyPaisa</p><p id="e-num" class="text-lg font-black tracking-widest">03379827882</p></div>
-                    <button onclick="copyText('03379827882')" class="text-[8px] bg-white/5 px-3 py-2 rounded-lg font-bold">COPY</button>
-                </div>
-                <div class="glass p-5 rounded-[2rem] border-l-4 border-black flex justify-between items-center">
-                    <div><p class="text-[8px] font-black text-gray-400 uppercase">SadaPay</p><p class="text-lg font-black tracking-widest">03705519562</p></div>
-                    <button onclick="copyText('03705519562')" class="text-[8px] bg-white/5 px-3 py-2 rounded-lg font-bold">COPY</button>
-                </div>
-            </div>
-            <div class="glass p-6 rounded-[2.5rem] space-y-4">
-                <input type="number" id="dep-amt" placeholder="Amount Sent (₨)">
-                <input type="text" id="dep-tid" placeholder="TID (Transaction ID)">
-                <div class="relative">
-                    <input type="file" id="dep-file" accept="image/*" class="hidden" onchange="previewImg(this)">
-                    <label for="dep-file" class="w-full p-4 border-2 border-dashed border-[var(--border)] rounded-xl flex flex-col items-center justify-center gap-1 cursor-pointer">
-                        <span id="upload-icon" class="text-xl">📸</span>
-                        <span id="file-label" class="text-[8px] font-black uppercase opacity-50">Upload Proof Slip</span>
-                    </label>
-                    <img id="img-preview" class="hidden w-full h-32 object-cover rounded-xl mt-2 border border-blue-500/30">
-                </div>
-                <button onclick="submitDep()" class="w-full p-4 btn-prime uppercase text-[10px] tracking-widest">Confirm Deposit ⚡</button>
-            </div>
+        <div id="p-invest" class="page p-6">
+            <h2 class="text-center font-black italic mb-6 uppercase text-blue-500 text-xl tracking-tighter">Asset Fleets</h2>
+            <div id="plans-list" class="grid grid-cols-1 gap-3 pb-10"></div>
         </div>
 
-        <div id="p-withdraw" class="page space-y-6">
-            <h3 class="text-[10px] font-black uppercase opacity-40 text-center italic tracking-widest">Request Payout</h3>
-            <div class="grid grid-cols-2 gap-3">
-                <div onclick="selBank('JazzCash')" id="b-JazzCash" class="bank-card glass p-4 rounded-2xl flex flex-col items-center gap-2 border-2 border-transparent transition-all">
-                    <span class="text-2xl">🔴</span><span class="text-[8px] font-black uppercase">JazzCash</span>
-                </div>
-                <div onclick="selBank('EasyPaisa')" id="b-EasyPaisa" class="bank-card glass p-4 rounded-2xl flex flex-col items-center gap-2 border-2 border-transparent transition-all">
-                    <span class="text-2xl">🟢</span><span class="text-[8px] font-black uppercase">EasyPaisa</span>
-                </div>
+        <div id="p-activity" class="page p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-black italic uppercase text-blue-400 text-sm">Security Ledger</h2>
+                <button onclick="clearHistory()" class="text-[8px] bg-red-500/10 px-4 py-2 rounded-full text-red-400 font-black uppercase">Clear History</button>
             </div>
-            <div class="glass p-6 rounded-[2.5rem] space-y-4">
-                <input type="number" id="w-amt" placeholder="Amount (₨)">
-                <input type="text" id="w-acc" placeholder="Account Number">
-                <input type="text" id="w-name" placeholder="Account Holder Name">
-                <button onclick="submitWith()" class="w-full p-4 btn-prime uppercase text-[10px] tracking-widest">Withdraw Funds 📤</button>
-            </div>
+            <div id="user-history" class="space-y-3 pb-10"></div>
         </div>
 
-        <div id="p-about" class="page space-y-6">
-            <h3 class="text-[10px] font-black uppercase opacity-40 text-center italic tracking-widest">Legal & Privacy</h3>
-            <div class="glass p-6 rounded-[2.5rem] space-y-4 text-[11px] leading-relaxed font-bold opacity-80">
-                <p class="text-blue-500 uppercase italic">MintCrest Gold Enterprise</p>
-                <p>Founded in 2026, we are a globally recognized liquidity mining node based in UK. Our protocols ensure 99.9% uptime for daily yields.</p>
-                <p>Registration No: #UK-99201-MCG (Certified Trading Platform)</p>
-                <div class="h-[1px] bg-white/5 w-full"></div>
-                <h4 class="text-blue-400 uppercase">Privacy Policy</h4>
-                <p>Users are responsible for their own security keys. We process payouts within 24 hours through encrypted channels only. All transactions are final.</p>
+        <div id="p-more" class="page p-6 space-y-6 pb-12">
+            <div class="glass p-8 rounded-[3rem] border-l-8 border-blue-600 shadow-xl">
+                <h3 class="text-blue-500 font-black text-[11px] uppercase mb-3 italic">About MintCrest Gold</h3>
+                <p class="text-[8.5px] text-gray-400 font-bold uppercase leading-relaxed">MintCrest is a regulated digital asset firm specializing in high-frequency liquidity trading. We use military-grade security to ensure 100% capital protection and daily dividends for all investors.</p>
+            </div>
+
+            <div class="glass p-8 rounded-[3rem] border-t-4 border-purple-500">
+                <h3 class="text-purple-400 font-black text-[11px] uppercase mb-1 italic">Partnership Program</h3>
+                <p class="text-[8px] text-gray-500 mb-4 font-bold uppercase italic italic">Get 5% Instant Commission on Team Funding</p>
+                <div class="flex gap-2">
+                    <input type="text" id="ref-link" readonly class="flex-1 bg-white/5 p-4 rounded-xl text-[9px] font-bold border border-white/10 outline-none text-blue-300">
+                    <button onclick="copyRef()" class="bg-purple-600 px-6 rounded-xl font-black text-[9px] uppercase">Copy</button>
+                </div>
+            </div>
+
+            <div class="glass p-8 rounded-[3rem] border-t border-white/10">
+                <h3 class="text-gray-300 font-black text-[10px] uppercase mb-4 text-center">Privacy & Global Trust</h3>
+                <div class="space-y-2 text-[8px] text-gray-500 font-bold uppercase">
+                    <p>• AES-256 Bit Encrypted Transactions</p>
+                    <p>• Verified Liquidity Maintenance (10% Tax)</p>
+                    <p>• 24/7 Global Asset Monitoring</p>
+                </div>
+            </div>
+
+            <div class="glass p-8 rounded-[3rem] border-t border-green-500">
+                <h3 class="text-green-500 font-black text-[10px] uppercase mb-4 italic">Submit Inquiry</h3>
+                <textarea id="support-msg" placeholder="Describe your issue..." class="w-full bg-white/5 p-4 rounded-xl text-[10px] border border-white/10 outline-none mb-4 h-20"></textarea>
+                <button onclick="sendSupport()" class="w-full bg-green-600 py-3 rounded-xl font-black text-[9px] uppercase text-white">Send Message</button>
+            </div>
+
+            <button onclick="logout()" class="w-full glass p-6 rounded-[2.5rem] text-center text-[10px] font-black text-red-500 uppercase italic">Terminate Session</button>
+        </div>
+
+        <div id="p-wallet" class="page p-6">
+            <div class="glass p-10 rounded-[4rem] text-center border-t-8 border-blue-600 shadow-2xl">
+                <h3 class="font-black text-blue-500 mb-8 uppercase text-sm italic">Funding Nodes</h3>
+                <div class="space-y-3 mb-10 text-[9px] font-black uppercase">
+                    <div class="glass p-5 rounded-2xl flex justify-between border-blue-500/20"><span>JAZZ/SADA</span><span class="text-blue-400">03705519562</span></div>
+                    <div class="glass p-5 rounded-2xl flex justify-between border-green-500/20"><span>EASYPAISA</span><span class="text-green-400">03379827882</span></div>
+                    <div class="glass p-5 rounded-2xl flex flex-col items-center border-yellow-500/20 gap-2">
+                        <span>BINANCE USDT (TRC20)</span>
+                        <span class="text-yellow-400 text-[10px] break-all">TTSxm4pBK26RB4vXaa3Uo3hqGa5HdhxBDR</span>
+                        <button onclick="copyAddr('TTSxm4pBK26RB4vXaa3Uo3hqGa5HdhxBDR')" class="bg-yellow-500/10 text-yellow-500 px-4 py-1 rounded-full text-[7px] border border-yellow-500/20">Copy Address</button>
+                    </div>
+                </div>
+                <input type="number" id="dep-amount" placeholder="Capital Amount" class="w-full bg-white/5 p-5 rounded-2xl mb-4 text-center font-bold border border-white/10">
+                <input type="text" id="dep-trx" placeholder="TID / Hash Number" class="w-full bg-white/5 p-5 rounded-2xl mb-10 text-center font-bold uppercase border border-white/10">
+                <button onclick="submitDeposit()" class="w-full grad-blue py-6 rounded-3xl font-black text-[11px] uppercase text-white shadow-xl">Verify Capital</button>
             </div>
         </div>
 
-        <div id="p-history" class="page space-y-4">
-            <h3 class="text-[10px] font-black uppercase opacity-40 italic tracking-widest">Transaction Log</h3>
-            <div id="history-list" class="space-y-3"></div>
+        <div id="p-withdraw" class="page p-6">
+            <div class="glass p-10 rounded-[4rem] border-t-8 border-red-600 text-center shadow-2xl">
+                <h3 class="font-black text-red-500 mb-4 uppercase text-sm italic">Liquidation</h3>
+                <p class="text-[8px] text-gray-500 mb-8 font-black uppercase italic tracking-widest">10% Regulation Tax Deducted Automatically</p>
+                <input type="number" id="wd-amt" placeholder="Amount (PKR)" class="w-full bg-white/5 p-5 rounded-2xl mb-4 text-center font-black border border-white/10">
+                <input type="text" id="wd-acc" placeholder="Account Name & No" class="w-full bg-white/5 p-5 rounded-2xl mb-12 text-center text-[10px] font-bold border border-white/10">
+                <button onclick="submitWithdraw()" class="w-full bg-red-600 py-6 rounded-3xl font-black text-[11px] uppercase text-white shadow-lg">Authorize Withdrawal</button>
+            </div>
         </div>
-
     </main>
 
-    <div id="admin-ui" class="fixed inset-0 bg-[#010409] z-[100000] hidden overflow-y-auto p-4 md:p-8">
-        <div class="flex justify-between items-center mb-8 sticky top-0 bg-[#010409]/90 backdrop-blur-md py-4 z-10">
-            <h2 class="text-xl font-black text-blue-500 italic uppercase">Administration Node</h2>
-            <button onclick="closeAdmin()" class="bg-red-500/10 text-red-500 px-6 py-2 rounded-xl text-[10px] font-black uppercase">Exit</button>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="glass p-5 rounded-3xl border-b-2 border-blue-600 text-center"><p id="adm-users-count" class="text-2xl font-black">0</p><p class="text-[8px] font-black uppercase opacity-40">Total Members</p></div>
-            <div class="glass p-5 rounded-3xl border-b-2 border-green-500 text-center"><p id="adm-pending-count" class="text-2xl font-black">0</p><p class="text-[8px] font-black uppercase opacity-40">Pending Tasks</p></div>
-        </div>
-
-        <div class="glass rounded-[2.5rem] overflow-hidden mb-8">
-            <div class="p-6 bg-white/5 flex justify-between items-center border-b border-white/5">
-                <h3 class="text-[9px] font-black uppercase tracking-[0.2em]">Member Directory</h3>
+    <div id="admin-panel" class="fixed inset-0 bg-[#000814] z-[5000] hidden overflow-y-auto">
+        <header class="p-8 border-b border-white/10 bg-[#000814]/80 backdrop-blur-2xl sticky top-0 flex justify-between items-center shadow-2xl">
+            <div><h2 class="text-2xl font-black text-blue-500 uppercase italic">Command Node</h2><p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Master Control Interface</p></div>
+            <button onclick="closeAdmin()" class="bg-red-600 text-white px-8 py-3 rounded-2xl text-[9px] font-black uppercase">Exit</button>
+        </header>
+        
+        <div class="p-6">
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <div class="glass p-4 rounded-2xl text-center"><p class="text-[7px] text-gray-500 uppercase">Total Users</p><h4 id="adm-total-users" class="text-lg font-black text-blue-400">0</h4></div>
+                <div class="glass p-4 rounded-2xl text-center"><p class="text-[7px] text-gray-500 uppercase">Active Requests</p><h4 id="adm-total-reqs" class="text-lg font-black text-amber-400">0</h4></div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <tr class="text-[8px] uppercase text-gray-500 border-b border-white/5">
-                        <th class="p-4 italic">User</th><th class="p-4 italic">Pass</th><th class="p-4 italic">Balance</th><th class="p-4 italic">Action</th>
-                    </tr>
-                    <tbody id="users-table-body" class="text-[10px] font-bold"></tbody>
-                </table>
+
+            <div class="grid grid-cols-4 gap-2 mb-8">
+                <button onclick="showAdmTab('requests')" class="grad-blue p-4 rounded-2xl text-[8px] font-black uppercase">Reqs</button>
+                <button onclick="showAdmTab('users')" class="glass p-4 rounded-2xl text-[8px] font-black uppercase">Users</button>
+                <button onclick="showAdmTab('msg')" class="grad-purple p-4 rounded-2xl text-[8px] font-black uppercase">Inbox</button>
+                <button onclick="showAdmTab('config')" class="grad-gold p-4 rounded-2xl text-[8px] font-black uppercase">Tools</button>
+            </div>
+
+            <div id="adm-sec-requests" class="adm-tab space-y-4"></div>
+            <div id="adm-sec-users" class="adm-tab hidden space-y-2"></div>
+            <div id="adm-sec-msg" class="adm-tab hidden space-y-2"></div>
+
+            <div id="adm-sec-config" class="adm-tab hidden space-y-6">
+                <div class="glass p-8 rounded-[3rem]">
+                    <h3 class="text-blue-500 font-black text-[10px] uppercase mb-6 text-center">Manual Fund Control</h3>
+                    <input type="text" id="adm-target" placeholder="User Name" class="w-full bg-white/5 p-4 rounded-xl mb-3 text-center text-[10px] font-bold border border-white/10">
+                    <input type="number" id="adm-val" placeholder="Amount" class="w-full bg-white/5 p-4 rounded-xl mb-6 text-center text-[10px] font-bold border border-white/10">
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="manualEdit('balance')" class="grad-blue py-4 rounded-xl font-black text-[8px] uppercase">Add Balance</button>
+                        <button onclick="manualEdit('profit')" class="bg-emerald-600 py-4 rounded-xl font-black text-[8px] uppercase">Add Profit</button>
+                    </div>
+                </div>
+                <div class="glass p-8 rounded-[3rem]">
+                    <h3 class="text-amber-500 font-black text-[10px] uppercase mb-4 text-center">Broadcast Ticker</h3>
+                    <textarea id="bc-msg" class="w-full bg-white/5 p-4 rounded-xl text-[10px] border border-white/10 mb-4"></textarea>
+                    <button onclick="sendBroadcast()" class="w-full grad-gold py-4 rounded-xl font-black text-[8px] uppercase">Update News</button>
+                </div>
             </div>
         </div>
-
-        <div class="grid md:grid-cols-2 gap-6 pb-20">
-            <div class="glass p-6 rounded-[2.5rem] space-y-4">
-                <h4 class="text-[10px] font-black uppercase text-blue-400 italic">Global Broadcast</h4>
-                <textarea id="set-news" placeholder="Enter new announcement..."></textarea>
-                <button onclick="updateNews()" class="w-full btn-prime p-4 text-[10px] uppercase">Publish News</button>
-            </div>
-            <div class="glass p-6 rounded-[2.5rem] space-y-4">
-                <h4 class="text-[10px] font-black uppercase text-red-500 italic">System Lockdown</h4>
-                <button id="m-btn" onclick="toggleMaintenance()" class="w-full p-4 rounded-2xl bg-gray-800 text-[10px] font-black uppercase">Maintenance Mode: OFF</button>
-            </div>
-        </div>
-
-        <h3 class="text-[10px] font-black uppercase mb-4 opacity-40 italic">Action Queue</h3>
-        <div id="adm-requests-list" class="space-y-4 pb-20"></div>
     </div>
 
-    <nav id="bottom-nav" class="hidden fixed bottom-0 w-full glass border-t border-[var(--border)] p-4 flex justify-around items-center rounded-t-[2.5rem] z-[4000]">
-        <button onclick="changePage('home')" id="n-home" class="nav-active opacity-40 flex flex-col items-center gap-1 px-4 py-2">🏠<span class="text-[7px] font-black">NODE</span></button>
-        <button onclick="changePage('wallet')" id="n-wallet" class="opacity-40 flex flex-col items-center gap-1 px-4 py-2">📥<span class="text-[7px] font-black">FUND</span></button>
-        <button onclick="changePage('withdraw')" id="n-withdraw" class="opacity-40 flex flex-col items-center gap-1 px-4 py-2">📤<span class="text-[7px] font-black">PAYOUT</span></button>
-        <button onclick="changePage('history')" id="n-history" class="opacity-40 flex flex-col items-center gap-1 px-4 py-2">📜<span class="text-[7px] font-black">LOGS</span></button>
-        <button onclick="changePage('about')" id="n-about" class="opacity-40 flex flex-col items-center gap-1 px-4 py-2">🏢<span class="text-[7px] font-black">LEGAL</span></button>
+    <nav id="bottom-nav" class="hidden glass border-t border-white/5 p-8 flex justify-around items-center fixed bottom-0 left-0 w-full z-[200] rounded-t-[4rem] shadow-2xl">
+        <button onclick="changePage('home')" id="n-home" class="flex flex-col items-center gap-2 active-tab">🏠<span class="text-[8px] font-black uppercase mt-1">Vault</span></button>
+        <button onclick="changePage('invest')" id="n-invest" class="flex flex-col items-center gap-2">📈<span class="text-[8px] font-black uppercase mt-1">Fleet</span></button>
+        <button onclick="changePage('activity')" id="n-activity" class="flex flex-col items-center gap-2">📜<span class="text-[8px] font-black uppercase mt-1">Ledger</span></button>
+        <button onclick="changePage('more')" id="n-more" class="flex flex-col items-center gap-2">🏢<span class="text-[8px] font-black uppercase mt-1">Firm</span></button>
     </nav>
 
     <script>
-        // --- 1. FIREBASE SETUP ---
-        const firebaseConfig = { apiKey: "AIzaSyDt3ChZHyDdtM4Ir1oXRZJUywcOiV30Wtg", authDomain: "investment-84f4e.firebaseapp.com", projectId: "investment-84f4e", storageBucket: "investment-84f4e.appspot.com", messagingSenderId: "975293889308", appId: "1:975293889308:web:6d034a99cc966c75ff58d9" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        let user = null; let tapCount = 0; let selectedBank = "";
+        const firebaseConfig = { apiKey: "AIzaSyDt3ChZHyDdtM4Ir1oXRZJUywcOiV30Wtg", authDomain: "investment-84f4e.firebaseapp.com", projectId: "investment-84f4e", storageBucket: "investment-84f4e.firebasestorage.app", messagingSenderId: "975293889308", appId: "1:975293889308:web:6d034a99cc966c75ff58d9" };
+        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
+        let user = null; let tapCount = 0;
 
-        // --- 2. PLAN DATA ---
-        const NORMAL_PLANS = [];
-        for(let i=1; i<=20; i++) {
-            let prc = 200 + (i-1)*500;
-            let prf = (3 + (i*0.2)).toFixed(1);
-            NORMAL_PLANS.push({ name: `Node Standard v${i}`, price: prc, profit: prf, days: 10 + i });
-        }
-        const SPECIAL_PLANS = [
-            { name: "Gold Flash Node", price: 5000, profit: "15", days: "No Limit" },
-            { name: "Admin Choice Node", price: 10000, profit: "25", days: "No Limit" },
-            { name: "Whale Liquidity Node", price: 50000, profit: "40", days: "No Limit" },
-            { name: "Elite Stake Node", price: 100000, profit: "60", days: "No Limit" },
-            { name: "Prime Legacy Node", price: 500000, profit: "85", days: "No Limit" }
+        const plans = [
+            { n: "Micro-Elite I", p: 200, r: 3 }, { n: "Bronze-S", p: 1000, r: 3.5 }, { n: "Silver-X", p: 5000, r: 4.5 },
+            { n: "Gold-X", p: 10000, r: 5.5 }, { n: "Diamond-Master", p: 50000, r: 8 },
+            { n: "⚡ FLASH 24H", p: 500, r: 12, s: true }, { n: "🚀 ROCKET PRO", p: 12000, r: 18, s: true }, { n: "👑 CROWN KING", p: 25000, r: 22, s: true }
         ];
 
-        // --- 3. AUTH & CORE ---
+        window.onload = () => { 
+            const saved = localStorage.getItem('mc_user'); if(saved) { document.getElementById('user-name').value = saved; login(); }
+            setInterval(updateCountdown, 1000); listenForPromos();
+        };
+
+        function listenForPromos() { db.collection("app_data").doc("announcement").onSnapshot(doc => { if(doc.exists) { document.getElementById('ticker-wrap').classList.remove('hidden'); document.getElementById('ticker-text').innerText = doc.data().message; } }); }
+
         async function login() {
-            const n = document.getElementById('user-name').value.trim().toLowerCase();
-            const p = document.getElementById('user-pass').value.trim();
-            if(!n || !p) return alert("Fill credentials sweetie! 😘");
-
-            const invitedBy = new URLSearchParams(window.location.search).get('ref') || "Direct";
-            const ref = db.collection("users").doc(n);
-            const d = await ref.get();
-
-            if(!d.exists) {
-                await ref.set({ name: n, password: p, balance: 0, invitedBy: invitedBy, time: Date.now() });
-                alert("Identity Created! 😘");
-            } else {
-                if(d.data().password !== p) return alert("Wrong Password! 😘");
-                if(d.data().banned) return showLock("BANNED", "Your account is restricted. Contact support.");
-            }
-            
-            localStorage.setItem('mc_user', n);
-            enterApp(n);
+            const name = document.getElementById('user-name').value.trim(); if(!name) return;
+            localStorage.setItem('mc_user', name);
+            const ref = db.collection("users").doc(name); const doc = await ref.get();
+            if(!doc.exists) await ref.set({ name: name, balance: 0, profit: 0, time: Date.now(), activeTier: 0, tierROI: 0, lastReqTime: Date.now(), tierName: "Inactive" });
+            startSync(name); document.getElementById('auth-ui').style.display='none'; document.getElementById('app-ui').classList.remove('hidden'); document.getElementById('bottom-nav').classList.remove('hidden');
+            renderPlans(); document.getElementById('ref-link').value = "https://mintcrest.gold/?ref=" + name;
         }
 
-        function enterApp(n) {
-            document.getElementById('auth-ui').classList.add('hidden');
-            document.getElementById('app-ui').classList.remove('hidden');
-            document.getElementById('bottom-nav').classList.remove('hidden');
-            sync(n);
-        }
-
-        function sync(n) {
-            db.collection("users").doc(n).onSnapshot(d => {
-                user = d.data();
-                if(user.banned) location.reload();
-                const bal = (user.balance || 0).toLocaleString();
-                document.getElementById('v-bal').innerText = "₨ " + bal;
-                document.getElementById('top-bal').innerText = "₨ " + bal;
-                if(user.activePlan) startTimer(user.activePlan.timer);
-            });
-            // Logs
-            db.collection("requests").where("user", "==", n).orderBy("time", "desc").limit(10).onSnapshot(s => {
-                const list = document.getElementById('history-list'); list.innerHTML = '';
-                s.forEach(doc => {
-                    const x = doc.data();
-                    list.innerHTML += `<div class="glass p-4 rounded-2xl flex justify-between items-center text-[10px] font-black border-l-4 ${x.status==='approved'?'border-green-500':'border-yellow-500'}">
-                        <div><p class="uppercase">${x.type}</p><p class="text-[7px] opacity-40">${new Date(x.time).toLocaleDateString()}</p></div>
-                        <div class="text-right"><p>₨ ${x.amount||0}</p><p class="text-[7px] uppercase italic">${x.status}</p></div>
-                    </div>`;
+        function startSync(name) {
+            db.collection("users").doc(name).onSnapshot(doc => { if(doc.exists) { 
+                user = doc.data(); document.getElementById('v-bal').innerText = "₨ " + (user.balance || 0).toLocaleString(); 
+                document.getElementById('v-profit').innerText = "₨ " + (user.profit || 0).toLocaleString(); 
+                let rank = "STANDARD"; if(user.activeTier >= 10000) rank = "GOLD INVESTOR"; if(user.activeTier >= 50000) rank = "DIAMOND WHALE";
+                document.getElementById('rank-badge').innerText = "RANK: " + rank; checkProfitReq(user); 
+            } });
+            db.collection("requests").where("user", "==", name).onSnapshot(snap => {
+                const list = document.getElementById('user-history'); list.innerHTML = '';
+                let items = []; snap.forEach(doc => { if(!localStorage.getItem('cl_'+doc.id)) items.push({id: doc.id, ...doc.data()}); }); items.sort((a,b) => b.time - a.time);
+                items.forEach(d => { 
+                    const clr = d.type.includes('dep') ? 'border-blue-500' : 'border-green-400'; 
+                    list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center border-l-4 ${clr} mb-2 text-[9px] font-black uppercase"><div>${d.type}<br><span class="opacity-30 text-[7px]">${new Date(d.time).toLocaleString()}</span></div><div class="text-right">₨ ${d.amount}<br><span class="status-badge badge-${d.status}">${d.status}</span></div></div>`; 
                 });
             });
         }
 
-        // --- 4. PLANS & TIMER ---
-        function renderPlans(cat) {
-            const grid = document.getElementById('plans-grid');
-            const data = cat === 'normal' ? NORMAL_PLANS : SPECIAL_PLANS;
-            document.getElementById('btn-normal').className = cat === 'normal' ? 'flex-1 p-3 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase' : 'flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40';
-            document.getElementById('btn-special').className = cat === 'special' ? 'flex-1 p-3 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase' : 'flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40';
-            
-            grid.innerHTML = '';
-            data.forEach(p => {
-                grid.innerHTML += `
-                <div class="glass p-6 rounded-[2rem] border-l-4 ${cat==='special'?'border-yellow-500':'border-blue-500'}">
-                    <div class="flex justify-between items-start">
-                        <div><p class="text-[10px] font-black uppercase italic">${p.name}</p><h3 class="text-xl font-black text-blue-500">₨ ${p.price.toLocaleString()}</h3></div>
-                        <div class="text-right"><span class="bg-blue-600/10 text-blue-500 px-3 py-1 rounded-full text-[8px] font-black">${p.profit}% DAILY</span>${p.days!=='No Limit'?`<p class="text-[7px] opacity-40 mt-1 uppercase">${p.days} DAYS</p>`:''}</div>
-                    </div>
-                    <button onclick="buyNode('${p.name}', ${p.price})" class="w-full mt-4 btn-prime p-3 text-[9px] uppercase tracking-widest">Activate Node ⚡</button>
-                </div>`;
+        function renderPlans() {
+            const list = document.getElementById('plans-list'); list.innerHTML = '';
+            plans.forEach(p => {
+                const style = p.s ? 'border: 1px solid rgba(139, 92, 246, 0.4);' : '';
+                list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass p-6 rounded-[2.5rem] flex justify-between items-center active:scale-95 mb-2 shadow-xl" style="${style}"><div><h4 class="font-black text-[11px] uppercase ${p.s ? 'text-purple-400' : 'text-gray-300'}">${p.n}</h4><p class="text-[9px] text-blue-400 font-black uppercase">${p.r}% Daily Payout</p></div><div class="text-right font-black text-lg">₨ ${p.p.toLocaleString()}</div></div>`;
             });
         }
 
-        async function buyNode(n, p) {
-            if(user.balance < p) return alert("Low balance sweetie! 😘");
-            if(confirm(`Activate ${n} for ₨ ${p}?`)) {
-                await db.collection("users").doc(user.name).update({
-                    balance: firebase.firestore.FieldValue.increment(-p),
-                    activePlan: { name: n, timer: Date.now() + 86400000 }
-                });
-                alert("Node Activated! 😘");
-            }
+        async function submitDeposit() {
+            const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; if(!a || !t) return alert("Required!");
+            await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, type: "deposit", status: "pending", time: Date.now() });
+            alert("Deposit Logged!"); changePage('activity');
         }
 
-        function startTimer(end) {
-            document.getElementById('timer-box').classList.remove('hidden');
-            const itv = setInterval(() => {
-                const diff = end - Date.now();
-                if(diff <= 0) { clearInterval(itv); document.getElementById('countdown').innerText = "PROFIT READY!"; return; }
-                const h = Math.floor(diff/3600000); const m = Math.floor((diff%3600000)/60000); const s = Math.floor((diff%60000)/1000);
-                document.getElementById('countdown').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            }, 1000);
+        async function submitWithdraw() {
+            const a = document.getElementById('wd-amt').value; const acc = document.getElementById('wd-acc').value; if(!a || !acc || parseInt(a) > user.balance) return alert("Invalid Balance!");
+            await db.collection("requests").add({ user: user.name, amount: parseInt(a), acc: acc, type: "withdraw (10% Tax)", status: "pending", time: Date.now() });
+            await db.collection("users").doc(user.name).update({ balance: user.balance - parseInt(a) }); alert("Authorized!"); changePage('activity');
         }
 
-        // --- 5. DEPOSIT & WITHDRAW ---
-        function previewImg(i) { if (i.files && i.files[0]) { const r = new FileReader(); r.onload = e => { document.getElementById('img-preview').src = e.target.result; document.getElementById('img-preview').classList.remove('hidden'); }; r.readAsDataURL(i.files[0]); } }
-        async function submitDep() {
-            const a = document.getElementById('dep-amt').value; const t = document.getElementById('dep-tid').value; const f = document.getElementById('dep-file').files[0];
-            if(!a || !t || !f) return alert("Fill all details! 😘");
-            const r = new FileReader(); r.readAsDataURL(f);
-            r.onload = async () => {
-                await db.collection("requests").add({ user: user.name, invitedBy: user.invitedBy||"Direct", amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() });
-                alert("Submitted! 😘"); location.reload();
-            };
+        async function requestBonus() {
+            await db.collection("requests").add({ user: user.name, amount: 0, type: "Daily Bonus Request", status: "pending", time: Date.now() });
+            alert("Bonus Request Sent To Admin, Sweetie!");
         }
 
-        function selBank(b) { selectedBank = b; document.querySelectorAll('.bank-card').forEach(c=>c.classList.remove('border-blue-600','bg-blue-600/5')); document.getElementById('b-'+b).classList.add('border-blue-600','bg-blue-600/5'); }
-        async function submitWith() {
-            const a = parseInt(document.getElementById('w-amt').value); const ac = document.getElementById('w-acc').value; const nm = document.getElementById('w-name').value;
-            if(!a || !ac || !nm || !selectedBank) return alert("Fill details! 😘");
-            if(a > user.balance) return alert("Low Balance! 😘");
-            await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(-a) });
-            await db.collection("requests").add({ user: user.name, amount: a, method: selectedBank, account: ac, holder: nm, type: "withdrawal", status: "pending", time: Date.now() });
-            alert("Requested! 😘"); location.reload();
+        async function sendSupport() {
+            const m = document.getElementById('support-msg').value.trim(); if(!m) return;
+            await db.collection("support").add({ user: user.name, message: m, time: Date.now() });
+            alert("Inquiry Sent!"); document.getElementById('support-msg').value = '';
         }
 
-        // --- 6. ADMIN GOD MODE ---
-        function adminTap() { tapCount++; if(tapCount >= 5) { if(prompt("Security Key:")==="mint786") { localStorage.setItem('is_admin','true'); document.getElementById('admin-ui').classList.remove('hidden'); syncAdm(); } tapCount=0; } }
-        function closeAdmin() { document.getElementById('admin-ui').classList.add('hidden'); }
-        async function syncAdm() {
-            db.collection("users").onSnapshot(s => {
-                document.getElementById('adm-users-count').innerText = s.size;
-                const tbody = document.getElementById('users-table-body'); tbody.innerHTML = '';
-                s.forEach(doc => {
-                    const u = doc.data();
-                    tbody.innerHTML += `<tr class="border-b border-white/5"><td class="p-4 text-blue-400">@${u.name}</td><td class="p-4 opacity-50 font-mono">${u.password}</td><td class="p-4 text-green-500">₨ ${u.balance||0}</td><td class="p-4 flex gap-2"><button onclick="quickEdit('${u.name}')" class="text-blue-500">✏️</button><button onclick="banU('${u.name}')" class="text-red-500">🚫</button></td></tr>`;
-                });
-            });
-            db.collection("requests").where("status", "==", "pending").onSnapshot(s => {
-                document.getElementById('adm-pending-count').innerText = s.size;
-                const rlist = document.getElementById('adm-requests-list'); rlist.innerHTML = '';
-                s.forEach(doc => {
-                    const r = doc.data();
-                    rlist.innerHTML += `<div class="glass p-6 rounded-[2rem] border-l-4 border-blue-500">
-                        <div class="flex flex-col md:flex-row gap-4 items-center">
-                            ${r.proof ? `<img src="${r.proof}" onclick="window.open(this.src)" class="w-full md:w-32 h-24 object-cover rounded-xl border border-white/10">` : ''}
-                            <div class="flex-1 text-[10px] font-bold uppercase"><p>${r.user} | ${r.type}</p><p class="text-green-500">Amount: ₨ ${r.amount}</p><p class="text-purple-400">Invited By: ${r.invitedBy}</p></div>
-                            <div class="flex gap-2 w-full md:w-auto"><button onclick="appvReq('${doc.id}','${r.user}', ${r.amount})" class="flex-1 bg-blue-600 p-3 rounded-xl text-[8px] font-black">APPROVE</button><button onclick="db.collection('requests').doc('${doc.id}').update({status:'rejected'})" class="flex-1 bg-red-600 p-3 rounded-xl text-[8px] font-black">REJECT</button></div>
+        async function buy(p, roi, tName) {
+            if(user.balance < p) { alert("Capital Required!"); changePage('wallet'); }
+            else { if(confirm("Activate "+tName+"?")) { await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: tName, lastReqTime: Date.now() }); await db.collection("requests").add({ user: user.name, amount: p, type: "Fleet Activation", status: "approved", time: Date.now() }); alert("Activated!"); changePage('activity'); } }
+        }
+
+        async function checkProfitReq(u) { if (u.activeTier > 0 && (Date.now() - u.lastReqTime) >= 86400000) { const amt = (u.activeTier * u.tierROI) / 100; await db.collection("requests").add({ user: u.name, amount: amt, type: "Daily Profit Yield", status: "pending", time: Date.now() }); await db.collection("users").doc(u.name).update({ lastReqTime: Date.now() }); } }
+        function updateCountdown() { if (user && user.activeTier > 0) { const d = (user.lastReqTime + 86400000) - Date.now(); if(d>0) { const h = Math.floor(d/3600000); const m = Math.floor((d%3600000)/60000); const s = Math.floor((d%60000)/1000); document.getElementById('countdown-display').innerText = `NEXT YIELD: ${h}H ${m}M ${s}S`; } else { document.getElementById('countdown-display').innerText = "YIELD READY"; } } else { document.getElementById('countdown-display').innerText = "SYSTEM SECURE"; } }
+        function clearHistory() { if(confirm("Clear ledger?")) { db.collection("requests").where("user", "==", user.name).get().then(snap => { snap.forEach(doc => { localStorage.setItem('cl_'+doc.id, 'true'); }); location.reload(); }); } }
+        changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active-tab')); document.getElementById('p-'+p).classList.add('active-page'); if(p!=='wallet'&&p!=='withdraw') document.getElementById('n-'+p).classList.add('active-tab'); }
+        function logout() { localStorage.removeItem('mc_user'); location.reload(); }
+        function copyRef() { const c = document.getElementById('ref-link'); c.select(); document.execCommand('copy'); alert("Copied!"); }
+        function copyAddr(txt) { navigator.clipboard.writeText(txt); alert("Address Copied!"); }
+        
+        function adminTap() { tapCount++; if(tapCount >= 4) { if(prompt("System Key:") === "mint786") { document.getElementById('admin-panel').classList.remove('hidden'); syncAdmin(); } tapCount=0; } }
+        function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
+        function showAdmTab(t) { document.querySelectorAll('.adm-tab').forEach(s=>s.classList.add('hidden')); document.getElementById('adm-sec-'+t).classList.remove('hidden'); }
+        async function sendBroadcast() { const m = document.getElementById('bc-msg').value.trim(); await db.collection("app_data").doc("announcement").set({ message: m }); alert("Updated!"); }
+
+        async function syncAdmin() {
+            db.collection("users").onSnapshot(s => document.getElementById('adm-total-users').innerText = s.size);
+            db.collection("requests").where("status", "==", "pending").onSnapshot(snap => {
+                document.getElementById('adm-total-reqs').innerText = snap.size;
+                const list = document.getElementById('adm-sec-requests'); list.innerHTML = '';
+                snap.forEach(doc => { const d = doc.data(); 
+                    list.innerHTML += `<div class="glass p-6 rounded-3xl mb-4 border border-white/10">
+                        <div class="flex justify-between text-[10px] font-black uppercase mb-1"><span>${d.user}</span><span class="text-blue-400">₨ ${d.amount}</span></div>
+                        <div class="text-[7px] opacity-40 mb-4">${d.type} | ${d.tid||d.acc||''}</div>
+                        <div class="flex gap-2">
+                            <button onclick="handle('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="flex-1 grad-blue py-3 rounded-xl text-[8px] font-black uppercase text-white">Approve</button>
+                            <button onclick="handle('${doc.id}','${d.user}',${d.amount},'rejected','${d.type}')" class="flex-1 bg-red-600 py-3 rounded-xl text-[8px] font-black uppercase text-white">Reject</button>
                         </div>
                     </div>`;
                 });
             });
+            db.collection("users").onSnapshot(snap => { const list = document.getElementById('adm-sec-users'); list.innerHTML = ''; snap.forEach(doc => { const u = doc.data(); list.innerHTML += `<div class="glass p-4 rounded-2xl flex justify-between items-center text-[9px] font-black uppercase mb-2"><div>${u.name}<br>Bal: ${u.balance}</div><button onclick="deleteUser('${u.name}')" class="text-red-500">Del</button></div>`; }); });
+            db.collection("support").onSnapshot(snap => { const list = document.getElementById('adm-sec-msg'); list.innerHTML = ''; snap.forEach(doc => { const m = doc.data(); list.innerHTML += `<div class="glass p-4 rounded-2xl text-[9px] mb-2 font-bold"><p class="text-blue-400 uppercase">${m.user}</p><p class="mt-1">${m.message}</p></div>`; }); });
         }
 
-        async function appvReq(id, u, a) { await db.collection("users").doc(u).update({ balance: firebase.firestore.FieldValue.increment(a) }); await db.collection("requests").doc(id).update({ status: 'approved' }); }
-        function quickEdit(n) { const b = prompt("New Balance for @"+n); if(b) db.collection("users").doc(n).update({ balance: parseInt(b) }); }
-        function banU(n) { if(confirm("Ban user?")) db.collection("users").doc(n).update({ banned: true }); }
-        async function toggleMaintenance() { await db.collection("settings").doc("system").set({ maintenance: !maintenanceActive }, { merge: true }); }
-        async function updateNews() { const n = document.getElementById('set-news').value; await db.collection("settings").doc("news").set({ text: n }); alert("Published! 😘"); }
+        async function handle(id, u, amt, act, type) { 
+            const ref = db.collection("users").doc(u); const doc = await ref.get();
+            if(act==='approved') {
+                if(type === "Daily Bonus Request") { const b = parseInt(prompt("Enter Bonus Amount for "+u)); await ref.update({ balance: (doc.data().balance||0) + b }); await db.collection("requests").doc(id).update({ status: 'approved', amount: b }); return; }
+                if(type==='deposit' || type.includes('Profit')) { await ref.update({ balance: (doc.data().balance||0) + amt }); }
+            } else if(act==='rejected' && type==='withdraw') { await ref.update({ balance: (doc.data().balance||0) + amt }); }
+            await db.collection("requests").doc(id).update({ status: act }); 
+        }
 
-        // --- 7. UTILS ---
-        function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.getElementById('p-'+p).classList.add('active-page'); document.querySelectorAll('.nav-icon, nav button').forEach(b=>b.classList.add('opacity-40')); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('nav-active')); document.getElementById('n-'+p).classList.add('nav-active'); document.getElementById('n-'+p).classList.remove('opacity-40'); }
-        function toggleTheme() { const h = document.getElementById('main-html'); h.classList.toggle('dark'); h.classList.toggle('light'); }
-        function copyText(t) { navigator.clipboard.writeText(t); alert("Copied! 😘"); }
-        function copyRef() { const link = window.location.origin + window.location.pathname + "?ref=" + user.name; copyText(link); }
-        async function applyPromo() { const c = document.getElementById('promo-input').value.toUpperCase(); if(c==='GOLD786'){ await db.collection("users").doc(user.name).update({ balance: firebase.firestore.FieldValue.increment(50) }); alert("₨ 50 Bonus Added! 😘"); document.getElementById('promo-input').value=''; } }
-        function showLock(t, m) { const s = document.getElementById('lock-screen'); s.classList.remove('hidden'); document.getElementById('lock-title').innerText = t; document.getElementById('lock-msg').innerText = m; }
-
-        // Sync Global Settings
-        let maintenanceActive = false;
-        db.collection("settings").doc("system").onSnapshot(d => {
-            if(d.exists) {
-                maintenanceActive = d.data().maintenance;
-                if(maintenanceActive && localStorage.getItem('is_admin') !== 'true') showLock("SYSTEM UPGRADE", "Node is being optimized, please wait sweetie! 😘");
-                else if(!user || !user.banned) document.getElementById('lock-screen').classList.add('hidden');
-                const mbtn = document.getElementById('m-btn'); if(mbtn) mbtn.innerText = "Maintenance: " + (maintenanceActive?"ON":"OFF");
-            }
-        });
-        db.collection("settings").doc("news").onSnapshot(d => { if(d.exists) document.getElementById('v-news').innerText = d.data().text; });
-
-        window.onload = () => { if(localStorage.getItem('mc_user')) enterApp(localStorage.getItem('mc_user')); renderPlans('normal'); }
+        async function manualEdit(f) { const u = document.getElementById('adm-target').value; const v = parseInt(document.getElementById('adm-val').value); const ref = db.collection("users").doc(u); const d = await ref.get(); if(d.exists) await ref.update({ [f]: (d.data()[f]||0)+v }); alert("Updated!"); }
+        async function deleteUser(n) { if(confirm("Delete "+n+"?")) await db.collection("users").doc(n).delete(); }
     </script>
 </body>
 </html>
