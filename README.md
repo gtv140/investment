@@ -1,262 +1,209 @@
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MINTCREST GOLD | FINAL SYSTEM</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MintCrest Pro</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <style>
-body{margin:0;font-family:Arial;background:#0b0f1a;color:#fff}
-header{padding:15px;text-align:center;background:linear-gradient(90deg,#d4af37,#b8860b);font-weight:bold}
-.container{max-width:1100px;margin:auto;padding:15px}
-.card{background:#121a2a;padding:15px;border-radius:12px;margin:10px 0}
-input{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:none}
-button{padding:10px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
-.btn{background:#d4af37}
-.danger{background:#ff4d4d;color:#fff}
-.success{background:#00c853;color:#000}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-.col{flex:1;min-width:250px}
-.hidden{display:none}
-.tx{background:#0f1626;padding:10px;margin:6px 0;border-radius:10px;font-size:13px}
-.badge{padding:3px 8px;border-radius:6px;font-size:11px}
-.pending{background:orange;color:#000}
-.approved{background:#00c853;color:#000}
-.rejected{background:#ff4d4d;color:#fff}
+body { background:#0d1117; color:white; font-family:sans-serif; }
+input { padding:10px; margin:5px 0; width:100%; border-radius:8px; background:#161b22; border:1px solid #30363d; }
+button { cursor:pointer; }
+.fbtn{ padding:8px 12px; border-radius:8px; background:#21262d; color:white; }
 </style>
 
 </head>
-
 <body>
 
-<header>MINTCREST GOLD | FINAL LIVE SYSTEM</header>
+<h2 style="padding:20px;">Dashboard</h2>
 
-<div class="container">
+<input id="w-amt" placeholder="Amount">
+<input id="w-acc" placeholder="Account">
+<input id="w-name" placeholder="Account Name">
 
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-<h3>Login</h3>
-<input id="username" placeholder="Enter Username"/>
-<button class="btn" onclick="login()">Enter</button>
+<button onclick="submitWith()" style="padding:10px;background:#2563eb;border-radius:10px;">
+Withdraw
+</button>
+
+<div id="countdown" style="padding:20px;"></div>
+
+<!-- ================= HISTORY PAGE ================= -->
+<div id="historyPage" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0d1117;z-index:9999;overflow:auto;padding:20px;">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <h2 style="font-size:22px;">📜 History</h2>
+    <button onclick="closeHistory()">✖</button>
+  </div>
+
+  <div style="display:flex;gap:10px;margin:15px 0;">
+    <button onclick="filterHistory('all')" class="fbtn">All</button>
+    <button onclick="filterHistory('deposit')" class="fbtn">Deposit</button>
+    <button onclick="filterHistory('withdraw')" class="fbtn">Withdraw</button>
+  </div>
+
+  <div id="historyList"></div>
 </div>
 
-<!-- APP -->
-<div id="app" class="hidden">
+<!-- ================= FLOATING BUTTONS ================= -->
+<div style="position:fixed;bottom:110px;right:20px;display:flex;flex-direction:column;gap:12px;">
 
-<div class="card">
-<b id="userLabel"></b><br>
-Balance: <span id="balance">0</span>
-<br><br>
-<button class="danger" onclick="logout()">Logout</button>
-</div>
+  <button onclick="showHistory()" style="width:55px;height:55px;border-radius:50%;background:#2563eb;font-size:22px;">
+    📜
+  </button>
 
-<div class="row">
-
-<!-- DEPOSIT -->
-<div class="card col">
-<h3>Deposit</h3>
-<input id="amount" type="number" placeholder="Amount"/>
-<input id="proof" placeholder="Proof URL"/>
-<button class="btn" onclick="deposit()">Send Deposit</button>
-</div>
-
-<!-- WITHDRAW -->
-<div class="card col">
-<h3>Withdraw</h3>
-<input id="wamount" type="number" placeholder="Amount"/>
-<button class="btn" onclick="withdraw()">Send Withdraw</button>
-</div>
-
-</div>
-
-<div class="row">
-
-<div class="card col">
-<h3>History</h3>
-<div id="history"></div>
-</div>
-
-<div class="card col" id="adminBox">
-<h3>Admin Panel</h3>
-<div id="admin"></div>
-</div>
+  <button onclick="logout()" style="width:55px;height:55px;border-radius:50%;background:#ef4444;font-size:22px;">
+    ⎋
+  </button>
 
 </div>
 
-</div>
+<script>
 
-</div>
-
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-getFirestore,
-collection,
-addDoc,
-query,
-getDocs,
-updateDoc,
-doc,
-runTransaction,
-increment,
-setDoc,
-getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+// 🔐 Firebase config (ADD YOURS)
 const firebaseConfig = {
-apiKey: "AIzaSyDt3ChZHyDdtM4Ir1oXRZJUywcOiV30Wtg",
-authDomain: "investment-84f4e.firebaseapp.com",
-projectId: "investment-84f4e",
-storageBucket: "investment-84f4e.firebasestorage.app",
-messagingSenderId: "975293889308",
-appId: "1:975293889308:web:6d034a99cc966c75ff58d9"
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-let user;
+// 👤 USER
+let user = JSON.parse(localStorage.getItem("user") || "null");
 
-// ⚠️ CHANGE THIS TO YOUR REAL ADMIN UID
-const ADMIN_UID = "CHANGE_THIS_ADMIN_UID";
+// ================= WITHDRAW =================
+async function submitWith(){
+    const a = Number(document.getElementById('w-amt').value);
+    const ac = document.getElementById('w-acc').value.trim();
+    const nm = document.getElementById('w-name').value.trim();
 
-window.login = async () => {
-if(!username.value) return alert("Enter username");
-localStorage.setItem("u", username.value);
-await signInAnonymously(auth);
-};
+    if(isNaN(a) || a<=0) return alert("Invalid amount");
+    if(!ac || !nm) return alert("Fill details!");
+    if(!user) return alert("Login first");
 
-onAuthStateChanged(auth, async (u)=>{
-if(u){
-user = u;
-loginBox.classList.add("hidden");
-app.classList.remove("hidden");
-userLabel.innerText = localStorage.getItem("u");
-await ensureUser();
-load();
-}
-});
+    await db.collection("requests").add({
+        user: user.name,
+        amount: a,
+        account: ac,
+        holder: nm,
+        type: "withdraw",
+        status: "pending",
+        time: Date.now()
+    });
 
-window.logout = ()=> location.reload();
-
-// CREATE USER WALLET
-async function ensureUser(){
-const ref = doc(db,"users",user.uid);
-const snap = await getDoc(ref);
-if(!snap.exists()){
-await setDoc(ref,{balance:0});
-}
+    alert("Request Submitted");
 }
 
-// DEPOSIT
-window.deposit = async ()=>{
-await addDoc(collection(db,"requests"),{
-uid:user.uid,
-username:localStorage.getItem("u"),
-type:"deposit",
-amount:Number(amount.value),
-proof:proof.value,
-status:"pending",
-time:Date.now()
-});
-alert("Deposit sent");
-load();
-};
+// ================= TIMER =================
+let timerInterval;
+function startTimer(end){
+    if(timerInterval) clearInterval(timerInterval);
 
-// WITHDRAW
-window.withdraw = async ()=>{
-await addDoc(collection(db,"requests"),{
-uid:user.uid,
-username:localStorage.getItem("u"),
-type:"withdraw",
-amount:Number(wamount.value),
-status:"pending",
-time:Date.now()
-});
-alert("Withdraw sent");
-load();
-};
+    timerInterval = setInterval(()=>{
+        const diff = end - Date.now();
 
-// LOAD DATA
-async function load(){
+        if(diff<=0){
+            clearInterval(timerInterval);
+            document.getElementById('countdown').innerText = "DONE";
+            return;
+        }
 
-const snap = await getDocs(collection(db,"requests"));
-
-let hist="",adm="";
-
-snap.forEach(d=>{
-let x = d.data();
-
-// HISTORY
-if(x.uid === user.uid){
-hist += `<div class='tx'>
-${x.type} | ${x.amount}
-<span class='badge ${x.status}'>${x.status}</span>
-</div>`;
+        document.getElementById('countdown').innerText =
+            Math.floor(diff/1000) + "s";
+    },1000);
 }
 
-// ADMIN PANEL
-adm += `<div class='tx'>
-<b>${x.username}</b><br>
-${x.type} | ${x.amount}<br>
-Status: ${x.status}<br>
-${x.proof ? `<a href="${x.proof}" target="_blank">View Proof</a><br>`:""}
-<button class="success" onclick="approve('${d.id}','${x.uid}',${x.amount},'${x.type}')">Approve</button>
-<button class="danger" onclick="reject('${d.id}')">Reject</button>
-</div>`;
-});
+// ================= HISTORY SYSTEM =================
+let allHistory = [];
 
-history.innerHTML = hist || "No data";
-admin.innerHTML = adm;
+async function showHistory(){
+    if(!user || !user.name){
+        alert("Login required");
+        return;
+    }
 
-// BALANCE UPDATE
-const userRef = doc(db,"users",user.uid);
-const userSnap = await getDoc(userRef);
-balance.innerText = userSnap.data()?.balance || 0;
+    document.getElementById("historyPage").style.display = "block";
+    const list = document.getElementById("historyList");
+    list.innerHTML = "Loading...";
 
-// ADMIN ACCESS
-if(localStorage.getItem("u") === "admin"){
-adminBox.classList.remove("hidden");
-}else{
-adminBox.classList.add("hidden");
-}
-}
+    try{
+        const snap = await db.collection("requests")
+            .where("user","==",user.name)
+            .get();
 
-// APPROVE (LEDGER SAFE)
-window.approve = async (id, uid, amount, type)=>{
+        allHistory = [];
+        snap.forEach(doc=> allHistory.push(doc.data()));
 
-const reqRef = doc(db,"requests",id);
-const userRef = doc(db,"users",uid);
+        renderHistory(allHistory);
 
-await runTransaction(db, async (t)=>{
-
-const req = await t.get(reqRef);
-if(req.data().status !== "pending") return;
-
-t.update(reqRef,{status:"approved"});
-
-if(type === "deposit"){
-t.update(userRef,{balance: increment(amount)});
+    }catch(e){
+        console.error(e);
+        list.innerHTML = "Error loading";
+    }
 }
 
-if(type === "withdraw"){
-t.update(userRef,{balance: increment(-amount)});
+function renderHistory(data){
+    const list = document.getElementById("historyList");
+
+    if(data.length === 0){
+        list.innerHTML = "No data found";
+        return;
+    }
+
+    list.innerHTML = "";
+
+    data.reverse().forEach(d=>{
+        let color = "#facc15";
+
+        if(d.status === "approved") color = "#22c55e";
+        if(d.status === "rejected") color = "#ef4444";
+
+        const div = document.createElement("div");
+
+        div.style.padding = "12px";
+        div.style.marginBottom = "10px";
+        div.style.borderRadius = "12px";
+        div.style.background = "#161b22";
+        div.style.border = "1px solid #30363d";
+
+        div.innerHTML = `
+            <div style="display:flex;justify-content:space-between;">
+                <b>${d.type}</b>
+                <span style="color:${color};">${d.status}</span>
+            </div>
+            <div>Amount: ${d.amount} PKR</div>
+            <div style="font-size:12px;opacity:0.7;">
+                ${new Date(d.time).toLocaleString()}
+            </div>
+        `;
+
+        list.appendChild(div);
+    });
 }
 
-});
+function filterHistory(type){
+    if(type === "all"){
+        renderHistory(allHistory);
+    }else{
+        renderHistory(allHistory.filter(d=>d.type === type));
+    }
+}
 
-alert("Approved");
-load();
-};
+function closeHistory(){
+    document.getElementById("historyPage").style.display = "none";
+}
 
-// REJECT
-window.reject = async (id)=>{
-await updateDoc(doc(db,"requests",id),{status:"rejected"});
-alert("Rejected");
-load();
-};
+// ================= LOGOUT =================
+function logout(){
+    if(confirm("Logout?")){
+        localStorage.removeItem("user");
+        location.reload();
+    }
+}
 
 </script>
 
