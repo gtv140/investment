@@ -6,212 +6,274 @@
 <title>MintCrest Ultimate</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <style>
-body { background:#0d1117; color:white; font-family:sans-serif; }
-input { padding:10px; margin:5px 0; width:100%; border-radius:8px; background:#161b22; border:1px solid #30363d; }
-button { padding:10px; border-radius:10px; }
-.card { background:#161b22; padding:12px; border-radius:12px; border:1px solid #30363d; margin-bottom:10px; }
+body {background:linear-gradient(135deg,#0d1117,#111827);color:white;font-family:sans-serif;}
+.card {background:rgba(255,255,255,0.03);padding:15px;border-radius:15px;margin-bottom:12px;}
+input,select {padding:10px;width:100%;margin:5px 0;border-radius:10px;background:#1f2937;border:none;}
+button {padding:10px;border-radius:10px;font-weight:bold;margin:3px;}
+button:hover{transform:scale(1.05);}
 </style>
 </head>
+
 <body>
 
-<!-- ================= AUTH ================= -->
-<div id="authPage">
-  <h2>Login / Signup</h2>
-  <input id="auth-name" placeholder="Username">
-  <input id="auth-pass" type="password" placeholder="Password">
-  <button onclick="login()" style="background:#22c55e;">Login</button>
-  <button onclick="signup()" style="background:#2563eb;">Signup</button>
-</div>
-
-<!-- ================= APP ================= -->
 <div id="app" style="display:none;padding:20px;">
 
 <h2>Dashboard</h2>
-<div id="balance">Balance: 0</div>
+
+<div class="card">
+User ID: <span id="uid"></span>
+</div>
+
+<div class="card">
+Balance: <span id="balance">0 PKR</span>
+</div>
+
+<!-- Deposit -->
+<div class="card">
+<h3>Deposit</h3>
+
+<select id="method">
+<option value="jazzcash">JazzCash</option>
+<option value="easypaisa">EasyPaisa</option>
+<option value="sadapay">SadaPay</option>
+</select>
+
+<div id="paymentInfo"></div>
 
 <input id="amount" placeholder="Amount">
-<input id="account" placeholder="Account">
-<input id="name" placeholder="Name">
+<input id="tid" placeholder="Transaction ID">
+<input id="account" placeholder="Your Number">
+<input type="file" id="proof">
 
-<button onclick="deposit()" style="background:#22c55e;">Deposit</button>
+<button onclick="deposit()" style="background:#22c55e;">Submit Deposit</button>
+</div>
+
+<!-- Withdraw -->
+<div class="card">
+<h3>Withdraw</h3>
+<input id="wamount" placeholder="Amount">
+<input id="waccount" placeholder="Account Number">
 <button onclick="withdraw()" style="background:#ef4444;">Withdraw</button>
+</div>
 
 <button onclick="showHistory()">History</button>
-<button onclick="logout()">Logout</button>
 
-<h3>Admin Panel</h3>
+<!-- Admin -->
+<div id="stats" class="card" style="display:none;"></div>
+<div id="adminTitle" style="display:none;">Admin Panel</div>
 <div id="admin"></div>
 
 </div>
 
-<!-- ================= HISTORY ================= -->
-<div id="historyPage" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0d1117;overflow:auto;padding:20px;">
+<!-- History -->
+<div id="historyPage" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;padding:20px;overflow:auto;">
 <h2>History</h2>
 <button onclick="closeHistory()">Close</button>
 <div id="historyList"></div>
 </div>
 
-<script>
+<script type="module">
 
-// 🔐 Firebase config
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT"
+  apiKey: "AIzaSyDt3ChZHyDdtM4Ir1oXRZJUywcOiV30Wtg",
+  authDomain: "investment-84f4e.firebaseapp.com",
+  projectId: "investment-84f4e",
+  storageBucket: "investment-84f4e.firebasestorage.app",
+  messagingSenderId: "975293889308",
+  appId: "1:975293889308:web:6d034a99cc966c75ff58d9"
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-let user = JSON.parse(localStorage.getItem("user") || "null");
+let currentUser;
 
-// ================= INIT =================
-window.onload = async ()=>{
-  if(user){
-    authPage.style.display="none";
-    app.style.display="block";
-    loadBalance();
-    loadAdmin();
-  }
-};
+signInAnonymously(auth);
 
-// ================= AUTH =================
-async function signup(){
-  const name=auth-name.value.trim();
-  const pass=auth-pass.value.trim();
+onAuthStateChanged(auth, async (user)=>{
+if(user){
+currentUser=user;
+appDiv.style.display="block";
+uid.innerText=user.uid;
 
-  const ref=db.collection("users").doc(name);
-  if((await ref.get()).exists) return alert("User exists");
+const refu=doc(db,"users",user.uid);
+if(!(await getDoc(refu)).exists()) await setDoc(refu,{balance:0});
 
-  await ref.set({password:pass,balance:0});
-  alert("Account created");
+loadBalance();
+
+// 🔴 SET ADMIN UID HERE
+if(user.uid==="ADMIN_UID_HERE"){
+stats.style.display="block";
+adminTitle.style.display="block";
+loadAdmin();
+loadStats();
+setInterval(loadAdmin,4000);
+setInterval(loadStats,5000);
 }
-
-async function login(){
-  const name=auth-name.value.trim();
-  const pass=auth-pass.value.trim();
-
-  const doc=await db.collection("users").doc(name).get();
-  if(!doc.exists) return alert("No user");
-
-  if(doc.data().password!==pass) return alert("Wrong pass");
-
-  localStorage.setItem("user",JSON.stringify({name}));
-  location.reload();
 }
+});
 
-// ================= LOGOUT =================
-function logout(){
-  localStorage.removeItem("user");
-  location.reload();
-}
-
-// ================= BALANCE =================
 async function loadBalance(){
-  const doc=await db.collection("users").doc(user.name).get();
-  balance.innerText="Balance: "+doc.data().balance;
+const d=await getDoc(doc(db,"users",currentUser.uid));
+balance.innerText=d.data().balance+" PKR";
 }
 
-// ================= DEPOSIT =================
-async function deposit(){
-  const amt=Number(amount.value);
-  if(amt<=0) return alert("Invalid");
+// PAYMENT INFO
+function updatePaymentInfo(){
+let m=method.value;
+let n="";
+if(m==="jazzcash"||m==="sadapay") n="03705519562";
+if(m==="easypaisa") n="03379827882";
 
-  await db.collection("requests").add({
-    user:user.name,amount:amt,type:"deposit",status:"pending",time:Date.now()
-  });
-
-  alert("Deposit request sent");
+paymentInfo.innerHTML=`Send to: ${n} <button onclick="navigator.clipboard.writeText('${n}')">Copy</button>`;
 }
+method.onchange=updatePaymentInfo;
+updatePaymentInfo();
 
-// ================= WITHDRAW =================
-async function withdraw(){
-  const amt=Number(amount.value);
-  if(amt<=0) return alert("Invalid");
+// DEPOSIT
+window.deposit=async ()=>{
+let file=proof.files[0];
+if(!file) return alert("Upload proof");
 
-  await db.collection("requests").add({
-    user:user.name,amount:amt,type:"withdraw",status:"pending",time:Date.now()
-  });
+let sref=ref(storage,"proofs/"+Date.now());
+await uploadBytes(sref,file);
+let url=await getDownloadURL(sref);
 
-  alert("Withdraw request sent");
-}
+await addDoc(collection(db,"requests"),{
+user:currentUser.uid,
+amount:Number(amount.value),
+tid:tid.value,
+account:account.value,
+method:method.value,
+proof:url,
+type:"deposit",
+status:"pending",
+time:Date.now()
+});
 
-// ================= HISTORY =================
-let allHistory=[];
+alert("Deposit sent");
+};
 
-async function showHistory(){
-  historyPage.style.display="block";
-  const snap=await db.collection("requests").where("user","==",user.name).get();
+// WITHDRAW
+window.withdraw=async ()=>{
+await addDoc(collection(db,"requests"),{
+user:currentUser.uid,
+amount:Number(wamount.value),
+account:waccount.value,
+type:"withdraw",
+status:"pending",
+time:Date.now()
+});
+alert("Withdraw request sent");
+};
 
-  allHistory=[];
-  snap.forEach(d=>allHistory.push(d.data()));
+// HISTORY
+window.showHistory=async ()=>{
+historyPage.style.display="block";
+const q=query(collection(db,"requests"),where("user","==",currentUser.uid));
+const snap=await getDocs(q);
 
-  renderHistory(allHistory);
-}
+historyList.innerHTML="";
+snap.forEach(d=>{
+let x=d.data();
+historyList.innerHTML+=`
+<div class="card">
+${x.type} | ${x.amount} | ${x.status}<br>
+${new Date(x.time).toLocaleString()}
+</div>`;
+});
+};
 
-function renderHistory(data){
-  historyList.innerHTML="";
-  data.forEach(d=>{
-    let color="#facc15";
-    if(d.status==="approved") color="#22c55e";
-    if(d.status==="rejected") color="#ef4444";
+window.closeHistory=()=>historyPage.style.display="none";
 
-    historyList.innerHTML+=`
-    <div class="card">
-      <b>${d.type}</b> - <span style="color:${color}">${d.status}</span><br>
-      ${d.amount} PKR<br>
-      ${new Date(d.time).toLocaleString()}
-    </div>`;
-  });
-}
-
-function closeHistory(){ historyPage.style.display="none"; }
-
-// ================= ADMIN =================
+// ADMIN
 async function loadAdmin(){
-  if(user.name!=="admin") return;
+const q=query(collection(db,"requests"),where("status","==","pending"));
+const snap=await getDocs(q);
 
-  const snap=await db.collection("requests").get();
-  admin.innerHTML="<h3>Requests</h3>";
+admin.innerHTML="";
+snap.forEach(docu=>{
+let d=docu.data();
 
-  snap.forEach(doc=>{
-    const d=doc.data();
-
-    admin.innerHTML+=`
-    <div class="card">
-      ${d.user} - ${d.type} - ${d.amount}
-      <button onclick="approve('${doc.id}')">Approve</button>
-      <button onclick="reject('${doc.id}')">Reject</button>
-    </div>`;
-  });
+admin.innerHTML+=`
+<div class="card">
+${d.user}<br>${d.type} | ${d.amount}<br>
+<img src="${d.proof||''}" width="80" onclick="viewImg('${d.proof}')">
+<br>
+<button onclick="approve('${docu.id}')">Approve</button>
+<button onclick="reject('${docu.id}')">Reject</button>
+</div>`;
+});
 }
 
-async function approve(id){
-  const ref=db.collection("requests").doc(id);
-  const d=(await ref.get()).data();
+// APPROVE
+window.approve=async (id)=>{
+let refd=doc(db,"requests",id);
+let d=(await getDoc(refd)).data();
 
-  if(d.type==="deposit"){
-    await db.collection("users").doc(d.user)
-      .update({balance:firebase.firestore.FieldValue.increment(d.amount)});
-  }
+let uref=doc(db,"users",d.user);
+let u=(await getDoc(uref)).data();
 
-  if(d.type==="withdraw"){
-    await db.collection("users").doc(d.user)
-      .update({balance:firebase.firestore.FieldValue.increment(-d.amount)});
-  }
+if(d.type==="deposit") await updateDoc(uref,{balance:u.balance+d.amount});
+if(d.type==="withdraw") await updateDoc(uref,{balance:u.balance-d.amount});
 
-  await ref.update({status:"approved"});
-  loadAdmin(); loadBalance();
+await updateDoc(refd,{status:"approved"});
+loadAdmin(); loadBalance();
+};
+
+window.reject=async (id)=>{
+await updateDoc(doc(db,"requests",id),{status:"rejected"});
+loadAdmin();
+};
+
+// IMAGE VIEW
+window.viewImg=(url)=>{
+let div=document.createElement("div");
+div.style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;";
+div.innerHTML=`<img src="${url}" style="max-width:90%">`;
+div.onclick=()=>div.remove();
+document.body.appendChild(div);
+};
+
+// STATS
+async function loadStats(){
+let users=(await getDocs(collection(db,"users"))).size;
+let reqs=await getDocs(collection(db,"requests"));
+
+let dep=0,withd=0;
+reqs.forEach(d=>{
+let x=d.data();
+if(x.type==="deposit") dep+=x.amount;
+if(x.type==="withdraw") withd+=x.amount;
+});
+
+stats.innerHTML=`
+Users: ${users}<br>
+Deposits: ${dep}<br>
+Withdraws: ${withd}`;
 }
 
-async function reject(id){
-  await db.collection("requests").doc(id).update({status:"rejected"});
-  loadAdmin();
-}
+// LIVE FAKE ACTIVITY
+setInterval(()=>{
+let msgs=["Deposit received","Withdraw processed","New user joined"];
+let div=document.createElement("div");
+div.innerText=msgs[Math.floor(Math.random()*msgs.length)];
+div.style="position:fixed;top:10px;right:10px;background:#22c55e;padding:8px;border-radius:8px;";
+document.body.appendChild(div);
+setTimeout(()=>div.remove(),3000);
+},5000);
+
+// AUTO BALANCE
+setInterval(loadBalance,5000);
 
 </script>
 
