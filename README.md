@@ -14,13 +14,13 @@
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .glass-light { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); }
         .card-blue { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: white; box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.3); }
+        .animate-marquee { display: inline-block; animation: marquee 15s linear infinite; white-space: nowrap; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .page { display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .active-page { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
         .input-field { width: 100%; background: #F1F5F9; padding: 16px; border-radius: 16px; border: 1px solid #E2E8F0; outline: none; transition: 0.3s; font-weight: 600; font-size: 12px; }
         .input-field:focus { border-color: #3B82F6; background: white; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
-        .animate-marquee { display: inline-block; animation: marquee 15s linear infinite; white-space: nowrap; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
 <body class="h-screen flex flex-col vibrant-bg">
@@ -35,14 +35,12 @@
         <div class="w-full max-w-sm text-center">
             <h1 onclick="adminTap()" class="text-4xl font-black italic tracking-tighter mb-2 uppercase text-slate-800">MINT<span class="text-blue-600">CREST</span></h1>
             <p class="text-slate-400 text-[8px] uppercase tracking-[0.4em] mb-10 font-bold">Official Digital Asset Vault</p>
-            
             <div id="login-form" class="glass-light p-8 rounded-[2.5rem] space-y-4">
                 <input type="text" id="auth-username" placeholder="Username" class="input-field text-center">
                 <input type="password" id="auth-password" placeholder="Security PIN" class="input-field text-center">
                 <button onclick="handleAuth('login')" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-[10px] uppercase shadow-xl">Secure Access</button>
                 <p class="text-[9px] font-bold text-slate-500">New? <span class="text-blue-600 cursor-pointer" onclick="toggleAuth(false)">Create Account</span></p>
             </div>
-
             <div id="signup-form" class="hidden glass-light p-8 rounded-[2.5rem] space-y-4">
                 <input type="text" id="reg-username" placeholder="Full Name" class="input-field text-center">
                 <input type="password" id="reg-password" placeholder="Set Security PIN" class="input-field text-center">
@@ -82,15 +80,12 @@
         <div id="p-activity" class="page p-6"><h2 class="text-center font-black italic mb-6 uppercase">Security Ledger</h2><div id="user-history" class="space-y-2 pb-10"></div></div>
 
         <div id="p-more" class="page p-6 space-y-6">
-            <div class="glass-light p-8 rounded-[2.5rem] border-t-8 border-blue-600 shadow-2xl">
-                <div class="mb-6"><h3 class="text-blue-600 font-black text-xs uppercase italic">Corporate Registry</h3><p class="text-[7px] font-bold text-slate-400 uppercase mt-1">Status: Active & Licensed ✅</p></div>
-                <div class="space-y-4">
-                    <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Company Name</p><p class="text-[10px] font-bold text-slate-800">MintCrest Gold Enterprise Ltd.</p></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">License No.</p><p class="text-[9px] font-bold text-blue-600">#UK-778491-MCG</p></div>
-                        <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Incorporated</p><p class="text-[9px] font-bold text-slate-800">12 FEB 2021</p></div>
-                    </div>
-                    <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Headquarters</p><p class="text-[9px] font-bold text-slate-600 italic">Level 24, The Shard, 32 London Bridge St, London SE1 9SG, UK.</p></div>
+            <div class="glass-light p-8 rounded-[2.5rem] border-t-8 border-blue-600">
+                <h3 class="text-blue-600 font-black text-xs uppercase italic mb-4">Corporate Registry</h3>
+                <div class="space-y-4 text-[9px] font-bold">
+                    <div><p class="opacity-40 uppercase">Company Name</p><p>MintCrest Gold Enterprise Ltd.</p></div>
+                    <div class="grid grid-cols-2"><div><p class="opacity-40 uppercase">License</p><p class="text-blue-600">#UK-778491-MCG</p></div><div><p class="opacity-40 uppercase">Since</p><p>2021</p></div></div>
+                    <div><p class="opacity-40 uppercase">Headquarters</p><p class="italic">The Shard, London, UK.</p></div>
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
@@ -100,52 +95,37 @@
                 </div>
                 <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3" class="glass-light p-6 rounded-[2rem] text-center border-b-4 border-green-500"><i class="fa-brands fa-whatsapp text-green-500 mb-1"></i><p class="text-[8px] font-black uppercase">Official Hub</p></a>
             </div>
-            <button onclick="logout()" class="w-full p-4 text-[9px] font-black text-rose-500 uppercase italic opacity-40">Terminate Secure Session</button>
+            <button onclick="logout()" class="w-full p-4 text-[9px] font-black text-rose-500 uppercase italic opacity-40">Terminate Session</button>
         </div>
 
         <div id="p-wallet" class="page p-6">
+            <div class="space-y-3 mb-6">
+                <div class="glass-light p-4 rounded-2xl flex justify-between items-center border-l-4 border-yellow-500"><div><p class="text-[7px] font-black opacity-40 uppercase">JazzCash</p><p class="font-black text-xs">03705519562</p></div><button onclick="copyToClipboard('03705519562')" class="bg-yellow-50 p-2 rounded-lg text-yellow-600"><i class="fa-solid fa-copy"></i></button></div>
+                <div class="glass-light p-4 rounded-2xl flex justify-between items-center border-l-4 border-green-500"><div><p class="text-[7px] font-black opacity-40 uppercase">EasyPaisa</p><p class="font-black text-xs">03379827882</p></div><button onclick="copyToClipboard('03379827882')" class="bg-green-50 p-2 rounded-lg text-green-600"><i class="fa-solid fa-copy"></i></button></div>
+            </div>
             <div class="glass-light p-8 rounded-[2.5rem] space-y-4 text-center">
-                <p class="text-[10px] font-black text-blue-600 uppercase">JazzCash: 03705519562 / EasyPaisa: 03379827882</p>
                 <input type="number" id="dep-amount" placeholder="Amount (PKR)" class="input-field text-center">
-                <input type="text" id="dep-trx" placeholder="Transaction ID (TID)" class="input-field text-center">
-                <input type="file" id="dep-proof" accept="image/*" class="hidden">
-                <label for="dep-proof" class="block w-full bg-slate-50 p-5 rounded-2xl border-2 border-dashed text-center cursor-pointer text-[9px] font-bold text-slate-400">📸 UPLOAD RECEIPT</label>
+                <input type="text" id="dep-trx" placeholder="Transaction ID (TID)" class="input-field text-center uppercase">
+                <label class="block w-full bg-slate-50 p-5 rounded-2xl border-2 border-dashed text-center cursor-pointer text-[9px] font-bold text-slate-400">📸 UPLOAD RECEIPT<input type="file" id="dep-proof" accept="image/*" class="hidden"></label>
                 <button onclick="submitDeposit()" class="w-full bg-blue-600 text-white py-6 rounded-2xl font-black text-[10px] uppercase shadow-xl">Verify Funding</button>
             </div>
         </div>
 
         <div id="p-withdraw" class="page p-6">
             <div class="glass-light p-10 rounded-[3rem] text-center border-l-8 border-rose-500">
-                <h3 class="font-black text-rose-500 mb-6 uppercase text-sm italic">Payout Terminal</h3>
-                <input type="number" id="wd-amt" placeholder="Amount (PKR)" class="input-field text-center mb-4">
-                <select id="wd-method" class="input-field mb-4 text-center">
-                    <option value="JazzCash">JazzCash</option>
-                    <option value="EasyPaisa">EasyPaisa</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
-                </select>
-                <input type="text" id="wd-acc-num" placeholder="Account Number" class="input-field text-center mb-4">
-                <input type="text" id="wd-acc-name" placeholder="Account Title Name" class="input-field text-center mb-8">
+                <h3 class="font-black text-rose-500 mb-6 uppercase text-xs italic">Payout Terminal</h3>
+                <input type="number" id="wd-amt" placeholder="Amount (PKR)" class="input-field text-center mb-3">
+                <select id="wd-method" class="input-field mb-3 text-center"><option value="JazzCash">JazzCash</option><option value="EasyPaisa">EasyPaisa</option><option value="Bank">Bank Transfer</option></select>
+                <input type="text" id="wd-acc-num" placeholder="Account Number" class="input-field text-center mb-3">
+                <input type="text" id="wd-acc-name" placeholder="Account Title" class="input-field text-center mb-6">
                 <button onclick="submitWithdraw()" class="w-full bg-rose-600 text-white py-6 rounded-2xl font-black text-[10px] uppercase shadow-xl">Authorize Payout</button>
             </div>
         </div>
     </main>
 
     <div id="admin-panel" class="fixed inset-0 bg-white z-[5000] p-6 hidden overflow-y-auto">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-xl font-black text-blue-600 uppercase italic">Master Console</h2>
-            <button onclick="closeAdmin()" class="bg-rose-100 text-rose-600 px-6 py-2 rounded-xl text-[10px] font-black uppercase">Exit</button>
-        </div>
-        <div class="flex gap-2 mb-8 overflow-x-auto">
-            <button onclick="showAdmTab('requests')" class="bg-blue-600 text-white px-6 py-3 rounded-xl text-[9px] font-black uppercase">Requests</button>
-            <button onclick="showAdmTab('users')" class="bg-slate-100 text-slate-600 px-6 py-3 rounded-xl text-[9px] font-black uppercase">Users</button>
-            <button onclick="showAdmTab('broadcast')" class="bg-yellow-500 text-white px-6 py-3 rounded-xl text-[9px] font-black uppercase">News</button>
-        </div>
-        <div id="adm-sec-requests" class="adm-tab space-y-3"></div>
-        <div id="adm-sec-users" class="adm-tab hidden space-y-2"></div>
-        <div id="adm-sec-broadcast" class="adm-tab hidden glass-light p-6 rounded-2xl">
-            <textarea id="bc-msg" placeholder="Broadcast news..." class="input-field mb-4 h-24"></textarea>
-            <button onclick="sendBroadcast()" class="w-full bg-yellow-500 text-white py-4 rounded-xl font-black text-[10px] uppercase">Deploy News</button>
-        </div>
+        <div class="flex justify-between items-center mb-8"><h2 class="text-xl font-black text-blue-600 uppercase italic">Master Console</h2><button onclick="closeAdmin()" class="bg-rose-100 text-rose-600 px-6 py-2 rounded-xl text-[10px] font-black uppercase">Exit</button></div>
+        <div id="adm-sec-requests" class="space-y-3"></div>
     </div>
 
     <nav id="bottom-nav" class="hidden bg-white/80 backdrop-blur-xl border-t p-6 flex justify-around items-center fixed bottom-0 left-0 w-full z-[200] rounded-t-[3.5rem] shadow-xl">
@@ -160,7 +140,19 @@
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
         let user = null; let tapCount = 0;
 
-        const plans = [{ n: "Micro-Elite I", p: 200, r: 3 }, { n: "Bronze-S", p: 1000, r: 3.5 }, { n: "Silver-X", p: 5000, r: 4.5 }, { n: "Gold-Master", p: 15000, r: 6 }, { n: "Royal-Grand", p: 100000, r: 10 }];
+        const plans = [
+            { n: "Micro-Elite I", p: 200, r: 3 }, { n: "Micro-Elite II", p: 500, r: 3.2 },
+            { n: "Bronze-S", p: 1000, r: 3.5 }, { n: "Bronze-X", p: 2000, r: 3.8 },
+            { n: "Silver-S", p: 3000, r: 4.2 }, { n: "Silver-X", p: 5000, r: 4.5 },
+            { n: "Gold-S", p: 7000, r: 5 }, { n: "Gold-X", p: 10000, r: 5.5 },
+            { n: "Gold-Master", p: 15000, r: 6 }, { n: "Platinum-S", p: 20000, r: 6.5 },
+            { n: "Platinum-X", p: 30000, r: 7 }, { n: "Diamond-S", p: 40000, r: 7.5 },
+            { n: "Diamond-X", p: 50000, r: 8 }, { n: "Royal-S", p: 75000, r: 9 },
+            { n: "Royal-Grand", p: 100000, r: 10 },
+            { n: "⚡ FLASH 24H", p: 500, r: 12 }, { n: "⭐ VIP ACCESS", p: 2500, r: 14 },
+            { n: "💎 ELITE PASS", p: 8000, r: 15 }, { n: "🚀 ROCKET PRO", p: 12000, r: 18 },
+            { n: "👑 CROWN KING", p: 25000, r: 22 }
+        ];
 
         window.onload = () => { if(localStorage.getItem('mc_user')) loginSuccess(localStorage.getItem('mc_user')); listenForPromos(); };
 
@@ -168,60 +160,42 @@
         async function handleAuth(type) {
             const u = document.getElementById(type==='login'?'auth-username':'reg-username').value.trim();
             const p = document.getElementById(type==='login'?'auth-password':'reg-password').value.trim();
-            if(!u || !p) return alert("All fields are required, sweetie!");
+            if(!u || !p) return alert("Fill all fields!");
             const ref = db.collection("users").doc(u); const doc = await ref.get();
-            if(type==='signup') { if(doc.exists) return alert("Taken!"); await ref.set({ name: u, password: p, balance: 0, profit: 0, time: Date.now(), tierName: "Inactive" }); alert("Ready! 😘"); location.reload(); }
-            else { if(!doc.exists || doc.data().password !== p) return alert("Invalid PIN!"); localStorage.setItem('mc_user', u); loginSuccess(u); }
+            if(type==='signup') { if(doc.exists) return alert("Taken!"); await ref.set({ name: u, password: p, balance: 0, profit: 0, time: Date.now(), tierName: "Inactive" }); alert("Success!"); location.reload(); }
+            else { if(!doc.exists || doc.data().password !== p) return alert("Invalid!"); localStorage.setItem('mc_user', u); loginSuccess(u); }
         }
 
         function loginSuccess(name) { document.getElementById('auth-ui').classList.add('hidden'); document.getElementById('app-ui').classList.remove('hidden'); document.getElementById('bottom-nav').classList.remove('hidden'); startSync(name); renderPlans(); }
         function startSync(name) {
             db.collection("users").doc(name).onSnapshot(doc => { if(doc.exists) { user = doc.data(); document.getElementById('v-bal').innerText = "₨ " + (user.balance||0).toLocaleString(); document.getElementById('v-profit').innerText = "₨ " + (user.profit||0).toLocaleString(); document.getElementById('tier-tag').innerText = user.tierName; } });
             db.collection("requests").where("user", "==", name).onSnapshot(snap => {
-                const list = document.getElementById('user-history'); list.innerHTML = ''; snap.forEach(doc => { const d = doc.data(); list.innerHTML += `<div class="glass-light p-4 rounded-2xl flex justify-between items-center text-[9px] uppercase font-black"><div>${d.type}<br><span class="opacity-30">${new Date(d.time).toLocaleTimeString()}</span></div><div class="text-right">Rs ${d.amount}<br><span class="text-blue-500">${d.status}</span></div></div>`; });
+                const list = document.getElementById('user-history'); list.innerHTML = '';
+                snap.forEach(doc => { const d = doc.data(); list.innerHTML += `<div class="glass-light p-4 rounded-2xl flex justify-between items-center text-[9px] uppercase font-black mb-2"><div>${d.type}<br><span class="opacity-30">${new Date(d.time).toLocaleTimeString()}</span></div><div class="text-right">Rs ${d.amount}<br><span class="text-blue-500">${d.status}</span></div></div>`; });
             });
         }
 
-        function renderPlans() { const list = document.getElementById('plans-list'); list.innerHTML = ''; plans.forEach(p => { list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass-light p-5 rounded-[2rem] flex justify-between items-center active:scale-95 mb-2 border-l-4 border-slate-300"><div><h4 class="font-black text-[10px] uppercase">${p.n}</h4><p class="text-[8px] text-green-600 font-black">${p.r}% Daily</p></div><div class="font-black text-[11px]">₨ ${p.p.toLocaleString()}</div></div>`; }); }
-        async function buy(p, roi, t) { if(user.balance < p) { alert("Insufficient Funds!"); changePage('wallet'); } else { if(confirm("Activate "+t+"?")) await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: t, lastReqTime: Date.now() }); alert("Fleet Ready! 🚀"); } }
-        
+        function renderPlans() { const list = document.getElementById('plans-list'); list.innerHTML = ''; plans.forEach(p => { list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass-light p-5 rounded-[2rem] flex justify-between items-center mb-2 border-l-4 border-slate-300"><div><h4 class="font-black text-[10px] uppercase">${p.n}</h4><p class="text-[8px] text-green-600 font-black">${p.r}% Daily</p></div><div class="font-black text-[11px]">₨ ${p.p.toLocaleString()}</div></div>`; }); }
+        async function buy(p, roi, t) { if(user.balance < p) { alert("Insufficient Funds!"); changePage('wallet'); } else { if(confirm("Activate "+t+"?")) await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: t, lastReqTime: Date.now() }); alert("Success! 🚀"); } }
         async function submitWithdraw() {
-            const a = parseInt(document.getElementById('wd-amt').value); const m = document.getElementById('wd-method').value; const n = document.getElementById('wd-acc-num').value.trim(); const nm = document.getElementById('wd-acc-name').value.trim();
-            if(!a || !n || a > user.balance) return alert("Invalid Request!");
+            const a = parseInt(document.getElementById('wd-amt').value); const m = document.getElementById('wd-method').value; const n = document.getElementById('wd-acc-num').value; const nm = document.getElementById('wd-acc-name').value;
+            if(!a || a > user.balance) return alert("Invalid!");
             await db.collection("requests").add({ user: user.name, amount: a, method: m, details: `${nm} (${n})`, type: "Withdrawal", status: "pending", time: Date.now() });
-            await db.collection("users").doc(user.name).update({ balance: user.balance - a }); alert("Sent! 💸"); changePage('activity');
+            await db.collection("users").doc(user.name).update({ balance: user.balance - a }); alert("Sent!"); changePage('activity');
         }
-
         async function submitDeposit() {
             const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const f = document.getElementById('dep-proof').files[0];
-            if(!a || !t || !f) return alert("Incomplete!");
-            const r = new FileReader(); r.readAsDataURL(f); r.onload = async () => { await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() }); alert("Submitted! 😘"); changePage('activity'); };
+            if(!a || !t || !f) return alert("Missing Info!");
+            const r = new FileReader(); r.readAsDataURL(f); r.onload = async () => { await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() }); alert("Submitted!"); changePage('activity'); };
         }
-
         function listenForPromos() { db.collection("app_data").doc("announcement").onSnapshot(doc => { if(doc.exists) { document.getElementById('promo-ticker').classList.remove('hidden'); document.getElementById('ticker-text').innerText = doc.data().message; } }); }
         function changePage(p) { document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active-page')); document.querySelectorAll('nav button').forEach(b=>b.classList.add('opacity-40')); document.getElementById('p-'+p).classList.add('active-page'); document.getElementById('n-'+p).classList.remove('opacity-40'); }
         function logout() { localStorage.removeItem('mc_user'); location.reload(); }
-        function adminTap() { tapCount++; if(tapCount >= 4) { if(prompt("Terminal Key:") === "mint786") { document.getElementById('admin-panel').classList.remove('hidden'); syncAdmin(); } tapCount=0; } setTimeout(()=>tapCount=0,3000); }
+        function copyToClipboard(t) { navigator.clipboard.writeText(t); alert("Copied!"); }
+        function adminTap() { tapCount++; if(tapCount >= 4) { if(prompt("Key:") === "mint786") { document.getElementById('admin-panel').classList.remove('hidden'); syncAdmin(); } tapCount=0; } setTimeout(()=>tapCount=0,3000); }
         function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
-        function showAdmTab(t) { document.querySelectorAll('.adm-tab').forEach(s=>s.classList.add('hidden')); document.getElementById('adm-sec-'+t).classList.remove('hidden'); }
-        async function sendBroadcast() { await db.collection("app_data").doc("announcement").set({ message: document.getElementById('bc-msg').value, time: Date.now() }); alert("Sent!"); }
-
-        function syncAdmin() {
-            db.collection("requests").where("status", "==", "pending").onSnapshot(snap => {
-                const l = document.getElementById('adm-sec-requests'); l.innerHTML = '';
-                snap.forEach(doc => { const d = doc.data(); 
-                    const info = d.details ? `<br>${d.method}: ${d.details}` : (d.tid ? `<br>TID: ${d.tid}` : '');
-                    l.innerHTML += `<div class="glass-light p-4 rounded-xl text-[8px] font-black uppercase mb-2"><div>${d.user} | Rs ${d.amount}<br>${d.type}${info}</div><button onclick="handleAdm('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 text-white px-4 py-1 mt-2 rounded">Approve</button></div>`;
-                });
-            });
-            db.collection("users").onSnapshot(snap => { const l = document.getElementById('adm-sec-users'); l.innerHTML = ''; snap.forEach(doc => { const u = doc.data(); l.innerHTML += `<div class="glass-light p-3 text-[8px] font-black uppercase mb-1 flex justify-between"><span>${u.name}</span><span>Rs ${u.balance}</span></div>`; }); });
-        }
-
-        async function handleAdm(id, u, amt, act, type) {
-            const ref = db.collection("users").doc(u); const doc = await ref.get();
-            if(act==='approved' && type==='deposit') await ref.update({ balance: (doc.data().balance||0) + amt });
-            await db.collection("requests").doc(id).update({ status: act }); alert("Actioned!");
-        }
+        async function syncAdmin() { db.collection("requests").where("status", "==", "pending").onSnapshot(snap => { const l = document.getElementById('adm-sec-requests'); l.innerHTML = ''; snap.forEach(doc => { const d = doc.data(); l.innerHTML += `<div class="glass-light p-4 rounded-xl text-[8px] font-black uppercase mb-2"><div>${d.user} | Rs ${d.amount}<br>${d.type}<br>${d.details||d.tid||''}</div><button onclick="handleAdm('${doc.id}','${d.user}',${d.amount},'approved','${d.type}')" class="bg-green-600 text-white px-4 py-1 mt-2 rounded">Approve</button></div>`; }); }); }
+        async function handleAdm(id, u, amt, act, type) { const ref = db.collection("users").doc(u); const doc = await ref.get(); if(act==='approved' && type==='deposit') await ref.update({ balance: (doc.data().balance||0) + amt }); await db.collection("requests").doc(id).update({ status: act }); alert("Done!"); }
     </script>
 </body>
 </html>
