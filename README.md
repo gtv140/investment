@@ -19,8 +19,8 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
         .input-field { width: 100%; background: #F1F5F9; padding: 16px; border-radius: 16px; border: 1px solid #E2E8F0; outline: none; transition: 0.3s; font-weight: 600; font-size: 12px; }
         .input-field:focus { border-color: #3B82F6; background: white; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .animate-marquee { display: inline-block; animation: marquee 15s linear infinite; white-space: nowrap; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
 <body class="h-screen flex flex-col vibrant-bg">
@@ -39,127 +39,116 @@
             <div id="login-form" class="glass-light p-8 rounded-[2.5rem] space-y-4">
                 <input type="text" id="auth-username" placeholder="Username" class="input-field text-center">
                 <input type="password" id="auth-password" placeholder="Security PIN" class="input-field text-center">
-                <button onclick="handleAuth('login')" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 shadow-xl">Secure Access</button>
-                <p class="text-[9px] font-bold text-slate-500">New Partner? <span class="text-blue-600 cursor-pointer" onclick="toggleAuth(false)">Create Account</span></p>
+                <button onclick="handleAuth('login')" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-[10px] uppercase shadow-xl">Secure Access</button>
+                <p class="text-[9px] font-bold text-slate-500">New? <span class="text-blue-600 cursor-pointer" onclick="toggleAuth(false)">Create Account</span></p>
             </div>
 
             <div id="signup-form" class="hidden glass-light p-8 rounded-[2.5rem] space-y-4">
-                <input type="text" id="reg-username" placeholder="Choose Username" class="input-field text-center">
-                <input type="password" id="reg-password" placeholder="Set PIN" class="input-field text-center">
-                <button onclick="handleAuth('signup')" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 shadow-xl">Register Fleet</button>
+                <input type="text" id="reg-username" placeholder="Full Name" class="input-field text-center">
+                <input type="password" id="reg-password" placeholder="Set Security PIN" class="input-field text-center">
+                <button onclick="handleAuth('signup')" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-[10px] uppercase shadow-xl">Register Account</button>
                 <p class="text-[9px] font-bold text-slate-500">Member? <span class="text-blue-600 cursor-pointer" onclick="toggleAuth(true)">Login</span></p>
             </div>
         </div>
     </section>
 
-    <header class="p-6 flex justify-between items-center sticky top-0 z-[500] bg-white/60 backdrop-blur-md border-b border-gray-200/50">
+    <header class="p-6 flex justify-between items-center sticky top-0 z-[500] bg-white/60 backdrop-blur-md border-b">
         <h1 class="text-xl font-black italic tracking-tighter uppercase text-slate-800">MINT<span class="text-blue-600 text-2xl">CREST</span></h1>
-        <div onclick="adminTap()" class="bg-blue-100 p-2.5 rounded-xl border border-blue-200 active:scale-90 transition-all">
-            <i class="fa-solid fa-fingerprint text-blue-600 text-lg"></i>
-        </div>
+        <div onclick="adminTap()" class="bg-blue-100 p-2.5 rounded-xl border border-blue-200"><i class="fa-solid fa-fingerprint text-blue-600 text-lg"></i></div>
     </header>
 
     <main id="app-ui" class="hidden flex-1 overflow-y-auto pb-32">
         <div id="p-home" class="page active-page p-6">
-            <div class="card-blue p-8 rounded-[2.5rem] mb-6 relative overflow-hidden">
-                <p class="text-[10px] opacity-80 font-black mb-1 uppercase tracking-widest">Active Assets Pool</p>
+            <div class="card-blue p-8 rounded-[2.5rem] mb-6 relative overflow-hidden text-center">
+                <p class="text-[10px] opacity-80 font-black mb-1 uppercase tracking-widest">Available Balance</p>
                 <h2 class="text-5xl font-black tracking-tighter mb-2" id="v-bal">₨ 0</h2>
                 <div id="countdown-display" class="text-[9px] font-black uppercase text-blue-200 italic mb-6">System Ready</div>
-                <div class="flex items-center justify-between border-t border-white/20 pt-6">
+                <div class="flex justify-between border-t border-white/20 pt-6">
                     <div><p class="text-[8px] opacity-70 font-black uppercase">Net Profit</p><p id="v-profit" class="text-lg font-black text-white">₨ 0</p></div>
-                    <div class="text-right"><p class="text-[8px] opacity-70 font-black uppercase tracking-tighter">Current Fleet</p><p id="tier-tag" class="text-[10px] font-black uppercase italic text-blue-100">Scanning...</p></div>
+                    <div class="text-right"><p class="text-[8px] opacity-70 font-black uppercase">Fleet</p><p id="tier-tag" class="text-[10px] font-black uppercase italic">Inactive</p></div>
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="changePage('wallet')" class="glass-light p-6 rounded-[2rem] flex flex-col items-center gap-2 border-b-4 border-blue-500 active:scale-95"><i class="fa-solid fa-plus text-blue-600"></i><span class="text-[9px] font-black uppercase">Deposit</span></button>
-                <button onclick="changePage('withdraw')" class="glass-light p-6 rounded-[2rem] flex flex-col items-center gap-2 border-b-4 border-rose-500 active:scale-95"><i class="fa-solid fa-paper-plane text-rose-600"></i><span class="text-[9px] font-black uppercase">Withdraw</span></button>
+                <button onclick="changePage('wallet')" class="glass-light p-6 rounded-[2rem] text-center border-b-4 border-blue-500"><i class="fa-solid fa-plus text-blue-600 mb-2"></i><br><span class="text-[9px] font-black uppercase">Deposit</span></button>
+                <button onclick="changePage('withdraw')" class="glass-light p-6 rounded-[2rem] text-center border-b-4 border-rose-500"><i class="fa-solid fa-paper-plane text-rose-600 mb-2"></i><br><span class="text-[9px] font-black uppercase">Withdraw</span></button>
             </div>
         </div>
 
         <div id="p-invest" class="page p-6">
-            <h2 class="text-center font-black italic mb-6 uppercase text-blue-600 text-lg tracking-widest">Active Trading Fleet</h2>
+            <h2 class="text-center font-black italic mb-6 uppercase text-blue-600">Active Trading Fleet</h2>
             <div id="plans-list" class="grid grid-cols-1 gap-3 pb-10"></div>
         </div>
 
-        <div id="p-activity" class="page p-6">
-            <h2 class="text-center font-black italic mb-6 uppercase text-slate-800">Security Ledger</h2>
-            <div id="user-history" class="space-y-2 pb-10"></div>
-        </div>
+        <div id="p-activity" class="page p-6"><h2 class="text-center font-black italic mb-6 uppercase">Security Ledger</h2><div id="user-history" class="space-y-2 pb-10"></div></div>
 
         <div id="p-more" class="page p-6 space-y-6">
-            <div class="glass-light p-8 rounded-[2.5rem] border-t-8 border-blue-600 shadow-2xl relative overflow-hidden">
-                <div class="mb-6"><h3 class="text-blue-600 font-black text-xs uppercase tracking-[0.3em] italic">Corporate Registry</h3><p class="text-[7px] font-bold text-slate-400 uppercase mt-1">Status: Active & Licensed ✅</p></div>
+            <div class="glass-light p-8 rounded-[2.5rem] border-t-8 border-blue-600 shadow-2xl">
+                <div class="mb-6"><h3 class="text-blue-600 font-black text-xs uppercase italic">Corporate Registry</h3><p class="text-[7px] font-bold text-slate-400 uppercase mt-1">Status: Active & Licensed ✅</p></div>
                 <div class="space-y-4">
-                    <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Company Name</p><p class="text-[10px] font-bold text-slate-800 uppercase">MintCrest Gold Enterprise Ltd.</p></div>
+                    <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Company Name</p><p class="text-[10px] font-bold text-slate-800">MintCrest Gold Enterprise Ltd.</p></div>
                     <div class="grid grid-cols-2 gap-4">
                         <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">License No.</p><p class="text-[9px] font-bold text-blue-600">#UK-778491-MCG</p></div>
                         <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Incorporated</p><p class="text-[9px] font-bold text-slate-800">12 FEB 2021</p></div>
                     </div>
-                    <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Headquarters</p><p class="text-[9px] font-bold text-slate-600 italic leading-relaxed">Level 24, The Shard, 32 London Bridge St, London SE1 9SG, United Kingdom.</p></div>
+                    <div><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Headquarters</p><p class="text-[9px] font-bold text-slate-600 italic">Level 24, The Shard, 32 London Bridge St, London SE1 9SG, UK.</p></div>
                 </div>
             </div>
-
             <div class="grid grid-cols-2 gap-4">
                 <div class="glass-light p-6 rounded-[2rem] text-center border-b-4 border-yellow-500">
-                    <i class="fa-solid fa-gift text-yellow-500 mb-2"></i>
-                    <input type="text" id="promo-input" placeholder="CODE" class="w-full bg-white mt-1 p-2 rounded-lg text-[9px] border border-slate-100 text-center uppercase font-bold">
-                    <button onclick="applyPromoRequest()" class="mt-2 text-[8px] font-black text-yellow-600 uppercase">Activate</button>
+                    <input type="text" id="promo-input" placeholder="CODE" class="w-full bg-white p-2 rounded-lg text-[9px] text-center uppercase font-bold">
+                    <button onclick="applyPromoRequest()" class="mt-2 text-[8px] font-black text-yellow-600 uppercase">Apply Promo</button>
                 </div>
-                <div class="glass-light p-6 rounded-[2rem] text-center border-b-4 border-green-500">
-                    <i class="fa-brands fa-whatsapp text-green-500 mb-2"></i>
-                    <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3" class="inline-block mt-2 text-[8px] font-black text-green-600 uppercase">Official Hub</a>
-                </div>
+                <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3" class="glass-light p-6 rounded-[2rem] text-center border-b-4 border-green-500"><i class="fa-brands fa-whatsapp text-green-500 mb-1"></i><p class="text-[8px] font-black uppercase">Official Hub</p></a>
             </div>
-
-            <button onclick="logout()" class="w-full p-4 text-[9px] font-black text-rose-500 uppercase italic opacity-40">Terminate Session</button>
+            <button onclick="logout()" class="w-full p-4 text-[9px] font-black text-rose-500 uppercase italic opacity-40">Terminate Secure Session</button>
         </div>
 
         <div id="p-wallet" class="page p-6">
             <div class="glass-light p-8 rounded-[2.5rem] space-y-4 text-center">
-                <p class="text-[10px] font-black text-blue-600 uppercase mb-4">Official Channels: 03705519562 / 03379827882</p>
+                <p class="text-[10px] font-black text-blue-600 uppercase">JazzCash: 03705519562 / EasyPaisa: 03379827882</p>
                 <input type="number" id="dep-amount" placeholder="Amount (PKR)" class="input-field text-center">
                 <input type="text" id="dep-trx" placeholder="Transaction ID (TID)" class="input-field text-center">
                 <input type="file" id="dep-proof" accept="image/*" class="hidden">
-                <label for="dep-proof" class="block w-full bg-slate-50 p-5 rounded-2xl border-2 border-dashed border-slate-200 text-center cursor-pointer text-[9px] font-bold text-slate-400 uppercase italic">📸 Upload Receipt</label>
+                <label for="dep-proof" class="block w-full bg-slate-50 p-5 rounded-2xl border-2 border-dashed text-center cursor-pointer text-[9px] font-bold text-slate-400">📸 UPLOAD RECEIPT</label>
                 <button onclick="submitDeposit()" class="w-full bg-blue-600 text-white py-6 rounded-2xl font-black text-[10px] uppercase shadow-xl">Verify Funding</button>
             </div>
         </div>
 
         <div id="p-withdraw" class="page p-6">
-            <div class="glass-light p-8 rounded-[3rem] text-center border-l-8 border-rose-500">
+            <div class="glass-light p-10 rounded-[3rem] text-center border-l-8 border-rose-500">
                 <h3 class="font-black text-rose-500 mb-6 uppercase text-sm italic">Payout Terminal</h3>
                 <input type="number" id="wd-amt" placeholder="Amount (PKR)" class="input-field text-center mb-4">
                 <select id="wd-method" class="input-field mb-4 text-center">
                     <option value="JazzCash">JazzCash</option>
                     <option value="EasyPaisa">EasyPaisa</option>
-                    <option value="SadaPay">SadaPay</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
                 </select>
-                <input type="text" id="wd-acc-num" placeholder="Wallet Number" class="input-field text-center mb-4">
-                <input type="text" id="wd-acc-name" placeholder="Account Name" class="input-field text-center mb-8">
+                <input type="text" id="wd-acc-num" placeholder="Account Number" class="input-field text-center mb-4">
+                <input type="text" id="wd-acc-name" placeholder="Account Title Name" class="input-field text-center mb-8">
                 <button onclick="submitWithdraw()" class="w-full bg-rose-600 text-white py-6 rounded-2xl font-black text-[10px] uppercase shadow-xl">Authorize Payout</button>
             </div>
         </div>
     </main>
 
     <div id="admin-panel" class="fixed inset-0 bg-white z-[5000] p-6 hidden overflow-y-auto">
-        <div class="flex justify-between items-center mb-10">
-            <h2 class="text-xl font-black text-blue-600 uppercase italic">Admin Console</h2>
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-black text-blue-600 uppercase italic">Master Console</h2>
             <button onclick="closeAdmin()" class="bg-rose-100 text-rose-600 px-6 py-2 rounded-xl text-[10px] font-black uppercase">Exit</button>
         </div>
         <div class="flex gap-2 mb-8 overflow-x-auto">
             <button onclick="showAdmTab('requests')" class="bg-blue-600 text-white px-6 py-3 rounded-xl text-[9px] font-black uppercase">Requests</button>
-            <button onclick="showAdmTab('users')" class="bg-slate-100 text-slate-600 px-6 py-3 rounded-xl text-[9px] font-black uppercase">Database</button>
-            <button onclick="showAdmTab('broadcast')" class="bg-yellow-500 text-white px-6 py-3 rounded-xl text-[9px] font-black uppercase">Broadcast</button>
+            <button onclick="showAdmTab('users')" class="bg-slate-100 text-slate-600 px-6 py-3 rounded-xl text-[9px] font-black uppercase">Users</button>
+            <button onclick="showAdmTab('broadcast')" class="bg-yellow-500 text-white px-6 py-3 rounded-xl text-[9px] font-black uppercase">News</button>
         </div>
         <div id="adm-sec-requests" class="adm-tab space-y-3"></div>
-        <div id="adm-sec-users" class="adm-tab hidden space-y-3"></div>
-        <div id="adm-sec-broadcast" class="adm-tab hidden glass-light p-8 rounded-[2.5rem]">
-            <textarea id="bc-msg" placeholder="Broadcast message..." class="input-field h-24 mb-4"></textarea>
-            <button onclick="sendBroadcast()" class="w-full bg-yellow-500 text-white py-4 rounded-xl font-black text-[10px] uppercase">Deploy Message</button>
+        <div id="adm-sec-users" class="adm-tab hidden space-y-2"></div>
+        <div id="adm-sec-broadcast" class="adm-tab hidden glass-light p-6 rounded-2xl">
+            <textarea id="bc-msg" placeholder="Broadcast news..." class="input-field mb-4 h-24"></textarea>
+            <button onclick="sendBroadcast()" class="w-full bg-yellow-500 text-white py-4 rounded-xl font-black text-[10px] uppercase">Deploy News</button>
         </div>
     </div>
 
-    <nav id="bottom-nav" class="hidden bg-white/80 backdrop-blur-xl border-t border-slate-100 p-6 flex justify-around items-center fixed bottom-0 left-0 w-full z-[200] rounded-t-[3.5rem] shadow-xl">
+    <nav id="bottom-nav" class="hidden bg-white/80 backdrop-blur-xl border-t p-6 flex justify-around items-center fixed bottom-0 left-0 w-full z-[200] rounded-t-[3.5rem] shadow-xl">
         <button onclick="changePage('home')" id="n-home" class="flex flex-col items-center"><i class="fa-solid fa-house-user text-xl"></i><span class="text-[8px] font-black uppercase mt-1">Vault</span></button>
         <button onclick="changePage('invest')" id="n-invest" class="flex flex-col items-center opacity-40"><i class="fa-solid fa-chart-line text-xl"></i><span class="text-[8px] font-black uppercase mt-1">Fleet</span></button>
         <button onclick="changePage('activity')" id="n-activity" class="flex flex-col items-center opacity-40"><i class="fa-solid fa-receipt text-xl"></i><span class="text-[8px] font-black uppercase mt-1">Ledger</span></button>
@@ -179,26 +168,26 @@
         async function handleAuth(type) {
             const u = document.getElementById(type==='login'?'auth-username':'reg-username').value.trim();
             const p = document.getElementById(type==='login'?'auth-password':'reg-password').value.trim();
-            if(!u || !p) return alert("Fill all fields, sweetie!");
+            if(!u || !p) return alert("All fields are required, sweetie!");
             const ref = db.collection("users").doc(u); const doc = await ref.get();
             if(type==='signup') { if(doc.exists) return alert("Taken!"); await ref.set({ name: u, password: p, balance: 0, profit: 0, time: Date.now(), tierName: "Inactive" }); alert("Ready! 😘"); location.reload(); }
-            else { if(!doc.exists || doc.data().password !== p) return alert("Wrong Credentials!"); localStorage.setItem('mc_user', u); loginSuccess(u); }
+            else { if(!doc.exists || doc.data().password !== p) return alert("Invalid PIN!"); localStorage.setItem('mc_user', u); loginSuccess(u); }
         }
 
         function loginSuccess(name) { document.getElementById('auth-ui').classList.add('hidden'); document.getElementById('app-ui').classList.remove('hidden'); document.getElementById('bottom-nav').classList.remove('hidden'); startSync(name); renderPlans(); }
         function startSync(name) {
             db.collection("users").doc(name).onSnapshot(doc => { if(doc.exists) { user = doc.data(); document.getElementById('v-bal').innerText = "₨ " + (user.balance||0).toLocaleString(); document.getElementById('v-profit').innerText = "₨ " + (user.profit||0).toLocaleString(); document.getElementById('tier-tag').innerText = user.tierName; } });
             db.collection("requests").where("user", "==", name).onSnapshot(snap => {
-                const list = document.getElementById('user-history'); list.innerHTML = '';
-                snap.forEach(doc => { const d = doc.data(); list.innerHTML += `<div class="glass-light p-4 rounded-2xl flex justify-between items-center mb-2 text-[9px] uppercase font-black"><div>${d.type}<br><span class="opacity-30">${new Date(d.time).toLocaleTimeString()}</span></div><div class="text-right">Rs ${d.amount}<br><span class="text-blue-500">${d.status}</span></div></div>`; });
+                const list = document.getElementById('user-history'); list.innerHTML = ''; snap.forEach(doc => { const d = doc.data(); list.innerHTML += `<div class="glass-light p-4 rounded-2xl flex justify-between items-center text-[9px] uppercase font-black"><div>${d.type}<br><span class="opacity-30">${new Date(d.time).toLocaleTimeString()}</span></div><div class="text-right">Rs ${d.amount}<br><span class="text-blue-500">${d.status}</span></div></div>`; });
             });
         }
 
         function renderPlans() { const list = document.getElementById('plans-list'); list.innerHTML = ''; plans.forEach(p => { list.innerHTML += `<div onclick="buy(${p.p}, ${p.r}, '${p.n}')" class="glass-light p-5 rounded-[2rem] flex justify-between items-center active:scale-95 mb-2 border-l-4 border-slate-300"><div><h4 class="font-black text-[10px] uppercase">${p.n}</h4><p class="text-[8px] text-green-600 font-black">${p.r}% Daily</p></div><div class="font-black text-[11px]">₨ ${p.p.toLocaleString()}</div></div>`; }); }
-        async function buy(p, roi, t) { if(user.balance < p) { alert("Low Funds!"); changePage('wallet'); } else { if(confirm("Activate "+t+"?")) await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: t, lastReqTime: Date.now() }); alert("Success! 🚀"); } }
+        async function buy(p, roi, t) { if(user.balance < p) { alert("Insufficient Funds!"); changePage('wallet'); } else { if(confirm("Activate "+t+"?")) await db.collection("users").doc(user.name).update({ balance: user.balance - p, activeTier: p, tierROI: roi, tierName: t, lastReqTime: Date.now() }); alert("Fleet Ready! 🚀"); } }
+        
         async function submitWithdraw() {
             const a = parseInt(document.getElementById('wd-amt').value); const m = document.getElementById('wd-method').value; const n = document.getElementById('wd-acc-num').value.trim(); const nm = document.getElementById('wd-acc-name').value.trim();
-            if(!a || !n || a > user.balance) return alert("Check Details!");
+            if(!a || !n || a > user.balance) return alert("Invalid Request!");
             await db.collection("requests").add({ user: user.name, amount: a, method: m, details: `${nm} (${n})`, type: "Withdrawal", status: "pending", time: Date.now() });
             await db.collection("users").doc(user.name).update({ balance: user.balance - a }); alert("Sent! 💸"); changePage('activity');
         }
@@ -206,7 +195,7 @@
         async function submitDeposit() {
             const a = document.getElementById('dep-amount').value; const t = document.getElementById('dep-trx').value; const f = document.getElementById('dep-proof').files[0];
             if(!a || !t || !f) return alert("Incomplete!");
-            const r = new FileReader(); r.readAsDataURL(f); r.onload = async () => { await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() }); alert("Sent! 😘"); changePage('activity'); };
+            const r = new FileReader(); r.readAsDataURL(f); r.onload = async () => { await db.collection("requests").add({ user: user.name, amount: parseInt(a), tid: t, proof: r.result, type: "deposit", status: "pending", time: Date.now() }); alert("Submitted! 😘"); changePage('activity'); };
         }
 
         function listenForPromos() { db.collection("app_data").doc("announcement").onSnapshot(doc => { if(doc.exists) { document.getElementById('promo-ticker').classList.remove('hidden'); document.getElementById('ticker-text').innerText = doc.data().message; } }); }
